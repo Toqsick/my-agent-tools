@@ -1,0 +1,10 @@
+{
+  "category": "document-generation",
+  "description": "Use this skill when visual quality and design identity matter for a PDF. CREATE (generate from scratch), FILL (complete form fields), REFORMAT (apply design to an existing doc).",
+  "id": 380157894602961,
+  "license": "MIT",
+  "name": "minimax-pdf",
+  "platform": "minimax",
+  "updated_at": 1774375571477,
+  "version": "1.0"
+}

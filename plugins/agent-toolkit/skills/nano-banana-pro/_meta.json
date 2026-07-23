@@ -1,0 +1,19 @@
+{
+  "author": "MiniMax Agent",
+  "category": "creative",
+  "created_at": "2026-03-26T03:31:00Z",
+  "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use for image create/modify requests including edits. Supports text-to-image + image-to-image; 1K/2K/4K resolution; use --input-image for editing.",
+  "id": 380468338307260,
+  "name": "nano-banana-pro",
+  "platform": "minimax",
+  "skill_id": 190707,
+  "tags": [
+    "image-generation",
+    "gemini",
+    "ai-image",
+    "nano-banana-pro",
+    "image-editing"
+  ],
+  "updated_at": 1774467162467,
+  "version": "1.0.1"
+}

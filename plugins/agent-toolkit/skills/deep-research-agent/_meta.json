@@ -1,0 +1,16 @@
+{
+  "author": "MiniMax Agent",
+  "created": "2026-03-22",
+  "description": "Comprehensive research agent for in-depth investigation with 100+ source verification",
+  "id": 379118388465966,
+  "name": "deep-research-agent",
+  "platform": "minimax",
+  "tags": [
+    "research",
+    "analysis",
+    "deep-investigation",
+    "multi-source"
+  ],
+  "updated_at": 1774146548276,
+  "version": "1.0.0"
+}

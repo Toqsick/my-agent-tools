@@ -1,0 +1,94 @@
+{
+  "plan": {
+    "name": "example-feature",
+    "version": "1.0.0",
+    "created": "2026-03-30",
+    "author": "Superpower-10x",
+    "status": "example"
+  },
+  "meta": {
+    "spec_file": "docs/superpowers/specs/2026-03-30-example-design.md",
+    "branch": "feature/example-feature",
+    "worktree": ".worktrees/example-feature",
+    "test_command": "npm test",
+    "coverage_target": 80
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "name": "User Model - Data Model Setup",
+      "description": "Create the User model with basic CRUD operations including validation schema",
+      "dependencies": [],
+      "files": {
+        "create": [
+          "src/models/user.model.ts",
+          "tests/unit/models/user.model.test.ts"
+        ],
+        "modify": [],
+        "test": "tests/unit/models/user.model.test.ts"
+      },
+      "test_command": "npm test -- tests/unit/models/user.model.test.ts --run",
+      "verify_command": "npm test -- tests/unit/models/user.model.test.ts --run",
+      "model": "haiku"
+    },
+    {
+      "id": "task-2",
+      "name": "User Service - Business Logic",
+      "description": "Add business logic layer with password hashing, validation, and user creation workflow",
+      "dependencies": ["task-1"],
+      "files": {
+        "create": [
+          "src/services/user.service.ts",
+          "tests/unit/services/user.service.test.ts"
+        ],
+        "modify": ["src/models/user.model.ts"],
+        "test": "tests/unit/services/user.service.test.ts"
+      },
+      "test_command": "npm test -- tests/unit/services/user.service.test.ts --run",
+      "verify_command": "npm test -- tests/unit/services/user.service.test.ts --run",
+      "model": "sonnet"
+    },
+    {
+      "id": "task-3",
+      "name": "User Controller - API Endpoints",
+      "description": "Implement REST API endpoints for user CRUD operations with proper error handling",
+      "dependencies": ["task-2"],
+      "files": {
+        "create": [
+          "src/controllers/user.controller.ts",
+          "src/routes/user.routes.ts",
+          "tests/integration/user.routes.test.ts"
+        ],
+        "modify": ["src/index.ts"],
+        "test": "tests/integration/user.routes.test.ts"
+      },
+      "test_command": "npm test -- tests/integration/user.routes.test.ts --run",
+      "verify_command": "npm test -- tests/integration/user.routes.test.ts --run",
+      "model": "sonnet"
+    },
+    {
+      "id": "task-4",
+      "name": "Authentication Middleware",
+      "description": "Add JWT authentication middleware, token validation, and protected route handling",
+      "dependencies": ["task-3"],
+      "files": {
+        "create": [
+          "src/middleware/auth.middleware.ts",
+          "src/utils/jwt.util.ts",
+          "tests/unit/middleware/auth.middleware.test.ts"
+        ],
+        "modify": ["src/routes/user.routes.ts"],
+        "test": "tests/unit/middleware/auth.middleware.test.ts"
+      },
+      "test_command": "npm test -- tests/unit/middleware/auth.middleware.test.ts --run",
+      "verify_command": "npm test -- tests/unit/middleware/auth.middleware.test.ts --run",
+      "model": "opus"
+    }
+  ],
+  "verification": {
+    "test_coverage": true,
+    "lint_check": true,
+    "type_check": true,
+    "security_scan": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "author": "MiniMax Agent",
+  "category": "Automation",
+  "created_at": "2026-03-27T19:03:00Z",
+  "description": "Workflow automation management for n8n platform. Create, test, execute, and optimize workflows with comprehensive API integration, validation, dry-run testing, and performance analysis capabilities.",
+  "id": 381130172424276,
+  "name": "n8n",
+  "platform": "minimax",
+  "skill_id": 190749,
+  "tags": [
+    "n8n",
+    "workflow",
+    "automation",
+    "api",
+    "testing",
+    "optimization"
+  ],
+  "updated_at": 1774609949768,
+  "version": "2.0.0"
+}

@@ -1,0 +1,86 @@
+{
+  "author": "MiniMax Agent",
+  "basedOn": [
+    "superpowers",
+    "test-driven-development",
+    "brainstorming",
+    "subagent-driven-development",
+    "systematic-debugging",
+    "writing-plans"
+  ],
+  "createdAt": "2026-03-30T00:56:08Z",
+  "dependencies": [],
+  "description": "10x Productivity Framework - Enhanced agentic development workflow with systematic processes, automated task orchestration, and intelligent debugging for coding agents",
+  "displayName": "Superpower-10x",
+  "features": [
+    "Automated task decomposition",
+    "TDD enforcement scripts",
+    "Quality gate pipeline",
+    "Subagent orchestration engine",
+    "Systematic debugging framework",
+    "Branch completion workflow",
+    "Design specification templates",
+    "Implementation plan templates",
+    "Progress tracking",
+    "Review automation"
+  ],
+  "fileStructure": {
+    "files": [
+      "SKILL.md",
+      "_meta.json",
+      "README.md",
+      "scripts/auto-plan.sh",
+      "scripts/tdd-enforce.sh",
+      "scripts/quality-gate.sh",
+      "scripts/subagent_executor.py",
+      "scripts/debug_engine.py",
+      "scripts/finish_pipeline.py",
+      "scripts/setup.sh",
+      "templates/SPEC_TEMPLATE.md",
+      "templates/PLAN_TEMPLATE.md",
+      "examples/feature-plan.json"
+    ],
+    "root": "/workspace/temp-skills/superpower-10x"
+  },
+  "id": 381871944810589,
+  "languages": [
+    "bash",
+    "python",
+    "typescript"
+  ],
+  "license": "MIT",
+  "name": "superpower-10x",
+  "platform": "minimax",
+  "platforms": [
+    "claude-code",
+    "cursor",
+    "codex",
+    "opencode",
+    "gemini-cli"
+  ],
+  "skillType": "workflow",
+  "sourceRepository": "https://github.com/obra/superpowers",
+  "tags": [
+    "productivity",
+    "development",
+    "workflow",
+    "automation",
+    "tdd",
+    "debugging",
+    "subagent",
+    "systematic",
+    "quality",
+    "planning"
+  ],
+  "updatedAt": "2026-03-30T00:56:08Z",
+  "updated_at": 1774804505957,
+  "usageExamples": [
+    "Build a user authentication system",
+    "Implement a new API endpoint",
+    "Debug a flaky test failure",
+    "Plan and execute a complex feature",
+    "Complete a development branch with PR creation",
+    "Systematically debug a production issue"
+  ],
+  "version": "1.0.0"
+}

@@ -1,0 +1,21 @@
+{
+  "author": "MiniMax Agent",
+  "category": "Productivity",
+  "created_at": "2026-03-26T03:47:04Z",
+  "description": "Build and manage Microsoft Excel spreadsheets with precision. Create, modify, and audit workbooks featuring formulas, formatting, and data integrity while preserving templates",
+  "id": 380467359047797,
+  "name": "excel-xlsx",
+  "platform": "minimax",
+  "skill_id": 190727,
+  "tags": [
+    "excel",
+    "spreadsheet",
+    "xlsx",
+    "formulas",
+    "data",
+    "workbook",
+    "microsoft"
+  ],
+  "updated_at": 1774469026236,
+  "version": "1.0.2"
+}

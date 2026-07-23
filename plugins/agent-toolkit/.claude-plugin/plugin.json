@@ -1,7 +1,7 @@
 {
   "name": "agent-toolkit",
   "description": "Basti's vetted Claude Code toolkit: curated skills, subagents, and MCP server declarations bundled together. One enable → every agent on the same state.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "Toqsick"
   },
@@ -112,6 +112,28 @@
     "./skills/superpowers-using-superpowers",
     "./skills/superpowers-verification-before-completion",
     "./skills/superpowers-writing-plans",
-    "./skills/superpowers-writing-skills"
+    "./skills/superpowers-writing-skills",
+    "./skills/zcode-subagent-team",
+    "./skills/hermes-themes",
+    "./skills/minimax-ai-agent-builder",
+    "./skills/minimax-crypto-trading",
+    "./skills/minimax-docx",
+    "./skills/minimax-pdf",
+    "./skills/superpower-10x",
+    "./skills/pptx-generator",
+    "./skills/n8n",
+    "./skills/clickhouse-best-practices",
+    "./skills/nano-banana-pro",
+    "./skills/prompt-engineer",
+    "./skills/deep-research-agent",
+    "./skills/frontend-design",
+    "./skills/mckinsey-presentation-generator",
+    "./skills/research-paper-generator",
+    "./skills/seo-geo-optimization-expert",
+    "./skills/web-scraper",
+    "./skills/excel-xlsx",
+    "./skills/job-hunter",
+    "./skills/sales-power-map",
+    "./skills/saas-niche-finder"
   ]
 }
