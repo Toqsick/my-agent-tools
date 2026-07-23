@@ -1,0 +1,12 @@
+display-name-zh: 图片重混
+version: 0.7.9
+tag-en: "Visual Production / Image Generation"
+tag-cn: "视觉创作 / 图像生成"
+summary-en: "Generate new images with a reference vibe"
+summary-cn: "复刻参考图氛围生成新图"
+desc-en: "For producing new images that share the feel of a reference but with different content and subject matter. Takes a reference image plus desired new content description as input. Produces fresh images via 10-dimension aesthetic analysis collapsed into Form, Aesthetic and Mood axes, with model matched to the reference origin for optimal style reproduction. Supports iterative refinement to progressively align output with creative intent."
+desc-cn: '适用于以参考图的“感觉”(构图、色彩、光影、风格、氛围)生成内容不同的新图。输入参考图与希望出现的新内容描述,输出受参考图美学启发的新图。通过 10 维美学拆解→Form(形式)、Aesthetic(美学)、Mood(氛围)三轴坍缩,自动匹配源模型实现最优风格复现,支持迭代细化逐步对齐创意意图。'
+cover: "https://cdn.hailuoai.com/hailuo-video-web/public_assets/5e198825-e672-48da-9c8f-b3cdd3165cac.mp4"
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official-featured

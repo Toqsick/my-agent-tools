@@ -1,0 +1,201 @@
+---
+name: multi-agent-orchestration
+description: |
+  Use when decomposing a complex goal into independent AI-agent workstreams, dispatching parallel workers, or synthesizing verified outputs into one result.
+  NOT for simple sequential tasks, overlapping writes to shared state, or trusting subagent summaries without inspecting artifacts and test evidence.
+  Provides a disciplined multi-agent delegation workflow with isolation, ownership, convergence, and verification controls.
+version: 1.3.0
+changelog:
+- '1.3.0 (2026-07-07): Adaptive Wave Dispatch + Mid-Flight Progress Tracking + Queen-Consolidation-Report
+  + PR/Issue ''Hot Garbage'' Assessment Pattern. Referenz github-bulk-closeout-bee-swarm.md
+  erweitert mit 3-Wellen- statt 2-Wellen-Prinzip, todo()-Scorecard, Subagent-Claim-Verifikation,
+  und 10 Pitfalls.'
+- '1.2.0 (2026-07-07): Neue Domain-Variant: GitHub Bulk Closeout via Bienen-Schwarm.
+  Referenz github-bulk-closeout-bee-swarm.md mit 2-Wellen-Dispatch, sofortiger Finalize,
+  Beispiel-Briefing und 6 Pitfalls.'
+- '1.1.0 (2026-07-05): Phase 0 (Inventur) + Hybrid Local+Fable Swarm (Phase 1a/1b)
+  als neues Dispatch-Muster. Referenz hybrid-local-fable-swarm.md mit Kostenmatrix,
+  Briefing-Format und 7 Pitfalls (inkl. claude models list Fallstrick).'
+- '1.0.0 (2026-07-03): Initial conversion from MiniMax Hub'
+author: Toqsick + Yuno (Hub→Hermes conversion)
+license: MIT
+platforms:
+- linux
+- macos
+- windows
+metadata:
+  hermes:
+    source: minimax-hub
+    hub_skill_id: orchestration-multi-agent-orchestration
+    category: orchestration
+    domain: orchestration
+    converted_at: '2026-07-03T23:19:32.983094'
+  tags:
+  - hub
+  - conversion
+  - workflow
+triggers:
+- orchestration/multi
+- agent
+- orchestration
+trigger_keywords: ['into', 'agent', 'decomposing', 'complex', 'goal']
+keywords: ['into', 'agent', 'decomposing', 'complex', 'goal']
+last_curated: '2026-07-23'
+curated_by: 'Yuno'
+related_skills: ['plan-review-and-orchestrate']
+---
+
+
+
+> **Hub Origin:** Convexed from MiniMax Hub skill `orchestration/multi-agent-orchestration` (version 1.0.0). Original Hub-SKILL.md is preserved at `scripts-originals/SKILL.md.hub`, original meta.yaml at `scripts-originals/meta.yaml.hub`. All Hub-specific paths (e.g. `~/.hub-global/skills/orchestration-multi-agent-orchestration/`) translated to Hermes-equivalent references in `references/`.
+# Multi-Agent Orchestration
+
+Orchestrate parallel AI agent workstreams for research, audits, and development.
+
+## The Pattern
+
+```
+set -euo pipefail
+Phase 1: Parallel Research (3 experts, ~5-10 min each)
+Phase 2: Immediate Fixes (parent acts while reviewing results)
+Phase 3: Synthesis (merge reports, prioritize) + 3.5 Cross-Check + 3.6 User-Decision
+Phase 4: Execute & Document (P0 fixes first, write report to ~/docs/)
+Phase 5: Retrospective (what worked, what didn't)
+```
+
+## When to Use
+
+- Deep research/improvement plans across multiple areas
+- System audits requiring breadth + depth
+- Any task splitting into 3+ independent domains
+- **GitHub Bulk Closeout** — [`references/github-bulk-closeout-bee-swarm.md`](references/github-bulk-closeout-bee-swarm.md): Adaptive 3-Wave Bienen-Schwarm für Issue/PR Cleanup. Discovery → Priorisieren → Wave 1 + Wave 2 + Mini-Wave 3 → Mid-Flight-Progress → Queen-Consolidation. Validiert 2026-07-07 mit 15→2 offenen Items, 8 Bees, 3 Repos.
+- **Self-skill evaluation** — scan and evaluate one's own skill library
+- **Meta-orchestration** — analyze which orchestration patterns exist across skills
+
+For recurring health checks, use `no_agent: True` shell scripts that exit silently on success. Only output when there's a problem.
+
+## Phase 0: Inventur (READ-ONLY)
+
+Vor dem Spawn: **Systematische Bestandsaufnahme** ohne Side-Effects. Grep/scan/stat was bereits existiert — Pitfall #18: Phase-0-Inventur FIRST.
+
+Ergebnis: Rohdaten → Grundlage für User-Entscheidungsmatrix (2-4 Optionen pro Frage).
+
+## Phase 1: Hybrid Swarm (Measurement + Judgment)
+
+**Zwei parallele Workstreams:**
+- **Phase 1a — Lokale Subagenten** (`delegate_task`, terminal+file): Messung (Diffs, Listings, Status)
+- **Phase 1b — Fable 5 Calls** (via Claude CLI): Judgment/Triage (Klassifikation, Priorisierung, Empfehlung)
+
+Beide parallel starten. Pattern-Detail: [`references/hybrid-local-fable-swarm.md`](references/hybrid-local-fable-swarm.md).
+
+Use `delegate_task(tasks=[...])` with **3 parallel tasks**. Full briefing template, scope assignment, toolset table, and parent-direct fallback: see [`references/phase-1-spawn-experts.md`](references/phase-1-spawn-experts.md).
+
+Typical scopes (adapt to actual system): **Expert 1** Auth/Security/Credentials, **Expert 2** Tools/APIs/GPU-Compute, **Expert 3** Infra/Messaging/Monitoring.
+
+**Critical:** Experts without `terminal` + `file` produce estimates, not measurements.
+
+## Phase 2: Immediate Fixes
+
+While experts run, execute obvious quick wins in the parent: re-enable deactivated toolsets, fix permissions, clear caches, verify subagent claims (don't trust "✅ done").
+
+## Phase 3: Synthesis
+
+Deduplicate, conflict-check, verify subagent claims, identify blocking deps, prioritize P0/P1/P2/P3. **Two proven sub-procedures are required** (full detail in [`references/phase-3-synthesis.md`](references/phase-3-synthesis.md)):
+
+- **Phase 3.5 — Critical-Cross-Check:** Grep-verify the 3-5 most-actionable claims per scout BEFORE proposing fixes. Pitfall #5 (verify EVERY claim).
+- **Phase 3.6 — User-Anker Decision:** After cross-check, present 2-4 verified fixes + 1-2 deferred items. User picks, parent doesn't dump 5+ fixes at once.
+
+Both sub-phases include the **3-Tier Verifikations-Matrix** (Datei-Existenz + Content-Validierung + Realitäts-Check) and **4 Recovery Options** for timed-out subagents.
+
+## Phase 4: Execute & Document
+
+Execute P0 fixes first in dependency order. Write report to `~/docs/builds/` or `~/docs/system/`. Update `~/docs/builds/README.md`. Report template: [`references/report-template.md`](references/report-template.md).
+
+## Phase 5: Retrospective
+
+Key questions: (1) Were the 3 scopes correct? (2) Did any expert produce estimates instead of measurements? (3) Were CLI commands validated before execution? (4) What would a 4th "Validator" expert have caught?
+
+## Queen-Bee Orchestration
+
+Die Bienenkönigin orchestriert einen Schwarm aus Subagenten. Das **Delegation-Modell ist unabhängig vom Parent-Modell** — die einzige Steuerung ist `delegation.model` in `~/.hermes/config.yaml` (Pitfall #10: `model`-Param wird ignoriert).
+
+**Rollen:** Königin (stark, höher Kosten, Strategie/Synthese) → Scouts (free tier, parallel, Messungen) → Arbeiter (Cron-Script, no_agent=True, recurring checks). Bei Free-Tier Rate-Limits → Parent übernimmt direkt (Fallback Phase 2).
+
+Full config blocks, free-model recommendations (Owl Alpha, Nemotron, Qwen3 Coder), Token-Plan-aware multi-provider routing (Profile + MoA-Preset patterns), and anti-patterns: see [`references/queen-bee-configuration.md`](references/queen-bee-configuration.md).
+
+## Batch vs Subagents Decision Matrix
+
+| Criterion | Subagents | Python Batch |
+|-----------|-----------|--------------|
+| File count | 1-10 per expert | 20-1000+ |
+| Check type | Needs reasoning | Deterministic |
+| Context cost | High | Low |
+| Risk | Phantom-fixes | Parent sees exact output |
+
+## Pitfalls (Quick Reference)
+
+The full 20-pitfall detailed list with examples lives in [`references/pitfalls-detailed.md`](references/pitfalls-detailed.md). For symptom-based trigger-watchlist (load BEFORE every `delegate_task`): see companion skill `multi-agent-pitfalls-cheatsheet`.
+
+**Top 10 one-liners** (must defend against):
+
+1. **`--help` first** — never assume CLI syntax
+2. **Timeouts 60-120s+** — network/build/install
+3. **terminal+file toolsets** — otherwise estimates not measurements
+4. **Pre-check deps** — "5 min" estimates are optimistic
+5. **VERIFY EVERY CLAIM** — subagent self-reports are NOT facts
+6. **Explicit OUTPUT path** — `~/docs/system/NAME-DATE.md`, never defaults
+7. **Parent applies config** — subagents blocked on `.env`/`config.yaml` writes
+8. **Parent-only YAML edits** — never let multiple subagents touch same config
+9. **MAX 8 web-calls** — subagents WILL loop pagination otherwise
+10. **`model` param ignored** — only `delegation.model` config controls routing
+
+**Critical advanced pitfalls** (full detail in reference):
+- **#11** Dispatch-fail → parent-direct fallback (don't retry `delegate_task` blindly)
+- **#13** Silent truncation of depp-models — use sentinel+structure validation
+- **#16** Queen-Lane-Plan for structured multi-lane missions (5.4x speedup)
+- **#17** Parent-direct for <30min lanes — subagent context-burn too costly
+- **#18** Phase-0-Inventur FIRST — grep what's already in repo
+- **#20** Verify user-path before `ls` — user-path is a hint, not a contract
+
+## Cross-Reference: hermes-orchestration (V2.4+)
+
+Seit 2026-06-27 existiert `hermes-orchestration` als **dedizierter Ausführungsskill** — dieser Skill bleibt das **Pattern-Repository**, der Ausführungsskill ist `hermes-orchestration`.
+
+| Feature | multi-agent-orchestration (Pattern) | hermes-orchestration (Runtime) |
+|---------|-------------------------------------|-------------------------------|
+| 3-Expert Deep Research | ✅ Phase 1 Pattern | ✅ Task-Typ `research` |
+| Queen-Bee Delegation | ✅ Konfig + Owl Alpha | ✅ Hermes Subagent Bridge |
+| Parent-Direct-Fallback | ✅ Pitfall #11 | ✅ Automatisch + `--manual` |
+| Heuristic Extraction / Mnemosyne / Cron | ❌ | ✅ |
+
+**Empfehlung:** Für neue Runs `hermes-orchestration` nutzen (es läuft). Diesen Skill für das Pattern-Wissen und die documentierten Pitfalls laden.
+
+## Hermes Subagent Bridge
+
+For the canonical code pattern (Worker-Role → Toolset mapping, dispatch with parent-direct fallback, worker-contract parsing): see [`references/hermes-subagent-bridge.md`](references/hermes-subagent-bridge.md). Used by `hermes-orchestration` (V2.1) and `the-dmz-transfer`.
+
+## See Also: Related Skills
+
+- **`hermes-orchestration`** (same category) — the **runtime** with `orchestrator.py`, metrics_extractor, heuristic_aggregator, mnemosyne_importer, weekly-pipeline cron. **Use this for actually running orchestration.**
+- **`multi-agent-pitfalls-cheatsheet`** — **load BEFORE every `delegate_task`** for the top-20 trigger-watchlist
+- **`subagent-driven-development`** — execution pattern using subagents
+- **`skill-library-maintenance`** — class-level skill for slim-down patterns and 4-Tier Verification
+
+## Documentation Planning — 4-Agent + Queen Pattern
+
+For creating/improving README, DESCRIPTION, NAVIGATION docs across a directory tree. Spawn 4 parallel sub-agents (README, Description, Navigation, Control) + Queen consolidation. Full role definitions, context templates, toolset assignments, risk categories, verification scripts: see [`references/documentation-planning-pattern.md`](references/documentation-planning-pattern.md).
+
+## Workflow
+
+1. Load `multi-agent-orchestration` (this skill) for the pattern
+2. Load `multi-agent-pitfalls-cheatsheet` BEFORE every `delegate_task` for traps
+3. Spawn 3 experts per Phase 1
+4. Cross-check scout claims per Phase 3.5 (verify, don't trust)
+5. Synthesize + present 2-4 verified fixes per Phase 3.6 (user decides)
+6. Write final report per `report-template.md`
+
+**Live demos & known-good baselines:** see `multi-agent-pitfalls-cheatsheet` references (`demo-session-2026-07-02.md`, `2026-07-02-additions.md`).
+
+---
+
+_Converted from Hermes-Skill by Yuno. Original SKILL.md preserved in references/original-hermes.md._

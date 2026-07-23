@@ -1,0 +1,12 @@
+display-name-zh: 技能创建
+version: 2.0.6
+tag-en: "Platform Tooling"
+tag-cn: "平台工具"
+summary-en: "Save current flow as a reusable skill"
+summary-cn: "把当前流程保存为可复用Skill"
+desc-en: "For creating, modifying or installing reusable skills, including saving the current conversation flow as a skill. Takes the user's intent or an existing flow such as a completed creative output as input. Produces a new SKILL.md plus directory structure or an updated existing skill, also assisting with installation from the skill market and understanding the skill directory structure."
+desc-cn: "适用于创建新 Skill、修改已有 Skill、把当前对话流程保存为可复用 Skill 的场景,也用于引导用户从市场安装 Skill 与理解目录结构。输入用户意图或刚完成的创作流程,输出新建的 SKILL.md 与目录结构或更新后的现有 Skill。同时提供市场安装引导与目录结构说明,帮助用户快速上手技能管理。"
+cover: ""
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official

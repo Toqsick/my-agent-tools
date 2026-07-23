@@ -1,0 +1,19 @@
+{
+  "name": "EXAMPLE_PLUGIN",
+  "version": "1.0.0",
+  "kind": "mcp_tool",
+  "namespace": "mcp",
+  "entry_point": "index.js",
+  "conflict_policy": "reject",
+  "io_schema": {
+    "input": {
+      "type": "object",
+      "required": ["action"],
+      "properties": {
+        "action": { "type": "string" }
+      }
+    },
+    "output": { "type": "object" }
+  },
+  "usage_score": 1.0
+}

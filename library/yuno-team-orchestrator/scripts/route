@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# ════════════════════════════════════════════════════════════════
+#  Yuno Team Orchestrator — Quick-Route CLI
+#  Wrapper um personas.py für Shell-Snobs.
+#
+#  Usage:
+#    route "build me a Python CLI"
+#    route "research vector databases"
+#    route --match "fix login bug"
+#    route --list
+#    route --preamble engineer
+# ════════════════════════════════════════════════════════════════
+set -euo pipefail
+
+SKILL_DIR="${HOME}/.hermes/skills/yuno-team-orchestrator"
+SCRIPT="${SKILL_DIR}/scripts/personas.py"
+
+if [[ ! -f "$SCRIPT" ]]; then
+    echo "ERROR: $SCRIPT nicht gefunden." >&2
+    exit 1
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "ERROR: python3 nicht im PATH." >&2
+    exit 1
+fi
+
+case "${1:-}" in
+    --list|-l)
+        exec python3 "$SCRIPT" list
+        ;;
+    --preamble|-p)
+        shift
+        exec python3 "$SCRIPT" preamble "$@"
+        ;;
+    --match|-m)
+        shift
+        exec python3 "$SCRIPT" match "$@"
+        ;;
+    --help|-h|"")
+        cat <<EOF
+Yuno Team Orchestrator — Quick-Route CLI
+
+Usage:
+  route "your task description"          # route + zeige Preamble
+  route --match "your task"              # nur Trigger-Match
+  route --list                           # alle Personas
+  route --preamble <engineer|researcher|designer|analyst|writer|verifier>
+
+Examples:
+  route "build a Python CSV summarizer"
+  route "research the latest in quantum computing"
+  route "is my code ready to ship?"
+
+EOF
+        ;;
+    *)
+        exec python3 "$SCRIPT" route "$@"
+        ;;
+esac

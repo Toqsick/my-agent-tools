@@ -1,0 +1,370 @@
+// ============================================================
+// YUNO V6 - Clean Minimal Edition
+// State Load/Save + Top-10 Commands
+// Sauber, lesbar, an Funktionsgrenzen getrennt
+// 
+// Usage: run yuno_v6_c
+// ============================================================
+
+// -- COLORS --
+style = function(text, color)
+    colors = {
+        "cyan": "<color=#00ffff>",
+        "green": "<color=#00ff66>",
+        "yellow": "<color=#ffcc00>",
+        "orange": "<color=#ff9933>",
+        "red": "<color=#ff3333>",
+        "lblue": "<color=#66aaff>",
+        "blue": "<color=#3366ff>",
+        "magenta": "<color=#ff33ff>",
+        "purple": "<color=#cc33ff>",
+        "grey": "<color=#888888>",
+        "white": "<color=#ffffff>"
+    }
+    endc = "</color>"
+    if colors.hasIndex(color) then return colors[color] + text + endc
+    return text
+end function
+
+// ============================================================
+// SECTION 1: STATE MANAGEMENT
+// ============================================================
+STATE_FILE = "/home/Bratan/yuno_state.json"
+
+DEFAULT_STATE = {}
+DEFAULT_STATE["targets"] = []
+DEFAULT_STATE["sessions"] = []
+DEFAULT_STATE["proxies"] = []
+DEFAULT_STATE["settings"] = {}
+DEFAULT_STATE["settings"]["auto_save"] = true
+DEFAULT_STATE["settings"]["verbose"] = false
+DEFAULT_STATE["settings"]["scan_port"] = 80
+DEFAULT_STATE["version"] = "6.0.0"
+
+state_load = function()
+    file = get_shell(HOME_DIR).file_open(STATE_FILE)
+    if file == null then
+        print(style("[!] Kein State-File. Erstelle Default.", "yellow"))
+        state_save(DEFAULT_STATE)
+        return DEFAULT_STATE
+    end if
+    content = file.get_content()
+    file.close()
+    
+    // Einfaches Key:Value-Parsing
+    parsed = {}
+    lines = content.split(char(10))
+    for line in lines
+        line = line.trim
+        if line == "" or line.startsWith("{") or line.startsWith("}") then continue
+        colonPos = line.indexOf(":")
+        if colonPos == null then continue
+        key = line[:colonPos].trim
+        value = line[colonPos+1:].trim
+        if value.endsWith(",") then value = value[:value.len-1]
+        if value.startsWith("\"") and value.endsWith("\"") then value = value[1:value.len-1]
+        parsed[key] = value
+    end for
+    
+    print(style("[+] State geladen", "green"))
+    return parsed
+end function
+
+state_save = function(state)
+    file = get_shell(HOME_DIR).file_open(STATE_FILE)
+    if file == null then return end if
+    
+    lines = ["{"]
+    for key in state.indexes
+        value = state[key]
+        line = char(34) + key + char(34) + ": "
+        if typeof(value) == "string" then
+            line = line + char(34) + value + char(34)
+        else if typeof(value) == "number" then
+            line = line + str(value)
+        else if typeof(value) == "list" then
+            line = line + "[" + value.join(",") + "]"
+        else
+            line = line + char(34) + str(value) + char(34)
+        end if
+        lines.push(line)
+    end for
+    lines.push("}")
+    
+    file.set_content(lines.join(char(10)))
+    file.close()
+    print(style("[+] State gespeichert", "green"))
+end function
+
+state_update_target = function(state, ip, port, service)
+    if not state.hasIndex("targets") then state["targets"] = []
+    for t in state["targets"]
+        if t == ip + ":" + str(port) then return state
+    end for
+    state["targets"].push(ip + ":" + str(port))
+    print(style("[+] Neues Target: " + ip + ":" + str(port), "green"))
+    return state
+end function
+
+// ============================================================
+// SECTION 2: HELPER FUNCTIONS
+// ============================================================
+HOME_DIR = get_shell.host_computer.User.split("/")[-1]
+HOST_IP = get_shell.host_computer.lan_ip
+
+valid_ip = function(ip)
+    parts = ip.split(".")
+    if parts.len != 4 then return false
+    for p in parts
+        n = p.val
+        if n == null or n < 0 or n > 255 then return false
+    end for
+    return true
+end function
+
+prompt_input = function(msg, default_value)
+    print(msg)
+    input_str = user_input("> ")
+    if input_str == "" and default_value != null then return default_value
+    return input_str
+end function
+
+get_computer = function(ip)
+    for comp in get_shell.host_computer.network.connections
+        if comp.ip == ip then return comp
+    end for
+    return null
+end function
+
+// ============================================================
+// SECTION 3: COMMANDS
+// ============================================================
+cmd_scan = function(args, state)
+    target_ip = args[0]
+    if target_ip == null then target_ip = prompt_input(style("Ziel-IP? ", "yellow"))
+    if not valid_ip(target_ip) then print(style("[!] Ungültige IP", "red")); return state end if
+    
+    port = 80
+    if args.len >= 2 then port = args[1].val
+    
+    print(style("[*] Scanne " + target_ip + ":" + str(port), "cyan"))
+    computer = get_computer(target_ip)
+    if computer == null then print(style("[!] Keine Verbindung", "red")); return state end if
+    
+    try
+        result = computer.scan_port(port)
+        print(style("[+] Port " + str(port) + ": " + str(result), "green"))
+        state = state_update_target(state, target_ip, port, str(result))
+    catch e
+        print(style("[!] Scan: " + str(e), "red"))
+    end try
+    return state
+end function
+
+cmd_hack = function(args, state)
+    target_ip = args[0]
+    if target_ip == null then target_ip = prompt_input(style("Target-IP? ", "yellow"))
+    if not valid_ip(target_ip) then print(style("[!] Ungültige IP", "red")); return state end if
+    
+    computer = get_computer(target_ip)
+    if computer == null then print(style("[!] Keine Verbindung", "red")); return state end if
+    
+    print(style("[*] Hacke " + target_ip, "cyan"))
+    try
+        if computer.hack() then print(style("[+] Zugriff!", "green"))
+        else print(style("[-] Hack fehlgeschlagen", "red"))
+    catch e
+        print(style("[!] Hack: " + str(e), "red"))
+    end try
+    return state
+end function
+
+cmd_exploit = function(args, state)
+    target_ip = args[0]
+    if target_ip == null then print(style("[!] exploit <ip> [name]", "yellow")); return state end if
+    exploit_name = "default"
+    if args.len >= 2 then exploit_name = args[1]
+    
+    computer = get_computer(target_ip)
+    if computer == null then print(style("[!] Keine Verbindung", "red")); return state end if
+    
+    print(style("[*] Exploit: " + exploit_name + " auf " + target_ip, "cyan"))
+    try
+        if computer.hack(exploit_name) then print(style("[+] Exploit erfolgreich", "green"))
+        else print(style("[-] Exploit fehlgeschlagen", "red"))
+    catch e
+        print(style("[!] Exploit: " + str(e), "red"))
+    end try
+    return state
+end function
+
+cmd_use = function(args, state)
+    target_ip = args[0]
+    if target_ip == null then print(style("[!] use <ip>", "yellow")); return state end if
+    
+    session = get_computer(target_ip)
+    if session != null then
+        print(style("[+] Session: " + target_ip, "green"))
+        state["sessions"].push(target_ip)
+        state_save(state)
+    else
+        print(style("[!] Kein Zugriff auf " + target_ip, "red"))
+    end if
+    return state
+end function
+
+cmd_ls = function(args, state)
+    path = "/"
+    if args.len >= 1 then path = args[0]
+    try
+        items = get_shell.host_computer.File(path)
+        if items == null then print(style("[!] Pfad nicht gefunden", "red")); return state end if
+        print(style(path + ":", "cyan"))
+        for item in items
+            icon = "📁 " if item.is_folder else "📄 "
+            print("  " + icon + item.name + " (" + str(item.size) + "B)")
+        end for
+    catch e
+        print(style("[!] " + str(e), "red"))
+    end try
+    return state
+end function
+
+cmd_cat = function(args, state)
+    if args.len == 0 then print(style("[!] cat <datei>", "yellow")); return state end if
+    try
+        f = get_shell.host_computer.File(args[0])
+        if f == null then print(style("[!] Nicht gefunden", "red")); return state end if
+        print(f.get_content())
+    catch e
+        print(style("[!] " + str(e), "red"))
+    end try
+    return state
+end function
+
+cmd_put = function(args, state)
+    if args.len < 2 then print(style("[!] put <src> <dst>", "yellow")); return state end if
+    try
+        src = get_shell.host_computer.File(args[0])
+        if src == null then print(style("[!] Quelle fehlt", "red")); return state end if
+        content = src.get_content()
+        dst = get_shell.host_computer.File(args[1])
+        dst.set_content(content)
+        print(style("[+] " + args[0] + " → " + args[1], "green"))
+    catch e
+        print(style("[!] " + str(e), "red"))
+    end try
+    return state
+end function
+
+cmd_get = function(args, state)
+    if args.len == 0 then print(style("[!] get <url> [dst]", "yellow")); return state end if
+    dst = "/tmp/downloaded.src"
+    if args.len >= 2 then dst = args[1]
+    print(style("[*] Lade " + args[0], "cyan"))
+    try
+        pc.wget(args[0], dst)
+        print(style("[+] " + dst, "green"))
+    catch e
+        print(style("[!] " + str(e), "red"))
+    end try
+    return state
+end function
+
+cmd_secure = function(args, state)
+    print(style("[*] Sichere System ...", "cyan"))
+    try
+        comp = get_shell.host_computer
+        if comp.network.hasIndex("firewall") then
+            comp.network.firewall.add_rule("deny_all")
+            print(style("[+] Firewall aktiv", "green"))
+        end if
+        print(style("[+] System gesichert!", "green"))
+    catch e
+        print(style("[!] " + str(e), "red"))
+    end try
+    return state
+end function
+
+LAST_COMMAND = null
+cmd_loop = function(args, state)
+    count = 3
+    if args.len >= 1 then count = args[0].val
+    if count == null or count < 1 then count = 3
+    if LAST_COMMAND == null then print(style("[!] Kein letzter Befehl", "yellow")); return state end if
+    
+    for i in range(0, count - 1)
+        state = dispatch_command(LAST_COMMAND, state)
+    end for
+    return state
+end function
+
+// ============================================================
+// SECTION 4: DISPATCH + MAIN
+// ============================================================
+dispatch_command = function(input_str, state)
+    parts = input_str.split(" ")
+    cmd = parts[0].lower
+    args = parts[1:]
+    LAST_COMMAND = input_str
+    
+    if cmd == "scan" then state = cmd_scan(args, state)
+    else if cmd == "hack" then state = cmd_hack(args, state)
+    else if cmd == "exploit" then state = cmd_exploit(args, state)
+    else if cmd == "use" then state = cmd_use(args, state)
+    else if cmd == "ls" then state = cmd_ls(args, state)
+    else if cmd == "cat" then state = cmd_cat(args, state)
+    else if cmd == "put" then state = cmd_put(args, state)
+    else if cmd == "get" then state = cmd_get(args, state)
+    else if cmd == "secure" then state = cmd_secure(args, state)
+    else if cmd == "loop" then state = cmd_loop(args, state)
+    else if cmd == "save" then state_save(state); print(style("[+] Gespeichert", "green"))
+    else if cmd == "targets" then
+        print(style("Targets:", "cyan"))
+        for t in state["targets"]; print("  " + t); end for
+    else if cmd == "sessions" then
+        print(style("Sessions:", "cyan"))
+        for s in state["sessions"]; print("  " + s); end for
+    else if cmd == "help" then print_help()
+    else if cmd == "version" then print(style("YUNO V6c Clean Minimal", "lblue"))
+    else if cmd == "exit" or cmd == "quit" then
+        print(style("Bye! (｡•́︿•̀｡)", "purple"))
+        state_save(state)
+        exit
+    else print(style("[!] Unbekannt: " + cmd, "yellow"))
+    end if
+    return state
+end function
+
+print_banner = function()
+    print(style("╔════════════════════════════╗", "cyan"))
+    print(style("║   Y U N O   V 6 c         ║", "purple"))
+    print(style("║   Clean Minimal Edition    ║", "lblue"))
+    print(style("╚════════════════════════════╝", "cyan"))
+    print(style("Host: " + get_shell.host_computer.User, "grey"))
+    print(style("IP:   " + HOST_IP, "grey"))
+    print(style("Tipp help", "yellow"))
+end function
+
+print_help = function()
+    print(style("🔓 EXPLOIT: hack <ip> | exploit <ip> [name] | use <ip> | sessions", "green"))
+    print(style("🖥️  RECON:  scan [ip] [port] | targets", "lblue"))
+    print(style("📁 FILES:  ls [path] | cat <file> | put <src> <dst> | get <url> [dst]", "cyan"))
+    print(style("🛡️  DEF:    secure", "yellow"))
+    print(style("🔧 UTILS:  loop [n] | save | version | help | exit", "grey"))
+end function
+
+// MAIN
+state = state_load()
+print_banner()
+
+while true
+    try
+        input_str = user_input(style("yuno> ", "lblue"))
+        if input_str == null then break
+        if input_str.trim == "" then continue
+        state = dispatch_command(input_str.trim, state)
+    catch e
+        print(style("[!] Error: " + str(e), "red"))
+    end try
+end while

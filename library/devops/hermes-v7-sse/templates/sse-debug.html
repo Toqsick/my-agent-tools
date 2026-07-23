@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SSE Debug</title>
+  <style>
+    body { font-family: monospace; background: #1a1a1a; color: #0f0; padding: 20px; }
+    .box { background: #000; padding: 12px; margin: 8px 0; border: 1px solid #0f0; }
+    .err { color: #f55; }
+    .ok { color: #0f0; }
+  </style>
+</head>
+<body>
+  <h1>🔍 SSE-Debug für Hermes V7</h1>
+
+  <div class="box">
+    <h3>Test 1: API Status mit Token-Header</h3>
+    <pre id="r1">running...</pre>
+  </div>
+
+  <div class="box">
+    <h3>Test 2: API Status OHNE Token</h3>
+    <pre id="r2">running...</pre>
+  </div>
+
+  <div class="box">
+    <h3>Test 3: SSE-Stream mit ?token=super-secret</h3>
+    <pre id="r3">running...</pre>
+  </div>
+
+  <div class="box">
+    <h3>Test 4: SSE-Stream OHNE Token</h3>
+    <pre id="r4">running...</pre>
+  </div>
+
+  <script>
+    const log = (id, msg, cls='') => {
+      const el = document.getElementById(id);
+      el.innerHTML += '\n' + msg;
+      el.className = cls;
+    };
+
+    // Test 1: API mit Token-Header
+    fetch('/api/status', { headers: { 'X-Hermes-Token': 'super-secret' } })
+      .then(r => { log('r1', `HTTP ${r.status}`); return r.text(); })
+      .then(t => log('r1', t.substring(0, 200), 'ok'))
+      .catch(e => log('r1', 'ERROR: ' + e.message, 'err'));
+
+    // Test 2: API ohne Token
+    fetch('/api/status')
+      .then(r => { log('r2', `HTTP ${r.status}`); return r.text(); })
+      .then(t => log('r2', t.substring(0, 200), 'err'))
+      .catch(e => log('r2', 'ERROR: ' + e.message, 'err'));
+
+    // Test 3: SSE mit Token
+    try {
+      const es1 = new EventSource('/api/events?token=super-secret');
+      es1.onopen = () => log('r3', '✅ OPEN', 'ok');
+      es1.onmessage = (e) => log('r3', 'MSG: ' + e.data.substring(0, 150), 'ok');
+      es1.onerror = (e) => log('r3', '❌ ERROR: ' + JSON.stringify({readyState: es1.readyState, status: es1.status}), 'err');
+    } catch (e) {
+      log('r3', 'THROW: ' + e.message, 'err');
+    }
+
+    // Test 4: SSE ohne Token
+    try {
+      const es2 = new EventSource('/api/events');
+      es2.onopen = () => log('r4', '✅ OPEN (no auth!)', 'ok');
+      es2.onmessage = (e) => log('r4', 'MSG: ' + e.data.substring(0, 150), 'ok');
+      es2.onerror = (e) => log('r4', '❌ ERROR: ' + JSON.stringify({readyState: es2.readyState, status: es2.status}), 'err');
+    } catch (e) {
+      log('r4', 'THROW: ' + e.message, 'err');
+    }
+  </script>
+</body>
+</html>

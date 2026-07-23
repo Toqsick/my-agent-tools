@@ -1,0 +1,508 @@
+// ============================================================
+// YUNO — All-in-One GreyHack Toolkit (schlank!)
+// Ersetzt 31 einzelne Scripts durch EINEN kompakten Scripter.
+//
+// Usage:
+//   run yuno scan <IP> [port]      Port+Vuln Scan
+//   run yuno hack <IP> [user pass] Auto-Exploit + SSH-Brute + Loot
+//   run yuno loot                  Configs vom aktuellen PC lesen
+//   run yuno defend                System-Check + Hardening-Tipps
+//   run yuno crack <hash>          MD5-Hash knacken
+//   run yuno bank <IP> <u> <p> <acct> <amount>  Bank-Transfer
+//   run yuno help                  Diese Hilfe
+// ============================================================
+
+metax = include_lib("/lib/metaxploit.so")
+crypto = include_lib("/lib/crypto.so")
+
+// --- Standard-Ports ---
+COMMON_PORTS = [22, 25, 80, 141, 1222, 1542, 3306, 6667, 8080, 37777]
+
+// --- Wordlist für SSH-Brute ---
+BRUTE_USERS = ["root", "admin", "guest", "test"]
+BRUTE_PASSES = ["admin", "root", "123456", "password", "test", "toor", "agle1", "Gerso"]
+
+// ============================================================
+// PARAMETER-CHECK
+// ============================================================
+if params.len < 1 then
+    print("YUNO TOOLKIT — run 'yuno help' für Hilfe" + char(10))
+    exit(0)
+end if
+
+cmd = params[0]
+
+// ============================================================
+// HELP
+// ============================================================
+if cmd == "help" then
+    print("=== YUNO TOOLKIT ===" + char(10))
+    print(char(10))
+    print("BEFEHLE:" + char(10))
+    print("  scan <IP> [port]     Port+Vuln Scan" + char(10))
+    print("  hack <IP> [user pass]  Auto-Exploit -> Shell -> Loot" + char(10))
+    print("  loot                 Configs vom aktuellen PC" + char(10))
+    print("  defend               System-Check" + char(10))
+    print("  crack <hash>         Hash knacken" + char(10))
+    print("  bank <IP> <u> <p> <a> <amt>  Bank-Transfer" + char(10))
+    print(char(10))
+    print("BEISPIELE:" + char(10))
+    print("  run yuno scan 199.229.146.172" + char(10))
+    print("  run yuno hack 199.229.146.172 root agle1" + char(10))
+    print("  run yuno crack ced2809f5ea305d9" + char(10))
+    print("  run yuno defend" + char(10))
+    exit(0)
+end if
+
+// ============================================================
+// SCAN — Port-Scan + Metaxploit Vulnerability Check
+// ============================================================
+if cmd == "scan" then
+    if params.len < 2 then
+        print("Usage: run yuno scan <IP> [port]" + char(10))
+        exit(0)
+    end if
+
+    target = params[1]
+    print("=== YUNO SCAN: " + target + " ===" + char(10))
+
+    // Port-Liste: spezifisch oder alle Standard-Ports
+    ports = COMMON_PORTS
+    if params.len > 2 then
+        ports = [val(params[2])]
+    end if
+
+    i = 0
+    while i < ports.len
+        p = ports[i]
+        found = false
+
+        if metax != null then
+            session = metax.net_use(target, p)
+            if session != null then
+                found = true
+                print("[+] Port " + str(p) + ": OFFEN" + char(10))
+
+                lib = session.dump_lib
+                if lib != null then
+                    print("  Service: " + lib.lib_name + " v" + lib.version + char(10))
+                    vulns = metax.scan(lib)
+                    if vulns != null then
+                        if vulns.len > 0 then
+                            print("  Vulns: " + str(vulns.len) + char(10))
+                            j = 0
+                            while j < vulns.len
+                                print("    [!] " + vulns[j] + char(10))
+                                j = j + 1
+                            end while
+                        else
+                            print("  [ok] keine Vulns" + char(10))
+                        end if
+                    end if
+                end if
+            end if
+        end if
+
+        if found == false then
+            print("[-] Port " + str(p) + ": geschlossen/null" + char(10))
+        end if
+
+        i = i + 1
+    end while
+
+    print(char(10) + "[✓] Scan komplett" + char(10))
+    exit(0)
+end if
+
+// ============================================================
+// HACK — Metaxploit Exploit + SSH Bruteforce + Auto-Loot
+// ============================================================
+if cmd == "hack" then
+    if params.len < 2 then
+        print("Usage: run yuno hack <IP> [user pass]" + char(10))
+        exit(0)
+    end if
+
+    target = params[1]
+    print("=== YUNO HACK: " + target + " ===" + char(10))
+
+    shell = null
+
+    // --- PHASE 1: Metaxploit auto-exploit ---
+    print("[*] Phase 1: Metaxploit..." + char(10))
+
+    if metax != null then
+        pi = 0
+        while pi < COMMON_PORTS.len
+            if shell != null then
+                break
+            end if
+
+            p = COMMON_PORTS[pi]
+            session = metax.net_use(target, p)
+
+            if session != null then
+                lib = session.dump_lib
+                if lib != null then
+                    vulns = metax.scan(lib)
+                    if vulns != null then
+                        v = 0
+                        while v < vulns.len
+                            if shell != null then
+                                break
+                            end if
+
+                            area = vulns[v]
+                            addr_info = metax.scan_address(lib, area)
+
+                            if addr_info != null then
+                                // Exploit-Code zwischen <b></b> extrahieren
+                                segs = addr_info.split("Unsafe check:")
+                                s = 1
+                                while s < segs.len
+                                    if shell != null then
+                                        break
+                                    end if
+
+                                    seg = segs[s]
+                                    p1 = seg.indexOf("<b>")
+                                    p2 = seg.indexOf("</b>")
+
+                                    if p1 != null then
+                                        if p2 != null then
+                                            if p1 >= 0 then
+                                                if p2 > p1 then
+                                                    exploit = seg[p1 + 3: p2]
+                                                    print("  [>] Versuch: " + exploit + char(10))
+
+                                                    result = lib.overflow(area, exploit)
+
+                                                    if typeof(result) == "shell" then
+                                                        print("  [!!!] SHELL via " + exploit + "!" + char(10))
+                                                        shell = result
+                                                    end if
+                                                end if
+                                            end if
+                                        end if
+                                    end if
+
+                                    s = s + 1
+                                end while
+                            end if
+
+                            v = v + 1
+                        end while
+                    end if
+                end if
+            end if
+
+            pi = pi + 1
+        end while
+    end if
+
+    // --- PHASE 2: SSH Bruteforce ---
+    if shell == null then
+        print(char(10) + "[*] Phase 2: SSH Bruteforce..." + char(10))
+
+        // Wenn explizite Creds gegeben
+        if params.len >= 4 then
+            test = get_shell.connect_service(target, 22, params[2], params[3])
+            if typeof(test) != "string" then
+                if test != null then
+                    print("[+] Login: " + params[2] + ":" + params[3] + char(10))
+                    shell = test
+                end if
+            end if
+        end if
+
+        // Wordlist fallback
+        if shell == null then
+            u = 0
+            while u < BRUTE_USERS.len
+                if shell != null then
+                    break
+                end if
+                pw = 0
+                while pw < BRUTE_PASSES.len
+                    test = get_shell.connect_service(target, 22, BRUTE_USERS[u], BRUTE_PASSES[pw])
+                    if typeof(test) != "string" then
+                        if test != null then
+                            print("[+] SSH: " + BRUTE_USERS[u] + ":" + BRUTE_PASSES[pw] + char(10))
+                            shell = test
+                            break
+                        end if
+                    end if
+                    pw = pw + 1
+                end while
+                u = u + 1
+            end while
+        end if
+    end if
+
+    if shell == null then
+        print("[!] Keine Shell!" + char(10))
+        exit(0)
+    end if
+
+    // --- AUTO-LOOT ---
+    print(char(10) + "[+] SHELL! Lese Configs..." + char(10))
+
+    victim = shell.host_computer
+    if victim == null then
+        print("[!] host_computer null" + char(10))
+        exit(0)
+    end if
+
+    print("[+] Host: " + victim.public_ip + " (" + victim.get_name + ")" + char(10))
+
+    // /etc/passwd
+    print(char(10) + "--- /etc/passwd ---" + char(10))
+    pwf = victim.File("/etc/passwd")
+    if pwf != null then
+        c = pwf.get_content
+        if c != null then
+            print(c + char(10))
+        end if
+    end if
+
+    // Alle Home-Dirs + Configs
+    home = victim.File("/home")
+    if home != null then
+        if home.is_folder then
+            dirs = home.get_folders
+            if dirs != null then
+                d = 0
+                while d < dirs.len
+                    uname = dirs[d].name
+                    print(char(10) + "--- /home/" + uname + " ---" + char(10))
+
+                    cfgD = victim.File("/home/" + uname + "/Config")
+                    if cfgD != null then
+                        if cfgD.is_folder then
+                            cfgFs = cfgD.get_files
+                            if cfgFs != null then
+                                cf = 0
+                                while cf < cfgFs.len
+                                    fn = cfgFs[cf].name
+                                    tf = victim.File("/home/" + uname + "/Config/" + fn)
+                                    if tf != null then
+                                        ct = tf.get_content
+                                        if ct != null then
+                                            print("  " + fn + ": " + ct + char(10))
+                                        end if
+                                    end if
+                                    cf = cf + 1
+                                end while
+                            end if
+                        end if
+                    end if
+                    d = d + 1
+                end while
+            end if
+        end if
+    end if
+
+    print(char(10) + "[✓] HACK + LOOT COMPLETE!" + char(10))
+    exit(0)
+end if
+
+// ============================================================
+// LOOT — Configs vom eigenen PC lesen
+// ============================================================
+if cmd == "loot" then
+    print("=== YUNO LOOT ===" + char(10))
+
+    pc = get_shell.host_computer
+    if pc == null then
+        print("[!] Kein Computer!" + char(10))
+        exit(0)
+    end if
+
+    print("[+] Host: " + pc.public_ip + char(10))
+
+    // /etc/passwd
+    print(char(10) + "--- /etc/passwd ---" + char(10))
+    pwf = pc.File("/etc/passwd")
+    if pwf != null then
+        c = pwf.get_content
+        if c != null then
+            print(c + char(10))
+        end if
+    end if
+
+    // Home-Dirs
+    home = pc.File("/home")
+    if home != null then
+        if home.is_folder then
+            dirs = home.get_folders
+            if dirs != null then
+                d = 0
+                while d < dirs.len
+                    uname = dirs[d].name
+                    print(char(10) + "--- /home/" + uname + " ---" + char(10))
+
+                    cfgD = pc.File("/home/" + uname + "/Config")
+                    if cfgD != null then
+                        if cfgD.is_folder then
+                            cfgFs = cfgD.get_files
+                            if cfgFs != null then
+                                cf = 0
+                                while cf < cfgFs.len
+                                    fn = cfgFs[cf].name
+                                    tf = pc.File("/home/" + uname + "/Config/" + fn)
+                                    if tf != null then
+                                        ct = tf.get_content
+                                        if ct != null then
+                                            print("  " + fn + ": " + ct + char(10))
+                                        end if
+                                    end if
+                                    cf = cf + 1
+                                end while
+                            end if
+                        end if
+                    end if
+                    d = d + 1
+                end while
+            end if
+        end if
+    end if
+
+    print(char(10) + "[✓] LOOT COMPLETE" + char(10))
+    exit(0)
+end if
+
+// ============================================================
+// DEFEND — System-Check + Hardening-Empfehlungen
+// ============================================================
+if cmd == "defend" then
+    print("=== YUNO DEFEND ===" + char(10))
+
+    pc = get_shell.host_computer
+    if pc == null then
+        print("[!] Kein Computer!" + char(10))
+        exit(0)
+    end if
+
+    print("[+] Host: " + pc.get_name + " (" + pc.public_ip + ")" + char(10))
+
+    // Passwörter anzeigen
+    print(char(10) + "[*] /etc/passwd:" + char(10))
+    pwf = pc.File("/etc/passwd")
+    if pwf != null then
+        c = pwf.get_content
+        if c != null then
+            print(c + char(10))
+        end if
+    end if
+
+    // Ports
+    print(char(10) + "[*] Offene Ports:" + char(10))
+    ports = pc.get_ports
+    if ports != null then
+        i = 0
+        while i < ports.len
+            p = ports[i]
+            st = "OFFEN"
+            if p.is_closed then
+                st = "zu"
+            end if
+            print("  " + str(p.port_number) + " | " + p.service + " | " + st + char(10))
+            i = i + 1
+        end while
+    end if
+
+    // Guest-Check
+    print(char(10) + "[*] Guest-Account:" + char(10))
+    guest = pc.File("/home/guest")
+    if guest != null then
+        print("  [!] Guest existiert! /home/guest löschen!" + char(10))
+    else
+        print("  [ok] kein Guest" + char(10))
+    end if
+
+    // Tipps
+    print(char(10) + "=== EMPFEHLUNGEN ===" + char(10))
+    print("1. Schwache Passwörter ändern (min 8 Zeichen)" + char(10))
+    print("2. Guest-Account deaktivieren" + char(10))
+    print("3. Nicht benötigte Ports schließen" + char(10))
+    print("4. Firewall aktivieren (nmap von außen)" + char(10))
+    print("5. Logs leeren nach Hack" + char(10))
+
+    print(char(10) + "[✓] DEFEND COMPLETE" + char(10))
+    exit(0)
+end if
+
+// ============================================================
+// CRACK — Hash knacken mit crypto.decipher
+// ============================================================
+if cmd == "crack" then
+    if params.len < 2 then
+        print("Usage: run yuno crack <hash>" + char(10))
+        exit(0)
+    end if
+
+    hash = params[1]
+    print("[*] Hash: " + hash + char(10))
+
+    if crypto == null then
+        print("[!] crypto.so fehlt!" + char(10))
+        exit(0)
+    end if
+
+    result = crypto.decipher(hash)
+    if result == null then
+        print("[-] Nicht knackbar" + char(10))
+    else
+        print("[+] PASSWORT: " + result + char(10))
+    end if
+
+    exit(0)
+end if
+
+// ============================================================
+// BANK — Bank-Transfer
+// ============================================================
+if cmd == "bank" then
+    if params.len < 6 then
+        print("Usage: run yuno bank <IP> <user> <pass> <account> <amount>" + char(10))
+        exit(0)
+    end if
+
+    bIP = params[1]
+    bUser = params[2]
+    bPass = params[3]
+    bAcct = params[4]
+    bAmt = params[5]
+
+    print("=== YUNO BANK ===" + char(10))
+    print("[*] " + bIP + " | Konto: " + bAcct + " | Betrag: " + bAmt + char(10))
+
+    net = include_lib("/lib/net.so")
+    if net == null then
+        print("[!] net.so fehlt!" + char(10))
+        exit(0)
+    end if
+
+    login = net.post("http://" + bIP + "/login", "user=" + bUser + "&pass=" + bPass)
+    if login != null then
+        print("[+] Login OK!" + char(10))
+        tr = net.post("http://" + bIP + "/transfer", "to=" + bAcct + "&amount=" + bAmt)
+        if tr != null then
+            print("[+] Transfer: " + bAmt + " -> " + bAcct + char(10))
+        else
+            print("[!] Transfer fail" + char(10))
+        end if
+        net.post("http://" + bIP + "/logs/clear", "confirm=true")
+        print("[+] Logs gelöscht" + char(10))
+    else
+        print("[!] Login fail" + char(10))
+    end if
+
+    exit(0)
+end if
+
+// ============================================================
+// FALLBACK — Unbekannter Befehl
+// ============================================================
+print("[!] Unbekannt: " + cmd + char(10))
+print("Run 'yuno help' für alle Befehle" + char(10))

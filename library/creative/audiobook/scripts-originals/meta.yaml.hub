@@ -1,0 +1,12 @@
+display-name-zh: 有声书
+version: 0.3.11
+tag-en: "Audio Content / Audio Generation"
+tag-cn: "音频内容 / 音频生成"
+summary-en: "Turn books into multi-voice audiobooks"
+summary-cn: "把书籍转化为多角色有声书"
+desc-en: "For converting books into multi-character narrated audio with professional-grade production quality. Takes book text typically chapter by chapter as input material. Produces audiobook audio with automatic dialogue and narration detection, per-character voice assignment for distinct character voices, smart pause insertion at natural break points and chapter-by-chapter generation. Supports both fiction and non-fiction genres."
+desc-cn: "适用于将文本书籍转换为多角色配音有声音频的场景,产出专业级制作品质的有声书。输入书籍文本(通常分章节处理),输出有声书音频,自动识别对话与旁白段落、为每个角色分配独立且有辨识度的音色、在自然停顿点智能添加间隔、按章节顺序逐步生成。同时支持虚构类与非虚构类书籍体裁。"
+cover: "https://cdn.hailuoai.com/hailuo-video-web/public_assets/c9d8e5e2-1370-40b4-87da-dde20f536cb9.mp4"
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official-featured

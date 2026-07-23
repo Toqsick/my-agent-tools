@@ -1,0 +1,81 @@
+services:
+  # ── InfluxDB 2.7 ──────────────────────────────
+  # Version: 2.x (stabil, Docker-Tag verfügbar)
+  # Wichtig: influxdb:3-core hat KEIN Docker-Hub-Image!
+  influxdb:
+    image: influxdb:2.7
+    container_name: health-influxdb
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD:-adminadmin}
+      DOCKER_INFLUXDB_INIT_ORG: health
+      DOCKER_INFLUXDB_INIT_BUCKET: health
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+    volumes:
+      - ./influxdb:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - health-net
+
+  # ── Grafana 13.x ──────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: health-grafana
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_INSTALL_PLUGINS: ""  # keine extra Plugins
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    user: "472"  # GRAFANA-UID, NICHT root!
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - health-net
+
+  # ── Home Assistant Core (optional) ────────────
+  # Entfernen wenn nicht gebraucht.
+  ha:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: health-ha
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8123:8123"
+    volumes:
+      - ./homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    # WICHTIG: KEIN network_mode: host — sonst Port-Konflikt mit Grafana!
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - health-net
+
+networks:
+  health-net:
+    driver: bridge

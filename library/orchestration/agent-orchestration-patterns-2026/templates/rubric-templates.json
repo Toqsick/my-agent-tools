@@ -1,0 +1,102 @@
+{
+  "code_python": {
+    "required_criteria": [
+      "Python syntax is valid (py_compile passes)",
+      "All pytest tests pass",
+      "No hardcoded credentials or secrets",
+      "Type hints on all public functions",
+      "No uses of eval() or exec() on user input"
+    ],
+    "preferred_criteria": [
+      "Docstrings on all public functions",
+      "Inline comments for complex logic (>5 lines)",
+      "Error handling on all external calls",
+      "Logging instead of print statements"
+    ],
+    "unrecoverable_signals": [
+      "contains hardcoded api key",
+      "contains hardcoded password",
+      "imports os.system",
+      "uses subprocess.run with shell=True and user input",
+      "uses eval() on user input",
+      "uses exec() on user input"
+    ]
+  },
+  "code_greyscript": {
+    "required_criteria": [
+      "GreyScript syntax is valid",
+      "Mission runner handles timeouts gracefully",
+      "No hardcoded credentials",
+      "Uses Yuno-style helper functions where applicable"
+    ],
+    "preferred_criteria": [
+      "Inline comments for complex logic",
+      "Logging for debug visibility",
+      "Graceful degradation on tool failure"
+    ],
+    "unrecoverable_signals": [
+      "contains hardcoded api key",
+      "infinite loop with no exit condition",
+      "uses eval() or exec() on user input",
+      "deletes system files"
+    ]
+  },
+  "content_writing": {
+    "required_criteria": [
+      "Matches target tone (professional/casual/educational)",
+      "No factual claims without sources",
+      "Word count within ±10% of target",
+      "No placeholder text (TODO, FIXME, Lorem ipsum)"
+    ],
+    "preferred_criteria": [
+      "Uses active voice",
+      "Includes concrete examples",
+      "Has clear structure (intro/body/conclusion)",
+      "Optimized for target audience"
+    ],
+    "unrecoverable_signals": [
+      "contains placeholder text",
+      "contains lorem ipsum",
+      "factual claim with no source citation",
+      "exceeds word limit by >30%"
+    ]
+  },
+  "data_analysis": {
+    "required_criteria": [
+      "Statistical methods are appropriate for data type",
+      "Results are reproducible (seed set if random)",
+      "Visualizations include axis labels and legends",
+      "Sample size mentioned"
+    ],
+    "preferred_criteria": [
+      "Includes confidence intervals",
+      "Discusses limitations",
+      "Compares with baseline",
+      "Includes raw data summary statistics"
+    ],
+    "unrecoverable_signals": [
+      "uses p-value without test statistic",
+      "confuses correlation with causation in conclusion",
+      "no sample size mentioned"
+    ]
+  },
+  "tiktok_hook": {
+    "required_criteria": [
+      "Hook is under 8 words (Card 1)",
+      "Curiosity gap is present",
+      "Matches target audience (DACH, 18-35)",
+      "No banned words (algorithm-safe)"
+    ],
+    "preferred_criteria": [
+      "Uses power words (geheim, niemand, endlich)",
+      "Has emotional trigger (FOMO, curiosity, fear)",
+      "Specific number in hook (3 Fehler, 5 Tipps)",
+      "Saves-trigger in Card 7"
+    ],
+    "unrecoverable_signals": [
+      "contains banned word (Link in Bio, gratis, kostenlos)",
+      "starts with question (low Save-Rate)",
+      "no curiosity gap"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+display-name-zh: 音色克隆
+version: 0.4.5
+tag-en: "Audio Content / Audio Generation"
+tag-cn: "音频内容 / 音频生成"
+summary-en: "Clone voice from reference audio with compliance check"
+summary-cn: "从参考音频克隆音色含合规校验"
+desc-en: "For cloning a voice from reference audio for downstream TTS use with built-in compliance safeguards. Takes a reference audio file in mp3, m4a or wav format, recommended 10 seconds to 5 minutes of clean speech. Produces a reusable voice_id with mandatory legal compliance check, auto preprocessing including loop, trim, denoise and volume normalization, language detection and a demo sample for quality verification."
+desc-cn: "适用于从参考音频中克隆音色,供后续 TTS 语音合成使用的场景,内置合规安全保障。输入参考音频文件(mp3/m4a/wav 格式,建议 10 秒至 5 分钟纯人声),输出可复用的 voice_id。完整流程包含强制法律合规确认、自动预处理(音频裁剪、循环补齐、降噪处理、音量归一化)、语种自动检测与试听样本生成,确保克隆音色的质量与合规性。"
+cover: ""
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official

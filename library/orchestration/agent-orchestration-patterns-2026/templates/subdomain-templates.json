@@ -1,0 +1,57 @@
+{
+  "research": {
+    "domain": "research",
+    "goal": "Recherche <TECHNOLOGY/DOMAIN> Patterns; liste 5 Ansätze mit Vor-/Nachteilen",
+    "artifacts": [],
+    "output_schema": {
+      "patterns": "list[str]",
+      "recommended": "str",
+      "sources": "list[str]"
+    }
+  },
+  "implement": {
+    "domain": "implement",
+    "goal": "Implementiere <COMPONENT> basierend auf Research-Output",
+    "artifacts": ["/tmp/research.json"],
+    "output_schema": {
+      "files_created": "list[str]",
+      "tests_pass": "bool"
+    }
+  },
+  "review": {
+    "domain": "review",
+    "goal": "Security + Style-Review der Implementierung auf <VULN_CLASS>",
+    "artifacts": ["/tmp/implement.json"],
+    "output_schema": {
+      "issues": "list[str]",
+      "severity": "str"
+    }
+  },
+  "data-collection": {
+    "domain": "data-collection",
+    "goal": "Fetch latest <DATA_TYPE> from <API/SOURCE>",
+    "artifacts": [],
+    "output_schema": {
+      "data": "list[dict]",
+      "count": "int"
+    }
+  },
+  "analysis": {
+    "domain": "analysis",
+    "goal": "Analysiere <DATA_TYPE> mit <METHOD>",
+    "artifacts": ["/tmp/data-collection.json"],
+    "output_schema": {
+      "insights": "list[str]",
+      "metrics": "dict"
+    }
+  },
+  "report": {
+    "domain": "report",
+    "goal": "Schreibe finalen Report der Insights",
+    "artifacts": ["/tmp/analysis.json"],
+    "output_schema": {
+      "report": "str",
+      "format": "str"
+    }
+  }
+}

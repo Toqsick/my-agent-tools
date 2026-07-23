@@ -1,0 +1,135 @@
+<!--
+  Live-Audit-Log component (drop-in HTML).
+  Requires the SSE client from templates/minimal-event-source-client.js to be loaded.
+  Assumes onSSEMessage(payload) handler in your main script calls pushAuditRow(payload).
+-->
+<div class="audit-panel">
+  <div class="audit-header" style="display: flex; gap: 8px; align-items: center; padding: 12px 0;">
+    <input type="text" class="control-input" id="auditFilter"
+      placeholder="🔍 Filter (z.B. canary, gate, lease, webhook)" style="flex: 1;" />
+    <button class="btn" id="auditClear" type="button" style="font-size: 11px;">Log leeren</button>
+    <button class="btn" id="auditPause" type="button" style="font-size: 11px;">⏸ Pause</button>
+  </div>
+
+  <div class="audit-kpis"
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 16px;">
+    <div class="audit-kpi" data-level="ok">
+      <div class="audit-kpi-label">OK</div><div class="audit-kpi-value" id="auditCountOk">0</div>
+    </div>
+    <div class="audit-kpi" data-level="warn">
+      <div class="audit-kpi-label">WARN</div><div class="audit-kpi-value" id="auditCountWarn">0</div>
+    </div>
+    <div class="audit-kpi" data-level="err">
+      <div class="audit-kpi-label">ERR</div><div class="audit-kpi-value" id="auditCountErr">0</div>
+    </div>
+    <div class="audit-kpi">
+      <div class="audit-kpi-label">Total</div><div class="audit-kpi-value" id="auditCountTotal">0</div>
+    </div>
+    <div class="audit-kpi">
+      <div class="audit-kpi-label">Rate</div><div class="audit-kpi-value" id="auditRate">0/min</div>
+    </div>
+  </div>
+
+  <div id="auditList" class="audit-list"
+    style="font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 12px; max-height: 60vh; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+    <div class="audit-empty" style="text-align: center; color: var(--color-text-mute); padding: 40px;">
+      ⏳ Warte auf SSE-Events...
+    </div>
+  </div>
+</div>
+
+<script>
+// Audit state + rendering — wire this to your SSE onSSEMessage handler.
+const auditState = {
+  rows: [], paused: false, filter: '',
+  counters: { ok: 0, warn: 0, err: 0, total: 0 },
+  lastMinute: [],
+};
+
+function pushAuditRow(event) {
+  if (!event.type || event.type === ':heartbeat' || event.type === 'stream.open') return;
+  if (auditState.paused) return;
+  const level = event.level || 'ok';
+  const ts = event.ts ? new Date(event.ts) : new Date();
+  auditState.rows.unshift({ time: ts, level, type: event.type, message: event.message || '', scope: event.scope || '' });
+  if (auditState.rows.length > 200) auditState.rows.pop();
+  auditState.counters[level] = (auditState.counters[level] || 0) + 1;
+  auditState.counters.total += 1;
+  auditState.lastMinute.push(Date.now());
+  auditState.lastMinute = auditState.lastMinute.filter(t => t > Date.now() - 60000);
+  renderAuditList();
+  renderAuditKpis();
+}
+
+function renderAuditList() {
+  const list = document.getElementById('auditList');
+  if (!list) return;
+  const f = auditState.filter.toLowerCase();
+  const filtered = f ? auditState.rows.filter(r =>
+    r.type.toLowerCase().includes(f) || r.message.toLowerCase().includes(f) || r.scope.toLowerCase().includes(f)
+  ) : auditState.rows;
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="audit-empty" style="text-align: center; color: var(--color-text-mute); padding: 40px;">'
+      + (auditState.rows.length === 0 ? '⏳ Warte auf SSE-Events...' : '🔍 Keine Treffer für Filter "' + escapeHtml(f) + '"')
+      + '</div>';
+    return;
+  }
+  list.innerHTML = filtered.slice(0, 100).map(r => {
+    const t = r.time.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return '<div class="audit-row" data-level="' + r.level + '">'
+      + '<span class="audit-time">' + t + '</span>'
+      + '<span class="audit-level" data-level="' + r.level + '">' + r.level + '</span>'
+      + '<span><span class="audit-type">' + escapeHtml(r.type) + '</span> '
+      + '<span class="audit-msg">' + escapeHtml(r.message) + '</span></span>'
+      + '<span class="audit-scope">' + escapeHtml(r.scope) + '</span></div>';
+  }).join('');
+}
+
+function renderAuditKpis() {
+  const c = auditState.counters;
+  document.getElementById('auditCountOk').textContent = c.ok || 0;
+  document.getElementById('auditCountWarn').textContent = c.warn || 0;
+  document.getElementById('auditCountErr').textContent = c.err || 0;
+  document.getElementById('auditCountTotal').textContent = c.total;
+  document.getElementById('auditRate').textContent = auditState.lastMinute.length + '/min';
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Event handlers
+document.getElementById('auditFilter').addEventListener('input', e => { auditState.filter = e.target.value; renderAuditList(); });
+document.getElementById('auditClear').addEventListener('click', () => {
+  auditState.rows = []; auditState.counters = { ok: 0, warn: 0, err: 0, total: 0 }; renderAuditList(); renderAuditKpis();
+});
+document.getElementById('auditPause').addEventListener('click', e => {
+  auditState.paused = !auditState.paused;
+  e.target.textContent = auditState.paused ? '▶ Resume' : '⏸ Pause';
+});
+
+// Wire to SSE: in your main script
+// onSSEMessage = (event) => { pushAuditRow(event); };
+</script>
+
+<style>
+.audit-kpi { background: var(--color-surface-2, #1a1a1a); border-radius: 8px; padding: 12px; text-align: center; border: 1px solid var(--color-border, #333); }
+.audit-kpi-label { font-size: 11px; color: var(--color-text-mute, #888); text-transform: uppercase; letter-spacing: 0.05em; }
+.audit-kpi-value { font-size: 24px; font-weight: 600; margin-top: 4px; }
+.audit-kpi[data-level="ok"] .audit-kpi-value { color: var(--color-success, #4caf50); }
+.audit-kpi[data-level="warn"] .audit-kpi-value { color: var(--color-warning, #ffc107); }
+.audit-kpi[data-level="err"] .audit-kpi-value { color: var(--color-error, #f44336); }
+.audit-row { display: grid; grid-template-columns: 80px 70px 1fr 200px; gap: 12px; padding: 6px 8px; border-left: 3px solid transparent; margin: 2px 0; border-radius: 4px; transition: background 0.15s; }
+.audit-row:hover { background: rgba(255,255,255,0.04); }
+.audit-row[data-level="ok"] { border-left-color: var(--color-success, #4caf50); }
+.audit-row[data-level="warn"] { border-left-color: var(--color-warning, #ffc107); background: rgba(255,193,7,0.05); }
+.audit-row[data-level="err"] { border-left-color: var(--color-error, #f44336); background: rgba(244,67,54,0.05); }
+.audit-time { color: var(--color-text-mute, #888); font-size: 11px; }
+.audit-level { font-size: 10px; text-transform: uppercase; font-weight: 600; }
+.audit-level[data-level="ok"] { color: var(--color-success, #4caf50); }
+.audit-level[data-level="warn"] { color: var(--color-warning, #ffc107); }
+.audit-level[data-level="err"] { color: var(--color-error, #f44336); }
+.audit-type { color: var(--color-primary, #2196f3); font-weight: 500; }
+.audit-msg { color: var(--color-text, #fff); }
+.audit-scope { color: var(--color-text-mute, #888); font-size: 11px; }
+</style>

@@ -1,0 +1,589 @@
+---
+name: orchestration/multi-agent-pitfalls-cheatsheet
+trigger-words: [orchestration/multi, agent, pitfalls, cheatsheet]
+description: |
+  Trigger-watchlist with the 20 most common pitfalls when spawning delegate_task subagents — symptom-based quick reference. Load BEFORE every delegate_task call to catch common mistakes (phantom fixes, timeouts, missing output paths, ignored model param, etc). Complement to multi-agent-orchestration which covers the pattern; this skill covers the failure modes.
+  Trigger phrases: orchestration/multi, agent, pitfalls, cheatsheet.
+  Converted from Hermes-Skill (Yuno's mastery library).
+---
+
+## Pre-Spawn Checklist (5 questions, always)
+
+Run through these mentally before calling `delegate_task`:
+
+1. **Output path:** Did I specify an explicit `OUTPUT: ~/docs/system/NAME-YYYY-MM-DD.md` for every subagent? (Never let them write to `~/.hermes/skills/` — that tree is for SKILL.md only.)
+2. **Call budget:** Did I write `MAX 8 web-calls. After 8 -> synthesis with what you have` for each subagent? (Subagents WILL loop pagination otherwise.)
+3. **Source-code paths:** For Hermes/framework questions, did I include exact source paths (e.g. `~/.hermes/hermes-agent/tools/delegate_tool.py:2487`)? (Source-code beats web research every time.)
+4. **Read-only or write?** If the briefing has write commands (chmod, rm, patch, systemctl), **parent will execute centrally** — subagent only reports. (See Pitfall #31 — write-commands trigger 90+90s Ollama approval timeouts.)
+5. **Verification plan:** Do I know HOW to verify the claims afterwards? (e.g. `grep -n <key> cli-config.yaml.example`, `python3 scripts/verify_subagent_claims.py config_key <path> <expected>`, `ls -la <file>`)
+
+If any answer is "no" -> fix the briefing BEFORE spawning.
+
+---
+
+## Top 20 Pitfalls — Symptom to Fix
+
+### Briefing Phase (before spawn)
+
+| # | Symptom (Trigger) | Fix |
+|---|---|---|
+| 6 | Subagent wrote report to random dir (skill folder, CWD, /tmp) | Specify `OUTPUT: ~/docs/system/NAME-YYYY-MM-DD.md` — never trust defaults |
+| 10 | Subagent quoted marketing claims instead of source code | Include exact source-code paths in briefing (e.g. `~/.hermes/hermes-agent/tools/delegate_tool.py`) |
+| 15 | Subagent hit `timeout after 600.0s` reading 874-line log files | Add `OUTPUT-LIMITS: Bei Outputs >100 Zeilen head, wc -l, oder limit=` to briefing |
+| 24 | Subagent recommended `hermes config set tool.parallel_calls: false` (key does not exist) | Before any `hermes config set`: `grep -n "<key>" ~/.hermes/hermes-agent/cli-config.yaml.example` — if empty, key is confabulated |
+| 26 | Subagent: "X errors in errors.log" (no date context, may be historical) | Ask for date breakdown. `grep ERROR log | awk '{print $1}' | sort -u | tail -10` — if all old, ignore |
+| 28 | Parent wanted local Ollama subagent via `model:` param | **`model` parameter is silently IGNORED** — subagent runs on system default. Workaround: `acp_command` for ACP-compatible CLI, or accept deepseek fallback |
+| 30 | Subagent timed out at 600s with 14+ API calls and no file write | Hung in tool loop. **Do not re-spawn with same briefing.** Parent takes over that scope with 3-5 focused calls. **CRITICAL PROVEN 2026-07-03 (YUNO V3 Audit):** 2 subagents dispatched with 8-question + 5-section briefings both timed out at 70+min. Parent Pre-Scan (1 deterministic Python run) + 1-2 focused calls finished in 30min total. **Default for single-file code audits = Parent-direct, NOT subagent.** |
+| **35** | **Subagent HTTP 429 "Insufficient balance" — silent fail with "completed" status** (NEW 2026-07-03) | Symptom: subagent returns in <2 min with status="completed" but `OUTPUT` file does NOT exist. Cause: provider API balance exhausted → 5 retries fail with HTTP 429 → subagent gives up, no file written. **Trap:** the "completed" status is misleading — it means "finished trying" not "succeeded". **Fix:** (1) **ALWAYS check file-existence with `ls <OUTPUT_PATH>` before trusting status="completed"** (Pitfall #29). (2) Subagent briefings MUST include: "If API fails (HTTP 429/error/timeout): write PARTIAL-REPORT.md with error message and exit immediately" — so the file always lands. (3) When HTTP 429 detected: do NOT re-spawn (same balance = same fail), parent-direct takeover is faster. **Proven 2026-07-03 (YUNO V3 Audit):** 2 subagents both HTTP 429'd in 60.9s, both marked "completed", 0 files written. Original diagnosis of "70+min hang" was WRONG — corrected to "HTTP 429 fail-fast". Re-diagnosis requires inspecting subagent output for `api_calls: 1` + non-zero `total_duration: 60s` pattern. |
+| 31 | Subagent has write commands (chmod/rm/systemctl) in briefing -> 90+90s Ollama timeouts per write | Use `briefing-readonly-audit` template, OR set `auxiliary.approval.provider: nous` before batch |
+| **33** | **Subagent briefing or skill frontmatter contains unescaped double quotes that break YAML parsing** (NEW 2026-07-02) | Two variants: (a) Subagent brief strings with `"-quoted` content (e.g. `Avoid "-characters in descriptions`) confuse YAML serialization when the parent later tries to dump/reload the briefing as structured data. Fix: use single-quote outer or strip the inner `"`. (b) `triggers:` list-items in a `SKILL.md` frontmatter that contain `"` cause `YAML frontmatter parse error: expected <block end>, but found '<scalar>'` on `skill_manage(create)`. Fix: rewrite trigger lines without `"`, e.g. `- phantom fix - subagent claimed success but nothing changed`. Workaround if `skill_manage(create)` keeps failing: `mkdir -p` the target dir, write the full SKILL.md via `write_file` directly. |
+| **34** | **Single-file code audit: parent-direct beats subagent** (NEW 2026-07-03) | When the scope is ONE file (e.g. a 50KB GreyScript src) and parent can pre-scan deterministically: skip the subagent entirely. Pre-Scan (5-30 sec) + 1 focused fix = faster than 70+min subagent hang. Use subagents only for: (a) cross-file patterns, (b) unknown scope, (c) source-code reasoning parent can't do. **Proven on YUNO V3 (52KB, 1 file)**: pre-scan found P0-bug in 5 sec, applied fix in 1 patch, build verified in 30 sec. Total: 30 min wall-clock vs 70+ min and counting for 2 subagents. |
+
+### During Run Phase
+
+| # | Symptom (Trigger) | Fix |
+|---|---|---|
+| 22 | `systemctl --user is-active` shows `active` but service is not working | Use `systemctl --user status <service>` — check Main PID + Tasks (active crash-loop has Tasks=1-2) |
+| 23 | Memory says "Ollama removed" but tool says it is running | Memory can be stale. **The file is right.** `which ollama` / `systemctl status` / `ls <path>` — measure don't trust |
+| 32 | Parallel subagents + `llama-server` process on same GPU = slow responses | `nvidia-smi --query-gpu=memory.used --format=csv` — if >80% used, kill idle llama-server or run sequential |
+
+### Post-Spawn Phase (verification)
+
+| # | Symptom (Trigger) | Fix |
+|---|---|---|
+| **5** | **Subagent says "fixed" but file unchanged** | **VERIFY EVERY CLAIM.** `read_file`/`terminal`/`hermes config get` — trust nothing |
+| **9** | **Subagent: "Write denied" on .env/config.yaml (then claims "done")** | Phantom-fix. Parent applies via `hermes config set` or Python `yaml.dump` |
+| 11 | Subagent patched `config.yaml` and corrupted it | Parent collects all YAML changes, applies centrally. **Never let multiple subagents touch same config in parallel** |
+| 14 | Parent used `sed -i` on `.env`, file is now garbage | Backup first: `cp .env .env.pre-fix-$(date +%s)`. Then Python-string-manipulation or `patch()` tool. **Never `sed` on YAML/.env** |
+| 27 | `execute_code` Python script with token-value got `SyntaxError: '(' was never closed` | String filter corrupts token-like values. Workaround: `write_file` script + `terminal python3 script.py`, or use `chr(61)` for `=` |
+| 29 | File at OUTPUT path has only 2 of 3 experts' findings | Subagent returned summary but did not write file. Parent combines summaries manually into master report |
+| 30 | Subagent timed out at 600s with 14+ API calls and no file write | Hung in tool loop. **Do not re-spawn with same briefing.** Parent takes over that scope with 3-5 focused calls |
+
+### Synthesis Phase
+
+| # | Symptom (Trigger) | Fix |
+|---|---|---|
+| 17 | `.env` corrupted, need to restore | Check `~/.hermes/state-snapshots/<latest>/.env` first — that is the pre-update backup |
+| 19 | 1+ subagent timed out | Do not re-spawn. Parent does 3-5 focused web-calls for missing scope, writes report itself. (Real example: M3 eval — parent wrote 2/3 reports in 4min) |
+| 21 | Skill was loaded but not consulted when problem hit | After loading, note the trigger keywords mentally. "For Discord problems -> messaging-gateway-setup step 5" |
+
+---
+
+## Tools and References
+
+### Verify-Script (run after every multi-agent batch)
+```bash
+python3 ~/.hermes/skills/.archive/multi-agent-research/scripts/verify_subagent_claims.py <check> [args]
+
+# Examples:
+python3 .../verify_subagent_claims.py config_key auxiliary.approval.provider nous
+python3 .../verify_subagent_claims.py env_var TELEGRAM_HOME_CHANNEL 7222661188
+python3 .../verify_subagent_claims.py file_permission ~/.ssh 700
+python3 .../verify_subagent_claims.py port_listening 8333 127.0.0.1
+python3 .../verify_subagent_claims.py service_running hermes-gateway
+```
+
+Exit code 0 = green, 1 = phantom-fix detected.
+
+### Read-Only Audit Template (for security/permission audits)
+`~/.hermes/skills/.archive/multi-agent-research/templates/briefing-readonly-audit.md` — copy and adapt. **Prevents 90+90s Ollama timeouts** (Pitfall #31).
+
+### Model-Evaluation Briefing Template
+`~/.hermes/skills/.archive/multi-agent-research/templates/model-evaluation-briefing.md` — for "should we switch to Model X?" research. Has the verified 3-expert split (Tool-Use / Integration / Edge-Cases).
+
+### Source-Code Reference (delegate_task internals)
+`~/.hermes/skills/.archive/multi-agent-research/references/hermes-delegation-internals.md` — exact line numbers for `_load_config`, `_build_child_agent`, `ThreadPoolExecutor`, timeout logic.
+
+---
+
+## The 3 "Always Verify" Patterns
+
+After every subagent run, parent MUST check:
+
+1. **File-existence check:** `ls -la <OUTPUT_PATH>` + `wc -l <OUTPUT_PATH>` — file actually written?
+2. **Content check:** `grep -c "<Expert N>:" <OUTPUT_PATH>` — all 3 experts' content present?
+3. **Claim verification:** For every "fixed" claim, run `read_file` / `terminal` / `hermes config get` to confirm.
+
+If any check fails -> treat as unproven, parent executes the fix directly.
+
+---
+
+## The 3-Step Verifikations-Matrix (Pflicht-Section im Master-Report)
+
+For each subagent, parent runs **three tiers** of verification — proven pattern from the 2026-07-02 demo session:
+
+### Tier 1: Datei-Existenz
+```bash
+for i in 1 2 3; do
+  FILE=~/docs/system/<audit>-expert$i-<scope>.md
+  [ -f "$FILE" ] && echo "✅ Expert $i: exists ($(wc -l < $FILE) lines)" || echo "❌ Expert $i: MISSING"
+done
+```
+
+### Tier 2: Content-Validierung
+```bash
+# Minimum sections, minimum table rows, concrete file:line references
+grep -c "^## " <file>     # sections
+grep -c "^| " <file>      # table rows
+grep -cE "\| .*\.src \| [0-9]+" <file>   # concrete file:line refs in bug reports
+```
+
+### Tier 3: Realitäts-Check (CRITICAL — Pitfall #5 defense)
+**Do not trust the report content — re-derive the answer independently:**
+- Counts (lines, files): `wc -l` on actual file vs. claim
+- Build outputs: re-run the build, compare numbers
+- Bug findings: spot-check 3 random claims with `grep -n`
+
+### Master-Report Pflicht-Section
+```markdown
+## Verifikations-Matrix
+
+| Subagent | Datei | Lines | Sections | Realitäts-Check | Status |
+|---|---|---|---|---|---|
+| Expert 1 | path | N | N | check / N | OK / PARTIAL / FAIL |
+| Expert 2 | path | N | N | check / N | OK / PARTIAL / FAIL |
+| Expert 3 | path | N | N | check / N | OK / PARTIAL / FAIL |
+```
+
+If any Tier fails, mark the corresponding finding as **"PARTIAL — UNVERIFIED"** in the synthesis.
+
+---
+
+## Hybrid Subagent-Pattern: Parent Pre-Scans, Subagent Verifies (NEW 2026-07-02)
+
+**Key insight:** For tasks where the parent can do a **deterministic pre-scan** before spawning, do it. Don't make subagents do work the parent can do in seconds with `execute_code`.
+
+### Pattern (proven with GreyHack bug-scan, Expert 3)
+
+```
+Phase 0: PARENT runs Python via execute_code → deterministic pattern-scan
+         → produces curated hit-list (10-30 files) → ~/docs/.../pre-scan-results.md
+
+Phase 1: PARENT spawns Expert 3 with briefing that REFERENCES pre-scan-results.md
+         → Subagent reads the hit-list, does NOT scan from scratch
+         → Subagent verifies 3-5 random findings, produces bug report
+
+Phase 2: PARENT cross-checks subagent's verifications against own scan
+```
+
+**Why this works:**
+- Subagent scope drops from "118 files × 12 patterns" to "verify 20 pre-filtered hits"
+- API-call budget for Expert 3: ~8 calls (vs. 50+ if scanning from scratch)
+- Pitfall #25 (Batch > Subagents bei >20 Files) is the underlying principle
+- Subagent provides **judgment** (false-positive vs. real bug), parent provides **measurement**
+
+### When to apply this pattern
+- Bug scans across many files (parent does regex, subagent verifies)
+- Documentation completeness checks (parent lists files, subagent evaluates)
+- Coverage audits (parent enumerates, subagent assesses quality)
+- Dependency audits (parent runs `npm ls`, subagent prioritizes)
+
+### When NOT to apply
+- Tasks requiring source-code reasoning (parent can't replace subagent's LLM)
+- Single-file deep dives (no need for parent pre-work)
+- Tasks where scope is unknown until explored (subagent must discover)
+
+---
+
+## Controlled Write in Read-Only Briefings (NEW 2026-07-02)
+
+**Nuance to Pitfall #31:** Read-only briefings are the SAFE DEFAULT, but **some tasks require exactly one controlled write operation** that the briefing explicitly authorizes.
+
+### Example (Expert 2 in GreyHack audit)
+- Briefing says: "ONLY read-only commands"
+- But Question 10 is: "Run the actual build: `bash ci-build.sh --out-dir /tmp/...`"
+- Solution: Explicitly authorize **just that one write to /tmp/** in the briefing
+
+### Briefing phrasing
+```markdown
+## TOOLING (Pitfall #31)
+
+- ONLY read-only commands: `ls`, `cat`, `head`, `tail`, `grep`, `find`, `wc`, `stat`, `diff`
+- AUTHORIZED EXCEPTION (Question 10): `bash ~/path/to/build.sh --out-dir /tmp/audit-build-$(date +%s)`
+  - Output goes ONLY to /tmp/, NEVER to repo
+- DO NOT execute: `chmod`, `chown`, `rm`, `mv`, `apt`, `systemctl`, `kill`
+```
+
+**Why this works:**
+- Parent and subagent both know the write boundary
+- The single authorized write is auditable (visible in subagent trace)
+- Other Write-Commands are still blocked by Background-Review
+- The output location is sandboxed (`/tmp/` not the repo)
+
+### When to use controlled writes
+- E2E test execution (run build/test, output to /tmp/)
+- Snapshot creation (output to /tmp/, not source tree)
+- One-shot diagnostic commands (memory check, df, free — already read-only)
+- **NOT for:** Config changes, permission changes, package installs
+
+---
+
+## Aborted-Delegation Recovery Pattern (NEW 2026-07-02)
+
+When 1+ subagent times out (Pitfall #19/#30), the parent has **4 recovery options** instead of "re-spawn with same briefing":
+
+### Option 1: Parent-direct targeted calls (RECOMMENDED)
+```
+For timed-out scope, parent runs 3-5 focused calls itself.
+Pro: better context visibility, can bail early.
+Con: parent's context bloats with the missing scope.
+```
+
+### Option 2: Re-spawn with reduced briefing
+```
+Take the original briefing, strip it to the bare essentials (2-3 questions instead of 8-12).
+Pro: lower timeout risk.
+Con: may miss depth.
+```
+
+### Option 3: Hand off to a different model
+```
+Spawn with a different provider (e.g. gemini-3-flash instead of deepseek-v4-flash).
+Pro: different model = different failure mode.
+Con: token cost + extra coordination.
+```
+
+### Option 4: Skip the scope, document the gap
+```
+Mark the scope as "NOT COVERED" in the synthesis, list it as P2 backlog.
+Pro: fast.
+Con: incomplete audit.
+```
+
+**Default:** Option 1 (parent-direct) if the scope is small (3-5 calls worth). Option 4 if the scope is large. Document the choice in the master report.
+
+### Master-Report section
+```markdown
+## Delegation Recovery Log
+- Expert 2: completed in 4min 12s
+- Expert 1: completed in 5min 47s
+- Expert 3: TIMED OUT at 600s, 14 API calls, no file → PARENT OVERTOOK (Option 1)
+  - Parent direct calls: 4 calls, 1min 23s, output integrated into this report
+```
+
+---
+
+## Workflow Discipline — User-Preference (2026-07-02)
+
+When the Hive Lord requests "skill bauen" + "skill nutzen" as **two separate options in sequence**, default to:
+
+1. **Phase A (current session):** Bauen — create the skill, document it, link it from `multi-agent-orchestration` if appropriate. Do NOT also spawn a subagent to demonstrate it in the same session.
+2. **Phase B (next session):** Nutzen — run the actual live test, with the cheatsheet in mind.
+
+**Why:** Mixing build + use in one session splits attention and the build may end up under-tested if you also try to validate via spawn. Clean separation also matches Basti's preference for "Skill-driven execution" (memory) and gives each skill time to settle before being exercised.
+
+If the user wants a live test in the same session anyway, run a **minimal demo spawn** (1 subagent, read-only, single OUTPUT path, ≤5 terminal-calls). Document the result in `references/demo-session-DATE.md` so the Phase-B session has a known-good baseline to compare against.
+
+---
+
+## Pitfall Frequency (real session data)
+
+| Frequency | Pitfalls |
+|---|---|
+| **HIGH FREQUENCY (every few sessions)** | #5 Phantom-fixes, #19 Web-API hangs, #31 Background-Review timeouts |
+| **MEDIUM (1-2x per month)** | #6 Wrong output path, #9 Write-denied, #14 sed-i on .env, #22 systemctl status, #28 model param ignored |
+| **LOW (rare, but catastrophic)** | #11 YAML corruption, #17 .env corrupted, #29 Subagent no file write, #33 Frontmatter quoting |
+
+**Priority:** Always defend against HIGH-FREQUENCY first.
+
+---
+
+## New Patterns Added 2026-07-02 (from live demo session)
+
+These patterns are not yet numbered in the archived 32-pitfall list — they were discovered by running the cheatsheet for real:
+
+| Pattern | Severity | Description |
+|---|---|---|
+| **Hybrid Pre-Scan** | MEDIUM | Parent pre-scans deterministically via `execute_code`, subagent only verifies — prevents 50+ wasted API-calls (Pitfall #25 in action) |
+| **Controlled Write** | MEDIUM | Read-only briefings + one explicitly authorized write to `/tmp/` — balance between Pitfall #31 safety and real-world test execution needs |
+| **3-Tier Verification** | HIGH | Datei-Existenz + Content-Validierung + Realitäts-Check — defends against Pitfall #5 (phantom fixes) AND Pitfall #29 (summary ≠ file) simultaneously |
+| **4 Recovery Options** | HIGH | When subagent times out: Parent-direct / Reduced-briefing / Different-model / Skip-and-document — default is parent-direct for small scopes |
+
+---
+
+## Skill-Slim-Down Pattern (NEW 2026-07-02)
+
+**Trigger:** SKILL.md >25 KB ohne ausreichende `references/`-Auslagerung.
+
+### Why slim down skills?
+- `skill_view(name=X)` lädt die **gesamte** SKILL.md in den Kontext
+- Monolithen (50-100 KB) verbrauchen massiv Token bei jeder Nutzung
+- Inhaltliche Qualität bleibt 100% erhalten — alles wird *ausgelagert*, nicht gelöscht
+
+### Protocol
+1. **Pre-Scan:** `find ~/.hermes/skills -name "SKILL.md" -not -path "*/.archive/*" -exec wc -c {} \; | sort -rn | head -10`
+2. **Struktur scannen:** `grep -n '^#\{1,3\} ' SKILL.md | head -40`
+3. **Existierende `references/`, `templates/`, `scripts/` checken**
+4. **Trennlinie definieren:**
+   - SKILL.md behält: Frontmatter (EXACT!), Trigger, Outline, Pitfalls (Bullets), Cross-Links
+   - references/ bekommt: Code >10 Zeilen, Step-by-Step, Bug-Logs, API-Details
+5. **Subagent parallel pro Skill** (siehe Multi-Batch-Pattern oben)
+6. **Verifizieren:** Frontmatter identisch? Refs valide? Keine Inhalte verloren?
+   - **Phantom-Ref-Detection (in-line, run BEFORE step 7):** `grep -oE 'references/[a-zA-Z0-9_-]+\.md' SKILL.md | sort -u | while read r; do [ ! -f "$r" ] && echo "PHANTOM: $r"; done` — catches broken See-Also links inherited from pre-slim state. Proven 2026-07-03 on `hermes-v7-sse-server`: 1 phantom (`event-source-headers.md`) detected, created as new ref rather than block-replaced.
+   - **Frontmatter byte-identity:** `sed -n '1,10p' SKILL.md > /tmp/fm.txt && diff <(cat /tmp/fm.txt) <(expected-fm)` → must be identical.
+   - **Content loss check:** `grep -c '^## ' SKILL.md` + `grep -c '^| ' SKILL.md` before/after — heading/table counts should hold steady (or grow if summary moves were correct).
+7. **Broken Refs fixen:** Bullet-Block-Replace mit Notiz (NICHT Ghost-Stubs) — siehe `Broken-Ref-Cleanup Pattern` unten für Stub-vs-Block-Replace-Entscheidung.
+
+### Target-Größen
+| Element | Healthy |
+|---|---|
+| SKILL.md | 8-15 KB |
+| Frontmatter (L1) | `---` |
+| `---` End | zwischen L20-50 |
+| `name:` in Frontmatter | 1 |
+| Heading-Count | 15-40 (gute Outline) |
+| Reference-Files | 5-40 |
+| Broken-Ref-Count | 0 |
+
+### Subagent-Briefing Template
+```
+SKILL.md is at ~/.hermes/skills/<category>/<skill>/SKILL.md (<SIZE>KB).
+
+PROTOCOL:
+1. Read the full SKILL.md.
+2. Keep in SKILL.md: YAML frontmatter (EXACT as-is), intro paragraph,
+   section headings as outline (1-2 sentence summaries), critical warnings/
+   pitfalls in short bullet form, links to references.
+3. Extract into references/: all code blocks >10 lines, step-by-step
+   procedures, bug logs, version histories, API details.
+4. Suggested new files: references/<topic>.md (one per logical section).
+5. Each reference file opens with a top-level heading matching the SKILL.md
+   outline.
+6. Target: SKILL.md ≤<X>KB.
+7. Report the final sizes.
+```
+
+### When to skip the subagent step (Parent-Direct)
+
+If the slim-down target is **exactly 1 skill** with **<30 min scope** and well-understood content, do it Parent-Direct instead of spawning parallel subagents. Same reason as Pitfall #17 from `multi-agent-orchestration` — subagent context-burn + dispatch overhead exceeds the actual work.
+
+**Decision rule:**
+- **1-2 skills, well-known content:** Parent-Direct sequential (8-12 min, no dispatch overhead, every section verified inline).
+- **3+ skills:** Subagent parallel — wall-clock savings of dispatch overhead exceed the loss of parent context. This is what produced the 513KB → 95KB run (9 skills, 2 waves, 12-13 min).
+
+Subagent-mode is the right default for "slim N skills" tasks. Parent-Direct is the right choice for the "slim THIS one specific skill" variant.
+
+### Proven Impact (2026-07-02, 9 Skills)
+- 513 KB → 95 KB (-81%, -418 KB)
+- Wellen: 5 Subagents parallel × 2 Wellen = 12-13 Min Wall-Clock
+- 0 Inhalt verloren, 0 Subagent-Crashes
+
+### Proven Impact (2026-07-03, 1 Skill, Parent-Direct)
+- `multi-agent-orchestration` 30 KB → 8.6 KB (−71%, −21 KB)
+- 5 new `references/` files created: `phase-1-spawn-experts.md`, `phase-3-synthesis.md`, `queen-bee-configuration.md`, `pitfalls-detailed.md`, `report-template.md`
+- Frontmatter byte-for-byte identical (verified via `diff`)
+- 0 broken refs (verified via `ls references/<each>.md`)
+- ~6 min wall-clock, 0 subagent dispatch overhead, 0 phantom fixes
+
+### Proven Impact (2026-07-03, 1 Skill, Parent-Direct, Creative Class)
+- `claude-design` 25.2 KB → 11.9 KB (−53%, −13.1 KB) — 3 new `references/` files created: `design-patterns.md`, `component-examples.md`, `design-systems.md`
+- Frontmatter byte-identical (lines 1–31), 24 inline refs all resolve, 0 broken refs
+- **~9 min wall-clock** but required **~10 successive patch iterations** to land under target — see "Markdown Compression Iterations" pitfall pattern below
+
+---
+
+## MD5-Frontmatter-Verifikation Pattern (NEW 2026-07-03)
+
+**Trigger:** Slim-Down mission complete, need to prove YAML frontmatter is byte-identical to original.
+
+### Why MD5 vs diff?
+- `diff` compares line-by-line — easy to miss trailing whitespace, BOM, encoding differences
+- `md5sum` is a single 32-char hash — provably unique to byte sequence
+- Subagent #1 (hermes-mcp-integration) demonstrated this on 2026-07-03 — produced MD5 `282410bc...` that matched original exactly
+- **Use this as the new default** for slim-down verification
+
+### Protocol
+```bash
+# 1. Extract frontmatter from original (if still available)
+head -50 SKILL.md.original | sed -n '/^---$/,/^---$/p' > /tmp/fm-original.txt
+head -50 SKILL.md.slimmed | sed -n '/^---$/,/^---$/p' > /tmp/fm-slimmed.txt
+
+# 2. MD5-compare
+ORIG=$(md5sum /tmp/fm-original.txt | awk '{print $1}')
+SLIM=$(md5sum /tmp/fm-slimmed.txt | awk '{print $1}')
+
+if [ "$ORIG" = "$SLIM" ]; then
+  echo "✅ Frontmatter byte-identical ($ORIG)"
+else
+  echo "❌ Frontmatter drift!"
+  echo "Original: $ORIG"
+  echo "Slimmed:  $SLIM"
+  diff /tmp/fm-original.txt /tmp/fm-slimmed.txt
+fi
+```
+
+### When to use
+- **Every** slim-down mission (cheap to run, catches issues early)
+- Especially when the frontmatter has `metadata.hermes` blocks with complex nested structures
+- Before declaring a skill "production-ready" after edit
+
+### Subagent-Briefing-Addition
+```
+VERIFICATION (after slim-down):
+- Extract frontmatter (lines 1 to second `---`) from both original and slimmed
+- Compute MD5 of each, must match exactly
+- Report MD5 in your summary as "Frontmatter MD5: <hash>"
+- If MD5 differs, fix before reporting completion
+```
+
+### Escalation: When MD5 Diff Fails
+1. **Trailing whitespace** — `sed -i 's/[[:space:]]*$//' SKILL.md` and re-check
+2. **BOM** — `file SKILL.md` should say "UTF-8" not "UTF-8 (with BOM)"
+3. **Line endings** — `file SKILL.md` should say "Unix" not "DOS"
+4. **YAML key order changed** — sed-reorder to original (auto-fix possible)
+5. **Nested quote changes** — manual fix required
+
+---
+
+## Pre-Existing-Reference-Audit Pattern (NEW 2026-07-03)
+
+**Trigger:** Slim-Down briefing says "skill has N reference files already". Before extracting content, check if it's already there.
+
+### Why this matters
+- Without audit: Subagent may create duplicates of content that already lives in `references/`
+- With audit: Subagent extracts only what's NEW, references existing files instead
+- Subagent #3 (hermes-orchestration) demonstrated this on 2026-07-03 — found 56 run-artifacts in `memory/runs/` that weren't real references, focused extraction on the 7 actual references
+
+### Protocol (Subagent must do this first)
+```bash
+# 1. List existing reference files (ignore run-artifacts / metadata / README)
+SKILL_DIR=~/.hermes/skills/<category>/<skill>
+ls "$SKILL_DIR/references/"  # all files
+
+# 2. Categorize: real references vs run-artifacts vs meta-files
+# Real: deep-dive docs (e.g., "phase-1-spawn-experts.md")
+# Run-artifacts: dated session logs in memory/runs/ or similar
+# Meta: README.md, INDEX.md, CHANGELOG.md
+
+# 3. For each existing real-reference, scan its TOC / headings
+grep -E '^#' "$SKILL_DIR/references/"*.md | head -50
+
+# 4. Compare with SKILL.md content — what's ALREADY covered vs what needs NEW extraction
+```
+
+### Decision Tree
+- Topic X is already fully covered in `references/topic-x.md` → **DON'T create new file**, link existing one
+- Topic X is partially covered → **Extract only the missing parts**, mention the existing file in your report
+- Topic X is not covered at all → **Create new `references/topic-x.md`**
+
+### Subagent-Briefing-Addition
+```
+PRE-FLIGHT (before any writes):
+1. Run: ls ~/.hermes/skills/<skill>/references/
+2. For each existing *.md file, list its top-level headings
+3. Build a coverage map: SKILL.md sections vs existing references
+4. Only create NEW references for genuinely uncovered sections
+5. Report in your summary: "X existing references audited, Y new ones needed"
+```
+
+### Red Flags (in subagent output)
+- Subagent creates `references/<topic>.md` without mentioning audit
+- Subagent creates duplicate content (same headings in multiple files)
+- Subagent doesn't mention what existing files were checked
+- Subagent says "I created N references" where N is suspiciously close to total section count of original SKILL.md
+
+### Impact (2026-07-03)
+- hermes-orchestration (28 KB) → 9 KB: Subagent audited 7 real references + 56 run-artifacts, focused extraction → 0 duplicates
+- vs. hermes-v7-sse (22 KB) → 11 KB: Subagent had fewer existing references (6), more new extraction needed → 4 new refs
+
+---
+
+## Broken-Ref-Cleanup Pattern (NEW 2026-07-02)
+
+**Trigger:** `grep -oE 'references/[a-zA-Z0-9_-]+\.md' SKILL.md | while read r; do [ ! -f "$r" ] && echo "BROKEN"; done`
+
+### Wann Bullet-Replace (statt Stub-Files)
+- ✅ Liste in "Siehe auch"-Sektion (keine Workflow-Abhängigkeit)
+- ✅ Refs auf TODO-Dateien die nie existierten
+- ✅ Refs die Inhalt doppeln würden (z.B. "siehe auch X" wenn X schon in Phase-Files lebt)
+- ✅ Session-Referenzen auf alte Experiment-Logs
+
+### Wann lieber Stubs oder Workflow-Korrektur
+- ⚠️ Ref ist im Workflow verkettet (`[details](...)` im Fließtext, nicht in Bullet-Liste)
+- ⚠️ Ref verspricht zentralen Inhalt der nicht anderswo existiert
+- ⚠️ Ref ist Pitfall-Referenz die aktiv genutzt wird
+
+### Block-Replace Template
+```markdown
+> **Note:** [Erklärung was hier war und wo der Inhalt jetzt lebt].
+> [Optional: Hinweis auf zukünftige Reaktivierung]
+```
+
+### Beispiel (echt, 2026-07-02)
+17 broken Refs in `multi-agent-work` (L44-60 "Session-Referenzen"-Block) ersetzt durch:
+```markdown
+> **Note:** Die folgenden Session-Referenzen wurden beim Slim-Down
+> entfernt, da die referenzierten Dateien nie existierten und nur als
+> Bullet-Liste dokumentiert waren. Workflow-Inhalte sind vollständig in
+> den oben gelisteten `references/`-Dateien erhalten.
+```
+→ -17 Zeilen, +3 Zeilen, semantisch klar dokumentiert.
+
+### Vorab-Check vor Slim-Down
+```bash
+# Existiert der Skill überhaupt aktiv?
+ls ~/.hermes/skills/<category>/<skill>/SKILL.md
+# Falls nur in .archive/ oder duplicates-*: SKIP, kein Cleanup nötig
+```
+
+---
+
+## New Patterns Added 2026-07-03 (Skill-Slim-Down Round 2)
+
+These patterns complement the 2026-07-02 patterns and apply to **iterative slim-down missions** (Round 2+):
+
+| Pattern | Severity | Description |
+|---|---|---|
+| **Re-Scan Fresh** | LOW | Top-N candidates change after each round. Re-run inventory, don't reuse last round's list. Verified 2026-07-03: Round 1 slimmed 9 candidates 33-105KB → 6-14KB; Round 2 targeted next 10 from current scan (22-29KB). |
+| **Skill-Exclusion-List** | LOW | Exclude `multi-agent-pitfalls-cheatsheet` from scan — it grows by design (~5-15KB per round) and shouldn't be slimmed. Verified 2026-07-03. |
+| **Stub-vs-Block-Replace** | MEDIUM | Broken refs in Markdown tables need stub-files (preserve table structure), not block-replace. Bullet-list broken refs use block-replace (R1 Block-Replace Pattern). |
+| **Subject-Index Acceptance** | LOW | When subagent creates N of M needed files and lists the rest as "Subject Index", that's honest scoping — verify the created files are substantial and the Index is transparent about being future-expansion. |
+| **Subagent Honesty = Feature** | LOW | Transparent reports ("I left 17 broken refs because they had no workflow dependency") show good judgment, not failure. Parent-side fix is cheap when subagent honestly reports gaps. |
+| **Smaller-Candidate Tolerance** | LOW | Skills 22-29KB have less extraction headroom than 33-105KB monoliths. Target "around 12KB" not "≤10KB". Landing 12-14KB is acceptable. |
+| **3% Target Overshoot OK** | LOW | SKILL.md landing at 12.1-12.3KB when target was ≤12KB (12,288 bytes) is within 3% and acceptable. Re-spawn only on structural issues (broken frontmatter, missing content, broken refs), not sub-KB overshoots. |
+| **Markdown Compression Iterations** | MEDIUM | Slimming a content-dense creative SKILL.md (heavy prose, decision tables, multi-line bullets) takes **~10 patch iterations to land under target** in Parent-Direct mode. Each `patch` round compresses 200-500 bytes; pure prose compresses less than expected (every whitespace/comma matters). **Fix:** in the first rewrite pass, target **~80% of the target size** (e.g. write to ~10KB when target is ≤12KB), not 100%. One extra iteration is cheap; ten is wasted wall-clock. Proven 2026-07-03 on `claude-design` (10 patches, ~9min). |
+
+### Quick Decision Matrix (Round 2+)
+- **Same skill broken refs in bullet-list** → block-replace (R1 Block-Replace Pattern)
+- **Broken refs in Markdown tables** → create stub file with TODO-status header
+- **Subagent says "I left Subject Index entries"** → verify stubs are honest, accept
+- **Top-N scan after a Round** → re-scan fresh, don't reuse list
+- **Skill is in cheatsheet-bank list** → exclude from candidates
+
+### Cross-Reference
+- Full integration: `skill-library-maintenance` skill (v1.1.0), Pitfalls #17-#23
+- R1 patterns: see "New Patterns Added 2026-07-02 (from live demo session)" section above
+- **R2 patterns detailed walk-throughs:** see `references/2026-07-02-additions.md` §5a-5f for the deep-dive on each Round-2 pattern (Subagent-Strategie-Selbstwahl, Markdown-Compression-Iterations, Wave-Clock-Variance, Stub-vs-Block-Replace, Pre-Existing-Reference-Audit, MD5-Frontmatter-Verifikation)
+- **Mission master reports:** `~/docs/system/skill-slim-down-2026-07-02.md` (R1, 9 skills, 513→95KB) + `~/docs/system/skill-slim-down-round-2-2026-07-03.md` (R2, 10 skills, 259→110KB). Cumulative across both rounds: 19 skills, 567 KB context-einsparung.
+
+---
+
+## Related Skills
+
+- `multi-agent-orchestration` — the PATTERN (3 experts, 5 phases, retrospective) — load this for the HOW
+- `multi-agent-research` (archived) — the FULL skill with all 32 pitfall details — load for deep reference
+- `multi-agent-pitfalls-cheatsheet` (this) — TRIGGER-WATCHLIST — load BEFORE every spawn
+- `subagent-driven-development` — execution pattern using subagents
+- `skill-library-maintenance` — class-level skill for skill-library hygiene; covers Multi-Wave slim-down pattern (Pitfall #15) and 4-Tier Verification
+- `/multi-agent-work` slash command — end-to-end workflow
+- `skill-navigator` — META-NAVIGATOR — load FIRST when unsure which skill applies to a task
+
+**Workflow:** Load `skill-navigator` (when unsure which skill to use) -> Load `multi-agent-orchestration` for the pattern -> Load `multi-agent-pitfalls-cheatsheet` (this) for traps -> Spawn -> Verify with script.
+
+**Live demos & known-good baselines:**
+- `references/demo-session-2026-07-02.md` — minimal demo spawn pattern (1 read-only subagent, explicit OUTPUT, ≤5 calls)
+- `references/2026-07-02-additions.md` — Pitfall #34 (broken subagent refs), Multi-Wave Subagent Pattern, 4-Tier Verification (proven on Skill-Slim-Down mission, 9 skills, 2 waves, 26 broken refs caught and fixed)
+
+---
+
+## Final Note from Yuno
+
+This skill is the "trap-detector" — small, fast, always-load. The big pattern lives in `multi-agent-orchestration`. The 32-pitfall encyclopedia lives in the archived `multi-agent-research`. **I (Yuno) load this skill before every `delegate_task` call to catch the common mistakes before they happen.** You should too.
+
+Lerneffekt: 5 Minuten Lesen spart 30 Minuten Debuggen. ♛
+
+**Last validated:** 2026-07-03 (YUNO V3 multi-agent audit: 2 subagents dispatched, both timed out at 70+min. Parent-direct takeover completed in 30 min total: 18 findings cataloged, 1 P0-bug fixed (.strip() → manual trim-loop), master-report written. Validates Pitfall #30 in production conditions and motivates new Pitfall #34. Cumulative skill-bank progress: 19 skills slimmed in 2 rounds = 567 KB context savings).
+
+---
+
+_Converted from Hermes-Skill by Yuno. Original SKILL.md preserved in references/original-hermes.md._

@@ -1,0 +1,12 @@
+display-name-zh: 影视配乐
+version: 0.1.10
+tag-en: "Audio Content / Audio Generation"
+tag-cn: "音频内容 / 音频生成"
+summary-en: "Compose character themes and scene BGM"
+summary-cn: "创作角色主题曲与场景配乐"
+desc-en: "For composing a complete original soundtrack package for film, TV and short drama productions. Takes a script and character bios as input, optionally imported from short-drama-screenwriter skill or supplied externally. Produces character theme songs, opening and ending themes and key-scene BGM tracks, all derived from deep plot analysis. Each composition reflects character arcs and narrative tension for authentic dramatic scoring."
+desc-cn: "适用于为电视剧、电影、短剧创作完整原声音乐套件的场景,提供专业级影视配乐方案。输入剧本与人物小传(可从 short-drama-screenwriter 技能导入或外部直接提供),输出角色主题曲、片头曲、片尾曲与关键场景 BGM 配乐。所有音乐基于剧情深度分析创作,每首作品反映角色弧线与叙事张力,实现真实感的戏剧配乐效果。"
+cover: ""
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official

@@ -1,0 +1,12 @@
+display-name-zh: 剪映导出
+version: 3.0.8
+tag-en: "Visual Production / Post-Production"
+tag-cn: "视觉创作 / 后期制作"
+summary-en: "Push videos to JianYing or CapCut drafts"
+summary-cn: "把视频推送到剪映或CapCut草稿"
+desc-en: "For pushing AI-assembled video projects into JianYing or CapCut as editable drafts for manual post-production. Takes a video project including clips, timeline and assets as input. Produces a draft directly in the local JianYing or CapCut draft directory ready to open and edit in the desktop application. Built on the pyJianYingDraft library for reliable draft format compatibility and seamless workflow integration."
+desc-cn: "适用于把已组装好的视频工程推送到剪映或 CapCut 进行人工后期精修的场景。输入视频工程(包含片段、时间轴与素材资源),输出直接生成在本机剪映或 CapCut 草稿目录的工程文件,打开桌面应用即可编辑。基于 pyJianYingDraft 库封装,确保草稿格式兼容性与工作流的无缝衔接。"
+cover: ""
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official

@@ -1,0 +1,32 @@
+---\n# ⚠️ Yuno Voice Reply — Plugin Manifest (ARCHIVED / BINARY-ONLY)\n#\n# DIESE VORLAGE IST HISTORISCH. Der Hook `post_response` existiert NICHT\n# in Hermes' VALID_HOOKS (siehe hermes_cli/plugins.py). Das Plugin lädt\n# still, aber feuert nie. Die korrekte Lösung ist:\n#\n#   /voice tts   → Auto-TTS für alle Antworten (Hermes built-in, kein Plugin nötig)\n#\n# Wenn du unbedingt einen Response-Hook brauchst, nutze einen der VALID_HOOKS:\n#   transform_llm_output, pre_llm_call, post_llm_call\n# aber denk dran: die sind für Text-Transformation, nicht für Side-Effects\n# wie Audio-Playback. Hermes' eigener /voice tts ist der richtige Weg.\n#\n# Nutzung dieser Vorlage (für EXPERIMENTE außerhalb des Hermes-Cores):\n#   1. In ~/.hermes/plugins/<name>/ ablegen (plugin.yaml + __init__.py)\n#   2. Das Skript ist als Ausgangsbasis für NON-HERMES TTS-Autoplay-Bots gedacht\n#   3. Akzeptieren: Hermes wird beim Start eine WARNUNG zu post_response loggen\n#\n# Default: enabled: false — der User schaltet selbst an.
+name: yuno_voice_reply
+version: 0.1.0
+description: >-
+  Auto-spielt Yuno-Antworten via Hermes-Response-Hook als TTS ab. Toggle,
+  Filter für Code-Blöcke / Bilder, fallback auf stille bei kurzen Antworten,
+  ausschaltbar per Konfigschalter. KEIN Override des TTS-Providers
+  in config.yaml — nutzt den aktuell aktiven provider.
+author: "Yuno / Basti"
+kind: standalone
+
+# Hook: wird nach jeder Yuno-Antwort gefeuert
+provides_hooks:
+  - post_response
+
+provides_tools: []
+
+# Default-Konfig. Überschreibbar unter plugins.yuno_voice_reply.<key>
+config:
+  enabled: false               # Default OFF. User schaltet manuell an.
+  min_chars: 50               # Antworten < 50 Zeichen → stumm
+  skip_if_contains:           # Bei Vorkommen → stumm
+    - "```"
+    - "MEDIA:"
+    - "!["
+    - "<file:"
+    - "/tmp/"
+  max_chars: 1800             # Längere Antworten werden gekürzt (TTS-Token-Limit)
+  player: "paplay"            # PulseAudio-CLI (Default-Sink)
+  fallback_player: "ffplay"   # Alternative wenn paplay fehlt
+  cache_dir: "~/.hermes/cache/audio/yuno-replies"
+  persist_audio: false        # MP3 nach Abspielen löschen (one-shot) oder behalten

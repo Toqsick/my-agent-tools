@@ -1,0 +1,9 @@
+display-name-zh: Hermes 记忆
+version: 1.0.0
+tag-en: "Context / Memory"
+summary-en: "Yuno's accumulated Hermes-memory (Mnemosyne) for context-aware agent prompts"
+desc-en: "Cross-injected Hermes/Mnemosyne memory into MiniMax Hub. Each entry below is a Memory-Note the agent can read in-context. Originally Hermes-managed, exported here for Hub-agent context."
+desc-cn: "Hermes/Mnemosyne memory entries injected into MiniMax Hub. Same content, different format."
+author-en: "Yuno"
+author-cn: "Yuno"
+source: community-custom

@@ -1,0 +1,9 @@
+display-name-zh: Orchestration/Skill Navigator
+version: 1.0.0
+tag-en: "Tools"
+summary-en: "Quick-reference navigator for all 169 active Hermes skills. Groups skills by domain-cluster (multi-a"
+desc-en: "Quick-reference navigator for all 169 active Hermes skills. Groups skills by domain-cluster (multi-agent, greyhack, mlops, creative, etc), tells you which skill to load for which task, flags clusters "
+desc-cn: "Quick-reference navigator for all 169 active Hermes skills. Groups skills by domain-cluster (multi-agent, greyhack, mlops, creative, etc), tells you which skill to load for which task, flags clusters "
+author-en: "Yuno (converted from Hermes)"
+author-cn: "Yuno (converted from Hermes)"
+source: community-custom

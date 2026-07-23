@@ -1,0 +1,111 @@
+// ============================================================
+// hermes_api — Hermes API-Client für GreyHack
+// Verbindet sich mit Hermes (localhost:8333) via HTTP_API
+// Nutzung:   hermes_api [endpoint] [json-data]
+// Standard:  hermes_api status {}
+// Beispiele:
+//   hermes_api status
+//   hermes_api ask {"query": "Wie hacke ich 192.168.1.1?"}
+//   hermes_api generate {"tool": "portscan"}
+//   hermes_api analyze {"target": "192.168.1.1", "ports": "22,80,443"}
+// ============================================================
+
+HERMES_URL = "http://127.0.0.1:8333"
+
+if params.len == 0 or params[0] == "--help" or params[0] == "-h" then
+    clear_screen
+    print("=" * 60)
+    print("  HERMES API CLIENT v1.0")
+    print("=" * 60)
+    print("")
+    print("  Verbindung: " + HERMES_URL)
+    print("")
+    print("  Verwendung:")
+    print("    hermes_api <endpoint> [json-data]")
+    print("")
+    print("  Endpunkte:")
+    print("    status         Server-Status abfragen")
+    print("    ask            Freitext-Frage an Hermes")
+    print("    generate       GreyScript-Code generieren")
+    print("    analyze        Netzwerkscan analysieren")
+    print("    crack          Passwort-Cracking-Tips")
+    print("")
+    print("  Beispiele:")
+    print('    hermes_api ask {"query": "Was ist SSH?"}')
+    print('    hermes_api generate {"tool": "backdoor"}')
+    print('    hermes_api analyze {"target": "10.0.0.5", "ports": "22,80"}')
+    print("")
+    print("  Optionen:")
+    print("    --help, -h     Diese Hilfe")
+    print("    --raw          Roh-Ausgabe (kein Pretty-Print)")
+    print("")
+    exit
+end if
+
+endpoint = params[0]
+json_data = "{}"
+raw_mode = false
+
+if params.len >= 2 and params[1][0] == "{" then
+    json_data = params[1]
+end if
+
+// HTTP Request aufbauen
+url = HERMES_URL + "/" + endpoint
+
+if endpoint == "status" then
+    url = HERMES_URL + "/status"
+    response = HTTP.Request(url, "GET")
+else
+    response = HTTP.Request(url, "POST", json_data)
+end if
+
+if response == null or response == "" then
+    print("[X] Fehler: Keine Antwort von Hermes (" + HERMES_URL + ")")
+    print("    Starte Hermes API: python3 ~/bin/hermes-gh-api-server.py")
+    exit
+end if
+
+if raw_mode then
+    print(response)
+else
+    // Pretty-Print
+    try
+        data = JSON.Parse(response)
+        print("")
+        print("=" * 60)
+        print("  HERMES — ANTWORT")
+        print("=" * 60)
+        print("")
+
+        if data["status"] then print("  Status: " + data["status"])
+        if data["analysis"] then print("  Analyse: " + data["analysis"])
+
+        if data["tips"] then
+            print("")
+            print("  Tipps:")
+            for tip in data["tips"]
+                print("    → " + tip)
+            end for
+        end if
+
+        if data["code"] then
+            print("")
+            print("  Generierter Code:")
+            lines = data["code"].split(char(10))
+            for line in lines
+                print("    " + line)
+            end for
+        end if
+
+        if data["common_passwords"] then
+            print("  Häufige Passwörter: " + data["common_passwords"].join(", "))
+        end if
+
+        print("")
+        print("-" * 60)
+        print("  Hermes API — http://127.0.0.1:8333")
+    catch e
+        print("[Hermes] " + response)
+    end try
+end if

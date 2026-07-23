@@ -1,0 +1,12 @@
+display-name-zh: 二次元风格锻造
+version: 0.2.7
+tag-en: "Visual Production / Image Generation"
+tag-cn: "视觉创作 / 图像生成"
+summary-en: "Forge anime characters in target styles"
+summary-cn: "把角色锻造为目标二次元画风"
+desc-en: "For anime style transfer and character stylization across Japanese, Donghua, Manhwa and Western anime systems. Takes a reference image and target style direction as input. Produces stylistically reforged images via 10-dimension style decomposition covering line weight, color palette, shading method and more, collapsed into 3-axis Form, Aesthetic and Mood positioning, with matched generation tooling per style genome."
+desc-cn: "适用于二次元及动漫角色的风格化生成与画风转换,覆盖日系、国漫、韩系、欧美等画风体系。输入参考图与目标风格方向,输出复刻该风格的新图。通过 10 维拆解(线条粗细、色彩方案、着色方式等)→ Form、Aesthetic、Mood 三轴坍缩定位画风基因,自动匹配最优生成工具与 prompt 写法,确保风格转换的精准度。"
+cover: ""
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official

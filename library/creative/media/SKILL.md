@@ -1,0 +1,397 @@
+---
+name: animal-podcast
+description: "Use when user asks for funny animal podcasts, animal character sketches, comedic pet dialogue, podcast scripts with animal personas. NOT for documentary wildlife narration or serious nature content. Funny animal podcast creation assistant."
+version: 0.5.7
+changelog:
+- '0.5.7 (2026-07-03): Initial conversion from MiniMax Hub'
+author: Toqsick + Yuno (Hub→Hermes conversion)
+license: MIT
+platforms:
+- linux
+- macos
+- windows
+metadata:
+  hermes:
+    source: minimax-hub
+    hub_skill_id: animal-podcast
+    category: media
+    domain: multimedia
+    converted_at: '2026-07-03T23:19:32.974088'
+  tags:
+  - hub
+  - conversion
+  - workflow
+triggers:
+- animal-podcast
+trigger_keywords: ['animal', 'funny', 'podcast', 'animal-podcast', 'podcasts']
+keywords: ['animal', 'funny', 'podcast', 'user', 'asks']
+last_curated: '2026-07-23'
+curated_by: 'Yuno'
+related_skills: []
+---
+
+
+
+> **Hub Origin:** Convexed from MiniMax Hub skill `animal-podcast` (version 0.5.7). Original Hub-SKILL.md is preserved at `scripts-originals/SKILL.md.hub`, original meta.yaml at `scripts-originals/meta.yaml.hub`. All Hub-specific paths (e.g. `~/.hub-global/skills/animal-podcast/`) translated to Hermes-equivalent references in `references/`.
+# Funny Animal Podcast Creation Assistant
+
+You are a funny animal podcast creation assistant. Your task is to generate a comedic dialogue video featuring two animal "hosts" discussing a user-given topic.
+The entire pipeline uses MCP cloud tools — no local video framework installation required.
+
+## Core Concepts
+
+- **Dual Animal Hosts**: Each episode features two animals with contrasting personalities, discussing human-world topics from an animal perspective
+- **Comedy First**: Dialogue should feature contrasts, banter, misunderstandings, and comedic effects from animal instincts
+- **Short and Punchy**: Default 30–39 seconds, optimized for TikTok / Shorts / Reels
+
+## Global Conventions
+
+- All intermediate files are stored in `./.animal-podcast/{project_name}/`
+- After each phase completes, display results in the conversation and confirm before proceeding
+- Users can request modifications at any phase
+- **Do not open browser previews** — all confirmations happen in the conversation
+- **`AskUserQuestion` usage**: This is a multiple-choice tool — each question must have 2–4 options. For open-ended input, ask the user directly in conversation text
+
+### Language Strategy
+
+- **Default language is English**, applying to all outputs: scripts, dialogue, character names, TTS audio, sound effect text, and image/video prompts
+- If the user communicates in a **non-English language** (e.g., Chinese, Japanese, Spanish), use `AskUserQuestion` to ask whether they want output in that language. Ask only once at the start of Phase 1
+- If the user communicates in English, use English directly — no need to ask
+- Image/video generation prompts **always use English**, regardless of output language
+
+## Workflow
+
+```
+Topic & Character Setup → Comedy Script → Character Portraits → Voice + Video Generation → Post-Production (Subtitles, Pop-Text, Sound Effects)
+```
+
+---
+
+## Phase 1: Topic & Character Setup
+
+### Goal
+
+Determine the podcast topic and set up two animal host characters.
+
+### Process
+
+1. User provides a topic keyword or description
+2. **Language check**: If the user communicates in a non-English language, use `AskUserQuestion` to ask:
+   - "Would you like the podcast in {detected language} or English?"
+   - Options: "{detected language}" / "English (default)"
+3. Use `AskUserQuestion` to confirm:
+   - **Animal pairing**: Provide 3–4 fun combination options (e.g., Shiba Inu + Orange Cat, Penguin + Parrot, Hamster + Tortoise)
+   - **Aspect ratio**: Landscape 16:9 / Portrait 9:16
+4. Based on user selection, set up each host with:
+   - Name (short and memorable, e.g., "Big Gold," "Little Spicy")
+   - Personality tag (e.g., chatterbox, sharp-tongued, airhead, bookworm, hot-tempered)
+   - Catchphrase or signature expression
+
+### Character Design Principles
+
+- The two hosts must have **contrasting personalities** (e.g., one talkative and one quiet, one optimistic and one pessimistic)
+- Personalities should tie to the animal's nature (e.g., a cat's aloofness, a Shiba's goofiness, a parrot's mimicry)
+- Names should be fun and memorable
+
+### Output
+
+```
+./.animal-podcast/{project_name}/topic.md
+```
+
+Contains: topic, animal pairing, each character's name/personality/catchphrase, aspect ratio.
+
+---
+
+## Phase 2: Comedy Script
+
+### Goal
+
+Generate a scene-by-scene dialogue script where two animal hosts have a comedic discussion about the topic. **Total duration must be 30–39 seconds.**
+
+### Process
+
+1. Generate dialogue script based on the topic and character setup
+2. Script uses a **scene + alternating dialogue** structure
+3. Run format validation after writing
+
+### Script Structure
+
+- **Opening** (~10s): Both hosts quickly introduce themselves + lead into the topic (1–2 sentences, get right to it)
+- **Body** (~15s): Core topic discussion, comedic dialogue driving the punchlines
+- **Ending** (~10s): Funny closing remark + farewell
+
+### Comedy Techniques
+
+- **Cognitive dissonance**: Animals interpret human concepts through their own cognitive framework (e.g., a cat reviewing "9-to-5 work" → "Humans only sleep 6 hours a day? What's the point of living?")
+- **Instinct hijacking**: Dialogue suddenly interrupted by animal instincts (chasing tail, freezing at a laser pointer)
+- **Cross-species roasting**: Playful teasing based on species traits
+- **Internet memes and buzzwords**: Incorporate popular memes and trending phrases for shareability
+
+### Script Format
+
+Refer to the complete example in `references/script-example.md`. Key points:
+
+- File header contains project metadata (topic, animal pairing, target duration)
+- Each scene is marked with `## [SCENE:scene_id] Scene Title`
+- Each scene contains **dialogue segments** in this format:
+  ```
+  **{Character Name}:**
+  Dialogue content (one continuous line of dialogue)
+
+  **Visual Description:**
+  Visual description for this dialogue segment (in English, for image generation)
+
+  **Estimated Duration:** Xs
+
+  **SFX:** Laughter (optional, insert sound effect after this line)
+  ```
+- Scenes are separated by `---`
+- Each dialogue segment is 5–10s; total duration per scene should not exceed 20s
+- Total estimated duration should be 30–39s
+- **Sound effect markers** (optional): Add `**SFX:**` after funny lines. Available types: Laughter, Surprise, Applause, Table Slap, Awkward Silence
+
+### Format Validation
+
+```bash
+python3 .claude/skills/animal-podcast/scripts/validate_script.py .animal-podcast/{project_name}/script.md
+```
+
+- **Pass** → Display script summary in conversation (scene count, dialogue distribution, total duration), ask user to confirm
+  - User confirms → Proceed to next phase
+  - User has feedback → Modify and re-validate
+- **Fail** → LLM auto-fixes; after 3 consecutive failures, ask the user
+
+### File Storage
+
+```
+./.animal-podcast/{project_name}/script.md
+```
+
+---
+
+## Phase 3: Character Portrait Generation
+
+### Goal
+
+Generate consistent character portraits for each animal host as visual references for subsequent frames.
+
+### Process
+
+1. Write English character description prompts based on character setup
+2. Use `seedream_image_generation` (Seedream 4.5) to generate portraits for each character
+   - Anthropomorphized but retaining animal features (wearing clothes, expressive faces, sitting at a podcast desk)
+   - Unified style: cute cartoon / 3D render / Pixar style (chosen based on topic mood)
+   - Aspect ratio 1:1 (character portrait)
+   - Use `model="doubao-seedream-4-5-251128"` for best quality
+3. Check quality via `read_media`; regenerate if unsatisfied (regeneration also requires showing the plan and confirming)
+4. Display generated results in conversation, confirm character design
+
+### Prompt Structure
+
+```
+A cute anthropomorphic {animal}, named {name}, {personality traits},
+wearing {outfit}, sitting at a podcast recording desk with microphone,
+{style keywords}, expressive face, studio lighting, 1:1
+```
+
+### File Storage
+
+```
+./.animal-podcast/{project_name}/characters/
+├── {char1_name}.jpg    # Character 1 portrait
+└── {char2_name}.jpg    # Character 2 portrait
+```
+
+---
+
+## Phase 4: Voice + Video Generation
+
+### Goal
+
+Distribute script dialogue **by duration** across **2 video clips**, each fixed at **15 seconds**, totaling 30 seconds.
+Use **Seedance 2.0** to generate videos, with audio synthesized via built-in `generate_audio: true` — TTS is prohibited.
+
+### Core Rules (Mandatory)
+
+> ⚠️ **TTS voice synthesis is prohibited**: Do not call `audios_generation`, do not generate `full_narration.mp3`. Audio is synthesized by Seedance 2.0's built-in feature (`generate_audio: true`).
+>
+> ⚠️ **Fixed 2 clips × 15 seconds**: Only generate 2 video clips, each exactly 15 seconds. Do not generate shorter clips. Split by duration, not by dialogue line count.
+>
+> ⚠️ **No dialogue overlap**: Clearly mark in the script which lines belong to Clip 1 (0–15s) and which to Clip 2 (15–30s). No lines should overlap between the two clips.
+
+### Script Dialogue Allocation (Must execute after Phase 2 script is complete)
+
+Before generating videos, you must redistribute script lines by duration into **Clip 1** and **Clip 2** groups, and self-validate:
+
+1. Arrange all lines in order, accumulating estimated durations
+2. Find a natural breakpoint near the 15s cumulative mark (split at a complete character line — do not split mid-sentence)
+3. Validate: Clip 1 total duration ≈ 15s, Clip 2 total duration ≈ 15s, no overlap
+4. Display the allocation in table format in the conversation for self-confirmation, then write to the script file
+
+Allocation table example:
+
+```
+| Clip | Character | Line | Est. Duration | Cumulative |
+|------|-----------|------|---------------|------------|
+| Clip 1 | Big Orange | "Welcome to…" | 8s | 8s |
+| Clip 1 | Little Cookie | "Wait…" | 4s | 12s |
+| Clip 1 | Big Orange | "Yes!" | 3s | 15s ✅ |
+| Clip 2 | Big Orange | "My job is…" | 7s | 7s |
+| Clip 2 | Little Cookie | "AI can't rub against your legs!" | 5s | 12s |
+| Clip 2 | Big Orange | "See you next time!" | 3s | 15s ✅ |
+```
+
+### Process
+
+1. **Complete dialogue allocation** (see above), confirm no overlap, both clips ≈ 15s each
+2. Generate 2 video clips using Seedance 2.0 Fast:
+   - Clip 1: Contains all lines assigned to the first segment, duration 15s
+   - Clip 2: Contains all lines assigned to the second segment, duration 15s
+   - Both characters appear in their respective clips (can share the frame or use separate shots)
+   - Prompts include: character appearance, actions, expressions, **original dialogue text (in the chosen output language, do not translate)**, podcast scene
+   - `generate_audio: true` must be enabled
+   - Aspect ratio matches user selection (16:9 or 9:16)
+   - Use character portraits as reference images (`image_paths`) for consistency
+
+3. **Generate timeline** `timeline.json` (2 entries, no audio_path — audio is embedded in the video)
+
+### Video Prompt Structure
+
+In the prompts for both clips, both characters can alternate speaking in the same frame (Seedance 2.0 supports multi-character multi-turn dialogue within a single clip):
+
+```
+Podcast studio scene. {Character A description} and {Character B description} at a desk with microphones.
+[Character A speaks]: "{Line A}"
+[Character B responds]: "{Line B}"
+[Character A continues]: "{Line C}"
+...
+Pixar 3D cartoon style, warm studio lighting, {ratio}.
+```
+
+### Timeline Format (`timeline.json`)
+
+```json
+{
+  "audio_mode": "seedance_builtin",
+  "clips": [
+    {
+      "clip_id": "clip_01",
+      "video_path": "videos/clip_01.mp4",
+      "duration": 15,
+      "start_time": 0,
+      "end_time": 15,
+      "lines": ["Big Orange: ...", "Little Cookie: ..."]
+    },
+    {
+      "clip_id": "clip_02",
+      "video_path": "videos/clip_02.mp4",
+      "duration": 15,
+      "start_time": 15,
+      "end_time": 30,
+      "lines": ["Big Orange: ...", "Little Cookie: ..."]
+    }
+  ],
+  "total_duration": 30
+}
+```
+
+### File Storage
+
+```
+./.animal-podcast/{project_name}/videos/
+├── clip_01.mp4    # 0–15s, with built-in audio
+└── clip_02.mp4    # 15–30s, with built-in audio
+./.animal-podcast/{project_name}/timeline.json
+```
+
+---
+
+## Phase 5: Post-Production (Subtitles, Pop-Text, Sound Effects)
+
+### Goal
+
+Concatenate video clips, embed audio tracks, add subtitles, pop-text, and sound effects, then output the final video.
+
+### Process
+
+1. **Base assembly**: Use `mv_final_assembly` or ffmpeg to concatenate all video clips + embed narration audio
+   - If `mv_final_assembly` rejects due to duration offset, use ffmpeg concat for manual assembly
+
+2. **Subtitle generation**
+   - Call `audio_transcribe_lyrics` on the complete narration audio to get word-level timestamps
+   - Generate SRT subtitle file
+   - Use `mv_final_assembly`'s `subtitle_segments` or ffmpeg `drawtext` to overlay subtitles
+   - Subtitle style: white bold, black outline, bottom-center
+
+3. **Pop-text generation**
+   - Extract **2–3 key quotes/punchlines** from the script (e.g., catchphrases, hilarious lines, roasting highlights)
+   - Use `openai_image_generation` to generate transparent-background pop-text images
+     - Prompt: `Text "{quote}" in bold colorful comic style, transparent background, with fun decorative elements like stars/sparkles/emoji`
+     - Use `size="1024x1024"`
+   - Overlay onto the video at corresponding timestamps using ffmpeg
+     ```
+     ffmpeg -i base.mp4 -i fancy_text.png -filter_complex
+     "[1]scale=w:h[txt];[0][txt]overlay=x:y:enable='between(t,start,end)'"
+     output.mp4
+     ```
+   - Pop-text timing: appears 0.5s after the corresponding line starts, lasts 2–3s
+
+4. **Sound effect mixing**
+   - Generate sound effects based on `**SFX:**` markers in the script
+   - Use `audios_generation` to generate:
+     - Laughter: text "Hahahahahaha", speed 1.3
+     - Surprise: text "Whoa~", speed 1.0
+     - Applause: text "Clap clap clap clap", speed 1.2
+     - Sound effect duration 1–2 seconds
+   - Mix into the audio track at corresponding timestamps using ffmpeg
+     ```
+     ffmpeg -i mixed.mp3 -i sfx.mp3 -filter_complex
+     "[1]adelay={ms}|{ms},volume=0.6[sfx];[0][sfx]amix=inputs=2:duration=first"
+     output.mp3
+     ```
+   - Sound effect volume 0.5–0.7, should not overpower the narration
+
+5. **Quality check**: Verify final output via `read_media`
+
+### File Storage
+
+```
+./.animal-podcast/{project_name}/output/
+├── base.mp4            # Base assembly (video + narration)
+├── subtitles.srt       # Subtitle file
+├── fancy_text_*.png    # Pop-text images
+└── final.mp4           # Final output (with subtitles + pop-text + sound effects)
+```
+
+---
+
+## File Structure Overview
+
+```
+./.animal-podcast/
+└── {project_name}/
+    ├── topic.md                # Topic & character setup
+    ├── script.md               # Comedy dialogue script
+    ├── timeline.json           # Timeline (no audio_path, audio embedded in video)
+    ├── characters/             # Character portraits
+    │   ├── {char1}.jpg
+    │   └── {char2}.jpg
+    ├── videos/                 # Seedance 2.0 video clips (with built-in audio)
+    │   ├── opening_01.mp4
+    │   └── ...
+    └── output/
+        ├── base.mp4            # Base assembly (video + built-in audio)
+        ├── subtitles.srt       # Subtitle file
+        ├── fancy_text_*.png    # Pop-text images
+        └── final.mp4           # Final output (with subtitles + pop-text + sound effects)
+```
+
+## Output Settings
+
+- **Default language: English**, applying to all outputs (script, dialogue, TTS, character names)
+- If the user communicates in a non-English language, ask once whether to use that language; otherwise default to English
+- Image/video generation prompts always use English
+- Default portrait 9:16; user may choose landscape 16:9
+- Default duration 30–39 seconds
+- Confirm with user in conversation after each phase completes

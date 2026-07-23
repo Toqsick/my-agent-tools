@@ -1,0 +1,12 @@
+display-name-zh: 动物播客
+version: 0.5.7
+tag-en: "Audio Content / Video Generation"
+tag-cn: "音频内容 / 视频生成"
+summary-en: "Generate funny animal dialogue podcasts"
+summary-cn: "生成搞笑动物对谈播客"
+desc-en: "For comedic animal-host podcast video creation with fully automated character design and production pipeline. Takes a topic plus optionally specified host animals as input. Produces a finished podcast video with two animal hosts, including character setup, comedy script writing, character art illustration, TTS voiceover generation, Seedance 2.0 video generation and subtitle plus sound effects post-processing for a polished final output."
+desc-cn: '适用于动物角色对谈类搞笑播客视频的创作,提供从角色设计到成片输出的全自动化制作管线。输入话题、可选指定主播动物形象,输出由两只动物“主播”主持的完整成片。制作流程包含角色人设与性格设定、喜剧脚本编写、角色立绘插画、TTS 语音合成、Seedance 2.0 视频生成、字幕花字与音效后期处理,最终交付精良的成品视频。'
+cover: "https://cdn.hailuoai.com/hailuo-video-web/public_assets/1b43644f-7d6b-4ef7-ab99-d80c1d291189.mp4"
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official-featured

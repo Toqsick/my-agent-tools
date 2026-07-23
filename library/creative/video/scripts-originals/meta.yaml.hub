@@ -1,0 +1,12 @@
+display-name-zh: YouTube创作
+version: 0.3.7
+tag-en: "Documentary / Script Writing"
+tag-cn: "纪录片 / 剧本写作"
+summary-en: "Generate YouTube script and thumbnail"
+summary-cn: "生成YouTube脚本与封面"
+desc-en: "For YouTube content planning from ideation through to thumbnail design covering the pre-production phase. Takes a topic or channel direction as input. Produces topic plans with audience analysis, retention-optimized scripts with hook and payoff structure, and high-CTR thumbnail designs. Focuses on the planning and scripting stage and does not generate concept images, voiceover, video clips or final assembly."
+desc-cn: "适用于 YouTube 视频从选题策划到封面设计的前期制作阶段,覆盖内容创作的核心规划环节。输入选题方向或频道定位,输出包含受众分析的选题规划、以 hook-payoff 结构优化留存率的脚本、高点击率封面图设计。聚焦策划与脚本阶段,不负责概念图生成、配音录制、视频片段制作与最终合成。"
+cover: ""
+author-en: "MiniMax Hub"
+author-cn: "MiniMax Hub"
+source: official

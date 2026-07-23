@@ -1,0 +1,191 @@
+// ============================================================
+// lib_core — Canonical core library for GreyScript tools
+// User: Bratan
+// Drop this in: /home/Bratan/bin/lib_core.src
+// Include via:  import_code("/home/Bratan/bin/lib_core")
+// ============================================================
+
+// === OUTPUT HELPERS ===
+render = function(title, lines)
+    clear_screen
+    print("=" * 60)
+    print("  " + title.upper)
+    print("=" * 60)
+    if lines != null then
+        for line in lines
+            print("  " + line)
+        end for
+    end if
+    print("")
+end function
+
+hr = function()
+    print("-" * 60)
+end function
+
+banner = function()
+    print("")
+    print("  [B] Bratan GreyScript Arsenal")
+    print("")
+end function
+
+// === STATUS MESSAGES ===
+fail = function(msg)
+    print("")
+    print("[X] FEHLER: " + msg)
+    exit
+end function
+
+warn = function(msg)
+    print("[!] " + msg)
+end function
+
+ok = function(msg)
+    print("[+] " + msg)
+end function
+
+info = function(msg)
+    print("[i] " + msg)
+end function
+
+step = function(n, total, msg)
+    print("")
+    print("  Schritt " + n + "/" + total + " - " + msg)
+    hr
+end function
+
+// === PARAMETER HANDLING ===
+requireParam = function(index, name)
+    if params.len <= index then
+        print("")
+        print("[X] Fehlender Parameter: <" + name + ">")
+        print("    Erwartete Position: " + (index + 1))
+        exit
+    end if
+    return params[index]
+end function
+
+optionalParam = function(index, defaultValue)
+    if params.len <= index then
+        return defaultValue
+    end if
+    return params[index]
+end function
+
+// === VALIDATION ===
+validIP = function(ip)
+    if typeof(ip) != "string" then return false
+    if not is_valid_ip(ip) then return false
+    return true
+end function
+
+validPort = function(portStr)
+    p = portStr.val
+    if p == null then return false
+    if p < 1 or p > 65535 then return false
+    return true
+end function
+
+// === FILE HELPERS ===
+getFile = function(pc, path)
+    f = pc.File(path)
+    if not f then fail("Datei nicht gefunden: " + path)
+    return f
+end function
+
+getDir = function(pc, path)
+    d = pc.File(path)
+    if not d then fail("Verzeichnis nicht gefunden: " + path)
+    if not d.is_folder then fail("Kein Verzeichnis: " + path)
+    return d
+end function
+
+fileExists = function(pc, path)
+    f = pc.File(path)
+    if not f then return false
+    return true
+end function
+
+ensureDir = function(pc, path)
+    d = pc.File(path)
+    if not d then
+        pc.touch(path + "/.__init")
+        tmpFile = pc.File(path + "/.__init")
+        if tmpFile then tmpFile.delete
+    end if
+    return pc.File(path)
+end function
+
+// === CONTEXT ===
+getContext = function()
+    shell = get_shell
+    pc = shell.host_computer
+    result = {}
+    result["shell"] = shell
+    result["pc"] = pc
+    result["user"] = "Bratan"
+    result["home"] = "/home/Bratan"
+    result["bin"] = "/home/Bratan/bin"
+    result["config"] = "/home/Bratan/.config"
+    result["logs"] = "/home/Bratan/.logs"
+    return result
+end function
+
+// === HELP SYSTEM ===
+// lastParam() replaces params[^0] — negative indexing does not work in Grey Hack
+lastParam = function()
+    if params.len == 0 then return null
+    return params[params.len - 1]
+end function
+
+showHelp = function(toolName, description, usage, examples)
+    lp = lastParam
+    if params.len == 0 or lp == "--help" or lp == "-h" then
+        clear_screen
+        print("")
+        print("  " + toolName.upper)
+        print("  " + ("-" * toolName.len))
+        print("")
+        print("  " + description)
+        print("")
+        print("  Verwendung:")
+        print("    " + usage)
+        print("")
+        print("  Beispiele:")
+        if examples != null then
+            for ex in examples
+                print("    $ " + ex)
+            end for
+        end if
+        print("")
+        print("  Optionen:")
+        print("    --help, -h     Diese Hilfe anzeigen")
+        print("")
+        exit
+    end if
+end function
+
+// === CONFIRMATION ===
+confirm = function(prompt)
+    print("")
+    print(prompt + " (y/n): ")
+    answer = user_input("> ")
+    if answer == "y" or answer == "yes" or answer == "j" or answer == "ja" then
+        return true
+    end if
+    return false
+end function
+
+// === LOGGING ===
+// Uses char(10) for real newline — "\n" is literal in GreyScript strings.
+logToFile = function(pc, logPath, message)
+    logFile = pc.File(logPath)
+    if not logFile then
+        pc.touch(logPath)
+        logFile = pc.File(logPath)
+    end if
+    if logFile then
+        existing = logFile.get_content or ""
+        logFile.set_content(existing + message + char(10))
+    end if
+end function
