@@ -1,0 +1,15 @@
+{
+  "name": "agent-toolkit",
+  "description": "Basti's vetted Claude Code toolkit: curated skills, subagents, and MCP server declarations bundled together. One enable → every agent on the same state.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Toqsick"
+  },
+  "category": "productivity",
+  "skills": [
+    "./skills/second-brain",
+    "./skills/yuno-cleaner",
+    "./skills/mmx-cli",
+    "./skills/drucker-experte"
+  ]
+}

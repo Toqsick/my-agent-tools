@@ -1,0 +1,28 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Logs / caches / local state
+*.log
+.cache/
+tmp/
+
+# Never commit secrets
+.env
+.env.*
+*.token
+*_secret*
+credentials*.json

@@ -1,0 +1,16 @@
+{
+  "name": "my-agent-tools",
+  "description": "Basti's curated, version-controlled Claude Code toolkit — vetted skills, agents, and MCP servers bundled as one installable plugin so every agent and machine runs the same maintained state.",
+  "owner": {
+    "name": "Toqsick"
+  },
+  "plugins": [
+    {
+      "name": "agent-toolkit",
+      "source": "./plugins/agent-toolkit",
+      "description": "One bundled plugin shipping Basti's vetted skills (second-brain, yuno-cleaner, mmx-cli, drucker-experte), subagents (coder, perf-tuner, security-auditor), and MCP server declarations (github). Enable once to sync the whole toolkit.",
+      "category": "productivity",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit"
+    }
+  ]
+}
