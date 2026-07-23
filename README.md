@@ -19,11 +19,7 @@ This repo is a **Claude Code plugin marketplace** containing a single bundled pl
     └── agent-toolkit/
         ├── .claude-plugin/
         │   └── plugin.json        # plugin manifest (registers the skills)
-        ├── skills/                # vetted skills (SKILL.md bundles)
-        │   ├── second-brain/      # Obsidian vault as a domain knowledge base
-        │   ├── yuno-cleaner/      # read-only system cleanup scan
-        │   ├── mmx-cli/           # MiniMax media generation CLI
-        │   └── drucker-experte/   # Bambu Lab A1 mini 3D-printing expertise
+        ├── skills/                # vetted skills (SKILL.md bundles) — 20 total, see table below
         ├── agents/                # vetted subagents (auto-discovered)
         │   ├── coder.md
         │   ├── perf-tuner.md
@@ -32,12 +28,46 @@ This repo is a **Claude Code plugin marketplace** containing a single bundled pl
 ```
 
 ### Skills
+
+**Seed set:**
+
 | Skill | Purpose |
 |---|---|
 | `second-brain` | Use my Obsidian vault as a domain knowledge base (recall + Inbox-first capture). |
 | `yuno-cleaner` | Read-only system-cleanup scan (dry-run by default). |
 | `mmx-cli` | MiniMax media generation via the `mmx` CLI. |
 | `drucker-experte` | 3D printing on the Bambu Lab A1 mini. |
+
+**Yuno/Hermes AI stack:**
+
+| Skill | Purpose |
+|---|---|
+| `yuno-team-orchestrator` | Orchestrate Yuno's 7-agent team for multi-domain tasks. |
+| `yuno-team-routing` | Decide which Yuno team agent should handle a task / how to decompose it. |
+| `yuno-user-preferences` | Apply Basti's working-style preferences and decision defaults. |
+| `model-selector` | Pick the right model/lane for a job; model-handoff guide. |
+| `multi-agent-master-workflow` | Master workflow patterns for coordinating multiple agents. |
+| `queen-bee-schwarm-dispatch` | Orchestrate parallel subagent swarms, orthogonal scouts, concurrent audits. |
+| `notebooklm-bridge` | Bridge content into NotebookLM workflows. |
+| `hermes-mcp-integration` | Hermes V7 native MCP client setup (stdio/HTTP servers, tool discovery). |
+| `hermes-desktop-plugins` | Write Hermes desktop plugins, UI panes, custom commands. |
+| `messaging-gateway-setup` | Set up messaging gateways (Telegram/Discord/Slack bot integration). |
+
+**Computer-use / GreyHack:**
+
+| Skill | Purpose |
+|---|---|
+| `greyhack-computer-use-suite` | Drive GreyHack gameplay via the Computer-Use automation suite. |
+| `computer-use-game-reconnaissance` | Computer-use reconnaissance patterns for games. |
+| `desktop-window-reconnaissance` | Explore a desktop app or game window for reconnaissance. |
+
+**Productivity:**
+
+| Skill | Purpose |
+|---|---|
+| `daily-briefing` | Session-start status + open items + recent activity summary. |
+| `knowledge-digest` | Convert textbooks/PDFs into personalized multimodal learning materials. |
+| `tidy-folder` | Safe, read-only-first folder cleanup and organization. |
 
 ### Agents
 | Agent | Purpose |

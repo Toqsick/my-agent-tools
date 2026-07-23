@@ -1,7 +1,7 @@
 {
   "name": "agent-toolkit",
   "description": "Basti's vetted Claude Code toolkit: curated skills, subagents, and MCP server declarations bundled together. One enable → every agent on the same state.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Toqsick"
   },
@@ -10,6 +10,22 @@
     "./skills/second-brain",
     "./skills/yuno-cleaner",
     "./skills/mmx-cli",
-    "./skills/drucker-experte"
+    "./skills/drucker-experte",
+    "./skills/yuno-team-orchestrator",
+    "./skills/yuno-team-routing",
+    "./skills/yuno-user-preferences",
+    "./skills/model-selector",
+    "./skills/multi-agent-master-workflow",
+    "./skills/queen-bee-schwarm-dispatch",
+    "./skills/notebooklm-bridge",
+    "./skills/hermes-mcp-integration",
+    "./skills/hermes-desktop-plugins",
+    "./skills/messaging-gateway-setup",
+    "./skills/greyhack-computer-use-suite",
+    "./skills/computer-use-game-reconnaissance",
+    "./skills/desktop-window-reconnaissance",
+    "./skills/daily-briefing",
+    "./skills/knowledge-digest",
+    "./skills/tidy-folder"
   ]
 }

@@ -1,0 +1,72 @@
+skill:
+  name: multi_agent_master_workflow
+  version: "1.0"
+  description: >
+    Generisches Subagent/Master-Controller-Pattern für parallele Analyse-,
+    Audit- und Umsetzungsaufgaben. Mappt auf Hermes Queen/Worker/Gate.
+  trigger:
+    - "prüfe systematisch"
+    - "analysiere und priorisiere"
+    - "erstelle einen umsetzungsplan"
+  compatible_with:
+    - hermes_pipeline_node
+    - perplexity_pro_agent_mode
+    - n8n_http_node
+
+  roles:
+    queen:
+      alias: master_controller
+      responsibilities:
+        - merge_results
+        - deduplicate
+        - resolve_conflicts
+        - unify_priorities
+        - decompose_into_tasks
+        - define_execution_order
+      output:
+        [kurzfazit, zusammenfassung, priorisierte_massnahmen, reihenfolge,
+         qa_checkliste, offene_risiken]
+
+    worker:
+      alias: subagent
+      count: "3-6"
+      parallel: true
+      template:
+        ziel: "<string>"
+        pruefpunkte: ["<string>"]
+        output:
+          [kurzbefund, luecken_oder_probleme, verbesserungsvorschlaege,
+           prioritaet, annahmen_markiert]
+
+    gate:
+      alias: qa_abnahme
+      optional: true
+      required_for: [security, production_code, public_docs]
+      checks: [vollstaendigkeit, konsistenz, nachvollziehbarkeit, risiken_benannt]
+
+  phases:
+    1_inventar: "Elemente erfassen, Kategorien zuordnen"
+    2_analyse: "behalten | ueberarbeiten | neu | teilen | zusammenfuehren | entfernen"
+    3_priorisierung: "kritisch | hoch | mittel | niedrig"
+    4_umsetzung: "Titel, Kategorie, Begruendung, Dringlichkeit, Aufwand, Abhaengigkeiten"
+    5_qa: "Gate-Pruefung vor Freigabe"
+
+  constraints:
+    - keine_unbelegten_annahmen
+    - bei_unsicherheit_markieren_statt_raten
+    - kleine_reviewbare_schritte
+    - "Gib nur das Ergebnis aus"
+
+  output_format:
+    default: markdown
+    agent_mode:
+      flag: "[AGENT-MODE: AKTIV]"
+      type: json
+      schema:
+        kurzfazit: string
+        inventar: array
+        gap_analyse: array
+        massnahmen: array
+        workflow: array
+        qa_checkliste: array
+        offene_punkte: array

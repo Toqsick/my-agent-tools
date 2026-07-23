@@ -1,0 +1,19 @@
+name: yuno-team-routing
+display-name: "Yuno Team Routing"
+version: "1.0.0"
+author: "Bratan (Yuno via Owl Alpha)"
+license: MIT
+source: "Basti Downloads/team-roster.md (manual)"
+description: |
+  Zentrale Routing-Spec für Yuno's 7-Agent Team. Single Source of Truth für welche
+  Skill zu welchem Agent gehört.
+trigger-words:
+  - routing
+  - agent team
+  - which agent
+  - wer ist zuständig
+provenance:
+  original-path: "~/Downloads/team-roster.md"
+  derived-skill: "yuno-team-routing/SKILL.md"
+  date: 2026-07-07
+  author: "Bratan (Yuno via Owl Alpha)"
