@@ -9,22 +9,50 @@ per-machine, ad-hoc configurations.
 This repo is a **Claude Code plugin marketplace** containing a single bundled plugin,
 **`agent-toolkit`**. Enable it once on a machine and the whole toolkit syncs.
 
+## Two tiers + routing (start here)
+
+The toolkit is organized so **any agent can find the right skill by reading one file** over a GitHub
+MCP server — even without the plugin installed. Point a GitHub MCP at `Toqsick/my-agent-tools` and:
+
+- **[`INDEX.json`](INDEX.json)** — the machine-readable master catalog of everything (skills, agents,
+  workflows) with normalized `triggers`/`tags`/`category`/`path`. Fetch it, match a task, fetch the
+  chosen skill by `path`. Generated — never hand-edited.
+- **[`ROUTING.md`](ROUTING.md)** — the deterministic match algorithm (word-boundary triggers, scoring,
+  gate priority, multi-domain decomposition) an agent follows to self-route.
+- **[`NAVIGATION.md`](NAVIGATION.md)** — human/LLM category tables with counts.
+- **[`workflows/`](workflows/)** — named multi-skill patterns (phases · owner-agent · exit criteria).
+
+Skills live in **two tiers**:
+
+| Tier | Location | Session-loaded? | How to use |
+|---|---|---|---|
+| **Installed** | `plugins/agent-toolkit/skills/` | Yes | invoke as `agent-toolkit:<name>` |
+| **Library** | `library/<category>/…` | No — browsable reference | fetch by `path` via the MCP when the index points there |
+
+The split is deliberate: ~1,400 skills would bloat every session's skill-matcher if all were loaded.
+Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulled on demand.
+
 ## What's inside
 
 ```
 .
+├── INDEX.json                    # machine-readable master catalog (generated)
+├── NAVIGATION.md                 # human/LLM category nav (generated)
+├── ROUTING.md                    # how an agent self-routes to a skill
 ├── .claude-plugin/
 │   └── marketplace.json          # marketplace manifest → lists the agent-toolkit plugin
-└── plugins/
-    └── agent-toolkit/
-        ├── .claude-plugin/
-        │   └── plugin.json        # plugin manifest (registers the skills)
-        ├── skills/                # vetted skills (SKILL.md bundles) — 106 total, see table below
-        ├── agents/                # vetted subagents (auto-discovered)
-        │   ├── coder.md
-        │   ├── perf-tuner.md
-        │   └── security-auditor.md
-        └── .mcp.json              # MCP server declarations (github)
+├── plugins/
+│   └── agent-toolkit/
+│       ├── .claude-plugin/
+│       │   └── plugin.json        # plugin manifest (registers the installed skills)
+│       ├── skills/                # 128 installed skills (SKILL.md bundles) — session-loaded
+│       ├── agents/                # 17 subagents (coder, perf-tuner, security-auditor + 14 zc-*)
+│       └── .mcp.json              # MCP server declarations (github)
+├── library/                      # 1,244 browsable Hermes-arsenal skills (NOT session-loaded)
+│   └── <category>/<skill>/SKILL.md
+├── workflows/                    # machine-readable multi-skill workflow patterns
+└── scripts/
+    └── build_index.py            # regenerates INDEX.json + NAVIGATION.md
 ```
 
 ### Skills
@@ -143,6 +171,45 @@ MITRE ATT&CK / NIST CSF mappings where applicable.
 [`mukul975/Anthropic-Cybersecurity-Skills`](https://github.com/mukul975/Anthropic-Cybersecurity-Skills)
 (Apache-2.0). Not originally authored by Basti — imported and curated for relevance to this toolkit.
 
+**ZCode team (1 skill + 14 agents):**
+
+| Skill | Purpose |
+|---|---|
+| `zcode-subagent-team` | Hermes-Kanban multi-lane agent swarm (Queen → General/Vision/Coder/Debug/Verify/Gate). Pairs with the `zc-*` agents. |
+
+**MiniMax (5):**
+
+| Skill | Purpose |
+|---|---|
+| `superpower-10x` | Systematic 10x agentic-dev pipeline (brainstorm→plan→TDD→debug→verify→finish) + automation scripts. |
+| `minimax-ai-agent-builder` | Guide to building AI agents on MiniMax. |
+| `minimax-crypto-trading` | BTC/ETH/SOL trading-decision agent. |
+| `minimax-docx` | DOCX generation via OpenXML. |
+| `minimax-pdf` | Design-token PDF create/fill/reformat. |
+
+**Curated from the Downloads vault (15):** `pptx-generator`, `n8n`, `clickhouse-best-practices`,
+`nano-banana-pro`, `prompt-engineer`, `deep-research-agent`, `frontend-design`,
+`mckinsey-presentation-generator`, `research-paper-generator`, `seo-geo-optimization-expert`,
+`web-scraper`, `excel-xlsx`, `job-hunter`, `sales-power-map`, `saas-niche-finder`. Plus `hermes-themes`
+(Hermes color-theme authoring). All fully self-contained, no secrets/hardcoded paths.
+
+### Library (browsable, not session-loaded)
+
+`library/` holds the full **Hermes skill arsenal — 1,244 skills** across 40+ categories (top: 815
+cybersecurity, 81 software-development, 44 orchestration, 44 devops, 43 creative, 29 productivity, …),
+a point-in-time snapshot of `~/.hermes/skills/` (`.archive/` excluded). These are **not** registered in
+`plugin.json` and never load into a session — agents discover them via [`INDEX.json`](INDEX.json) and
+fetch a skill's `SKILL.md` by `path` through the GitHub MCP. Provenance is heterogeneous (each carries
+its own frontmatter `license`/`author`); the set includes both defensive and offensive security
+material — treat it as a browsable reference arsenal, not a vetted install set.
+
+### Workflows
+
+[`workflows/`](workflows/) defines named, machine-readable multi-skill patterns (frontmatter `phases`
+with owner-agent + skills + exit criteria per phase): `superpower-10x-pipeline`, `zcode-6lane-pipeline`,
+`security-audit`, `repo-cleanup`, `research-to-report`, `multi-agent-master`. An agent consults
+`INDEX.json → workflows[]` for multi-step work and fetches the pattern by `path`.
+
 ### Agents
 | Agent | Purpose |
 |---|---|
@@ -178,7 +245,11 @@ servers) and `/agents` (shows `coder`, `perf-tuner`, `security-auditor`).
    `plugins/agent-toolkit/agents/` — it's auto-discovered, no manifest edit needed.
 3. **MCP server:** add an entry to `plugins/agent-toolkit/.mcp.json`. Keep every credential as an
    `${ENV_VAR}` reference, never a literal.
-4. Bump `version` in `plugin.json`, commit, push. Re-sync on other machines with
+4. **Library:** to add browsable (non-installed) reference skills, drop `SKILL.md` bundles under
+   `library/<category>/<name>/` — no `plugin.json` edit (they are discovered via the index, not loaded).
+5. **Regenerate the index (required):** run `python3 scripts/build_index.py` to rebuild
+   [`INDEX.json`](INDEX.json) + [`NAVIGATION.md`](NAVIGATION.md). Never hand-edit those two.
+6. Bump `version` in `plugin.json`, commit, push. Re-sync on other machines with
    `claude plugin marketplace update my-agent-tools`.
 
 **Rule:** only vetted, quality tools land here — this is the canonical set, not a dumping ground.
