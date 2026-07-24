@@ -1,0 +1,31 @@
+skill_name,mcp_server,note,configured
+mmx-cli,mmx,MMX CLI; verify server availability,False
+notebooklm-bridge,notebooklm,NotebookLM MCP; verify server availability,False
+findmy,findmy,Apple FindMy; verify server availability,False
+imessage,imessage,macOS iMessage bridge; verify server availability,False
+blender-mcp,blender,Blender MCP; verify server availability,False
+touchdesigner-mcp,touchdesigner,TouchDesigner MCP; verify server availability,False
+github-grayhack-workflow,github,GitHub MCP / gh CLI fallback,True
+agentmail,agentmail,AgentMail API; verify server availability,False
+himalaya,himalaya,himalaya CLI; verify server availability,False
+firecrawl-web,firecrawl,Firecrawl MCP; verify server availability,False
+github-branch-inventory,github,GitHub MCP / gh CLI fallback,True
+github-auth,github,GitHub MCP / gh CLI fallback,True
+github-code-review,github,GitHub MCP / gh CLI fallback,True
+github-issues,github,GitHub MCP / gh CLI fallback,True
+github-portfolio-launch,github,GitHub MCP / gh CLI fallback,True
+github-pr-merge-readiness,github,GitHub MCP / gh CLI fallback,True
+github-pr-workflow,github,GitHub MCP / gh CLI fallback,True
+github-repo-management,github,GitHub MCP / gh CLI fallback,True
+github-workflow,github,GitHub MCP / gh CLI fallback,True
+spotify,spotify,Spotify API; verify server availability,False
+notebooklm-bridge,notebooklm,NotebookLM MCP; verify server availability,False
+github-sweep-orchestration,github,GitHub MCP / gh CLI fallback,True
+airtable,airtable,Airtable API; verify server availability,False
+google-workspace,google-workspace,Google Workspace API; verify server availability,False
+linear,linear,Linear API; verify server availability,False
+maps,maps,Google Maps API; verify server availability,False
+notion,notion,Notion API; verify server availability,False
+arxiv,web-search-prime,ArXiv via web search; verify server availability,False
+1password,1password,1Password MCP; verify server availability,False
+openhue,openhue,Philips Hue API; verify server availability,False
