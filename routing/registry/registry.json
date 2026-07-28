@@ -286,7 +286,7 @@
       "source_root": "repo",
       "domain": "content/media",
       "is_meta": false,
-      "description": "Start each session with a system status + open items + recent activity summary. Use at session start, after a long break, or when context is unclear. Triggers on \"morning\", \"start of day\", \"what's open\", \"session start\".",
+      "description": "Use when user asks for starting a Hermes work session, reviewing the last session and open work, checking cron and system status, validating today daily note, or requesting a morning or daily briefing. NOT for end-of-session handoff or a standalone reminder about an empty daily note. Builds an evidence-backed session briefing from recent context, schedules, delivery health, optional news, and vault hygiene checks.",
       "mcp_server": null,
       "mcp_note": null,
       "name_dir_mismatch": null

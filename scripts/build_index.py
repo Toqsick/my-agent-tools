@@ -43,7 +43,7 @@ AGENTS_DIR = REPO / "plugins" / "agent-toolkit" / "agents"
 WORKFLOWS_DIR = REPO / "workflows"
 NAMESPACE = "agent-toolkit"
 REPO_SLUG = "Toqsick/my-agent-tools"
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "2.0"  # keep in sync with scripts/build_routing.py
 
 # ---- installed-skill provenance map (best-effort) --------------------------
 MINIMAX = {

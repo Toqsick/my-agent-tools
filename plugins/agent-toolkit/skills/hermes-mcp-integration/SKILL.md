@@ -164,7 +164,7 @@ const adapter = new MCPAdapter({
   command: 'docker',
   args: ['run', '-i', '--rm', '-e', 'GITHUB_PERSONAL_ACCESS_TOKEN',
          'toqsick/github-mcp-server:develop'],
-  env: { GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_TOKEN },
+  env: { GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN },
 });
 
 await adapter.connect();           // JSON-RPC initialize handshake

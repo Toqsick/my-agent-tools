@@ -17,8 +17,9 @@ declaration in [`plugins/agent-toolkit/.mcp.json`](plugins/agent-toolkit/.mcp.js
 2. **Match** the task against each skill record using the algorithm below (`triggers[]`, `tags[]`,
    `category`, and `name`/`description` words).
 3. **Rank** by match score and pick the top skill (or a small set for multi-domain tasks).
-4. **Fetch the skill body** at its `path` (e.g. `library/cybersecurity/…/SKILL.md`) in one more MCP
-   call, then follow it. If the skill is `tier: "installed"`, it is also directly invocable in-session
+4. **Fetch the skill body** at its `path` (e.g.
+   `library/cyber-analyzing-active-directory-acl-abuse/SKILL.md`) in one more MCP call, then follow it.
+   If the skill is `tier: "installed"`, it is also directly invocable in-session
    as its `namespace` (e.g. `agent-toolkit:superpowers-writing-plans`) — no fetch needed.
 5. **Multi-step work:** consult `workflows[]` first; a workflow names the ordered phases, the owner
    agent per phase, the skills each phase uses, and the exit criteria. Fetch the workflow's `path` for

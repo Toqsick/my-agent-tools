@@ -41,7 +41,21 @@ at routing time**. This one does.
 ## Runtime data sources (these replace the template variables)
 
 The role spec's `{{...}}` placeholders resolve to files **in this repo**, not
-magic. At the start of a routed task, load:
+magic. Resolve the repository root from this skill directory before reading
+those files:
+
+```bash
+repo_root="$(cd "${SKILL_DIR}/../../../.." && pwd)"
+test -f "$repo_root/INDEX.json"
+test -f "$repo_root/routing/registry/registry.json"
+```
+
+`SKILL_DIR` means the absolute skill directory injected by the host when the
+skill is loaded. If the host does not inject it, locate the nearest parent that
+contains both `INDEX.json` and `routing/registry/registry.json`; do not assume a
+fixed workstation path.
+
+At the start of a routed task, load:
 
 | Placeholder | Source | What it provides |
 |---|---|---|
@@ -50,8 +64,8 @@ magic. At the start of a routed task, load:
 | `{{workspaceRoot}}` | the session's CWD | never commit or assume a fixed workstation path |
 | `{{currentDate}}` | system date | for recency-sensitive routing |
 
-Static coupling table (the ~31 skills where matching the name IS the server
-resolution) lives at `registry/skill-to-mcp.csv`.
+Static coupling table (the 30 skills where matching the name IS the server
+resolution) lives at `routing/registry/skill-to-mcp.csv`.
 
 ## The 5-step decision flow
 

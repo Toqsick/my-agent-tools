@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.0",
-  "generated_at": "2026-07-23T22:29:16+02:00",
+  "schemaVersion": "2.0",
+  "generated_at": "2026-07-24T14:16:22+02:00",
   "repo": "Toqsick/my-agent-tools",
   "how_to_use": "See ROUTING.md. Fetch this file, match a task against each skill's triggers/tags/category, rank, then fetch the chosen skill's `path`. Installed skills also load in-session as their `namespace`. Multi-step work: see `workflows`.",
   "counts": {
@@ -5448,15 +5448,23 @@
     {
       "id": "daily-briefing",
       "name": "daily-briefing",
-      "description": "Start each session with a system status + open items + recent activity summary. Use at session start, after a long break, or when context is unclear. Triggers on \"morning\", \"start of day\", \"what's open\", \"session start\".",
+      "description": "Use when user asks for starting a Hermes work session, reviewing the last session and open work, checking cron and system status, validating today daily note, or requesting a morning or daily briefing. NOT for end-of-session handoff or a standalone reminder about an empty daily note. Builds an evidence-backed session briefing from recent context, schedules, delivery health, optional news, and vault hygiene checks.",
       "tier": "installed",
       "namespace": "agent-toolkit:daily-briefing",
       "path": "plugins/agent-toolkit/skills/daily-briefing/SKILL.md",
       "category": "standalone",
       "tags": [],
-      "triggers": [],
-      "routing_hint": "Start each session with a system status + open items + recent activity summary.",
-      "source": "original"
+      "triggers": [
+        "session",
+        "daily",
+        "work",
+        "note",
+        "briefing"
+      ],
+      "routing_hint": "Use when user asks for starting a Hermes work session, reviewing the last session and open work, checking cron and system status, validating today daily note, or requesting a morni",
+      "source": "original",
+      "license": "MIT",
+      "version": "1.4.0"
     },
     {
       "id": "debugging-patterns",
