@@ -1,0 +1,88 @@
+name: Skill Lint
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'plugins/agent-toolkit/skills/**'
+      - 'library/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'plugins/agent-toolkit/skills/**'
+      - 'library/**'
+  workflow_dispatch:
+
+jobs:
+  lint-skills:
+    name: Validate SKILL.md frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint all SKILL.md files
+        run: |
+          python3 - <<'EOF'
+          import pathlib, re, sys
+
+          root = pathlib.Path('.')
+          REQUIRED_FIELDS = ['name', 'description', 'triggers']
+          errors = []
+          checked = 0
+
+          for skill_file in sorted(root.rglob('SKILL.md')):
+              checked += 1
+              content = skill_file.read_text(errors='replace')
+
+              # Extract YAML frontmatter between --- delimiters
+              fm_match = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+              if not fm_match:
+                  errors.append(f'  ❌ {skill_file}: missing frontmatter (no --- block)')
+                  continue
+
+              fm = fm_match.group(1)
+              missing = [f for f in REQUIRED_FIELDS if not re.search(rf'^{f}\s*:', fm, re.MULTILINE)]
+              if missing:
+                  errors.append(f'  ❌ {skill_file}: missing fields: {missing}')
+
+              # Warn if description is suspiciously short
+              desc_match = re.search(r'^description\s*:\s*(.+)', fm, re.MULTILINE)
+              if desc_match and len(desc_match.group(1).strip()) < 10:
+                  errors.append(f'  ⚠️  {skill_file}: description too short (<10 chars)')
+
+          print(f'Checked {checked} SKILL.md files')
+          if errors:
+              print(f'Found {len(errors)} issue(s):')
+              for e in errors: print(e)
+              sys.exit(1)
+          else:
+              print(f'  ✅ All {checked} skills pass frontmatter validation')
+          EOF
+
+      - name: Check for duplicate skill names
+        run: |
+          python3 - <<'EOF'
+          import pathlib, re, collections
+
+          root = pathlib.Path('.')
+          names = []
+          for skill_file in root.rglob('SKILL.md'):
+              content = skill_file.read_text(errors='replace')
+              m = re.search(r'^name\s*:\s*(.+)', content, re.MULTILINE)
+              if m:
+                  names.append((m.group(1).strip(), skill_file))
+
+          counts = collections.Counter(n for n, _ in names)
+          dupes = {n: [str(p) for nm, p in names if nm == n]
+                   for n, c in counts.items() if c > 1}
+
+          if dupes:
+              print(f'⚠️  Duplicate skill names found:')
+              for name, paths in dupes.items():
+                  print(f'  "{name}" in:')
+                  for p in paths: print(f'    {p}')
+              # Warning only — not a hard failure
+          else:
+              print(f'  ✅ No duplicate skill names')
+          EOF
