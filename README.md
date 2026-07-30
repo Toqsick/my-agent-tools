@@ -39,6 +39,7 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 ├── INDEX.json                    # machine-readable master catalog (generated)
 ├── NAVIGATION.md                 # human/LLM category nav (generated)
 ├── ROUTING.md                    # how an agent self-routes to a skill
+├── .env.example                  # all MCP env-var templates + setup guide
 ├── .claude-plugin/
 │   └── marketplace.json          # marketplace manifest → lists the agent-toolkit plugin
 ├── plugins/
@@ -47,7 +48,7 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 │       │   └── plugin.json        # plugin manifest (registers the installed skills)
 │       ├── skills/                # 128 installed skills (SKILL.md bundles) — session-loaded
 │       ├── agents/                # 17 subagents (coder, perf-tuner, security-auditor + 14 zc-*)
-│       └── .mcp.json              # MCP server declarations (github)
+│       └── .mcp.json              # MCP server declarations (8 servers)
 ├── library/                      # 1,244 browsable Hermes-arsenal skills (NOT session-loaded)
 │   └── <category>/<skill>/SKILL.md
 ├── routing/                       # zcode-skills MCP-aware routing metadata
@@ -98,7 +99,7 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 
 | Skill | Purpose |
 |---|---|
-| `daily-briefing` | Session-start status + open items + recent activity summary. |
+| `daily-briefing` | Session-start status + open items + recent activity summary. Uses Gmail + Calendar MCP when configured. |
 | `knowledge-digest` | Convert textbooks/PDFs into personalized multimodal learning materials. |
 | `tidy-folder` | Safe, read-only-first folder cleanup and organization. |
 
@@ -224,17 +225,64 @@ with owner-agent + skills + exit criteria per phase): `superpower-10x-pipeline`,
 | `security-auditor` | Read-only security-posture audit against the documented baseline. |
 
 ### MCP servers
-| Server | Notes |
-|---|---|
-| `github` | `toqsick/github-mcp-server:develop` via Docker. Requires the `GITHUB_PERSONAL_ACCESS_TOKEN` environment variable — the token is **never** stored in this repo, only referenced as `${GITHUB_PERSONAL_ACCESS_TOKEN}`. |
 
-The repository is a Claude Code plugin marketplace; it is **not** the implementation of the MCP server.
-The plugin declaration starts the external Docker image. The ZCode CLI has a separate MCP configuration and
-must be given an equivalent `stdio` entry in `~/.zcode/cli/config.json` if you want to use `github` from ZCode.
-The sanitized, copyable template is [`routing/config/mcp-template.json`](routing/config/mcp-template.json).
-The routing skill uses [`routing/registry/`](routing/registry/) to resolve a skill first, then the configured
-server, then only the few tools needed for the request. Static mappings for unavailable servers are marked
-as fallback hints; they are not claims that those servers are installed.
+All 8 servers are declared in [`plugins/agent-toolkit/.mcp.json`](plugins/agent-toolkit/.mcp.json).
+Credentials are **always** referenced as `${ENV_VAR}` — never stored here. Copy [`.env.example`](.env.example) to `.env` and fill in your values.
+
+| Server | Transport | Purpose | Required env vars |
+|---|---|---|---|
+| `github` | Docker (`toqsick/github-mcp-server:develop`) | Issues, PRs, commits, file ops, code search | `GITHUB_PERSONAL_ACCESS_TOKEN` |
+| `gmail` | npx (`@gongrzhe/server-gmail-autoauth-mcp`) | Read, send, search e-mail | `GMAIL_OAUTH_CLIENT_ID` · `GMAIL_OAUTH_CLIENT_SECRET` · `GMAIL_OAUTH_REFRESH_TOKEN` |
+| `google-calendar` | npx (`@cocal/google-calendar-mcp`) | Read & create calendar events | `GOOGLE_CLIENT_ID` · `GOOGLE_CLIENT_SECRET` · `GOOGLE_REFRESH_TOKEN` |
+| `filesystem` | npx (`@modelcontextprotocol/server-filesystem`) | Read/write local workspace files | `WORKSPACE_PATH` (default `/workspace`) |
+| `brave-search` | npx (`@modelcontextprotocol/server-brave-search`) | Live web search for agents | `BRAVE_API_KEY` |
+| `memory` | npx (`@modelcontextprotocol/server-memory`) | Persistent knowledge graph across sessions | `MEMORY_FILE_PATH` (default `~/.agent-memory/memory.json`) |
+| `puppeteer` | npx (`@modelcontextprotocol/server-puppeteer`) | Headless browser / web automation | — |
+| `sequential-thinking` | npx (`@modelcontextprotocol/server-sequential-thinking`) | Structured multi-step reasoning | — |
+
+#### Gmail + Google Calendar — Quick OAuth2 Setup
+
+> Both share the same Google Cloud project and OAuth2 credentials.
+
+```bash
+# 1. One-shot auth flow — opens browser, writes tokens automatically
+npx @gongrzhe/server-gmail-autoauth-mcp auth
+
+# 2. Copy the printed values into your .env
+GMAIL_OAUTH_CLIENT_ID=...
+GMAIL_OAUTH_CLIENT_SECRET=...
+GMAIL_OAUTH_REFRESH_TOKEN=...
+GOOGLE_CLIENT_ID=...        # same client_id
+GOOGLE_CLIENT_SECRET=...    # same client_secret
+GOOGLE_REFRESH_TOKEN=...    # same refresh_token
+```
+
+If you prefer manual setup:
+1. [Google Cloud Console](https://console.cloud.google.com) → new project
+2. Enable **Gmail API** + **Google Calendar API**
+3. Create OAuth2 credentials → type **Desktop App** → download JSON
+4. Run the auth command above or use `oauth2l` to fetch a refresh token
+
+#### Brave Search — Quick Setup
+
+```bash
+# Free tier: 2,000 queries/month
+# Sign up at https://api.search.brave.com → copy your API key into .env
+BRAVE_API_KEY=BSA_...
+```
+
+#### Skills that benefit from the new MCP servers
+
+| Skill | MCP servers used |
+|---|---|
+| `daily-briefing` | `gmail` + `google-calendar` + `memory` |
+| `deep-research-agent` | `brave-search` + `puppeteer` + `memory` |
+| `second-brain` | `filesystem` + `memory` |
+| `hermes-mcp-integration` | all servers (routing + discovery) |
+| `skill-mcp-router` | all servers (intent → tool resolution) |
+| `yuno-team-orchestrator` | `github` + `gmail` + `google-calendar` |
+| `web-scraper` / `stealth-web-scraping` | `puppeteer` + `brave-search` |
+| `queen-bee-schwarm-dispatch` | `github` + `filesystem` + `sequential-thinking` |
 
 ## Install (on any machine)
 
@@ -247,8 +295,9 @@ claude plugin install agent-toolkit@my-agent-tools
 Verify in an interactive session with `/plugin` (shows `agent-toolkit` and its skills/agents/MCP
 servers) and `/agents` (shows `coder`, `perf-tuner`, `security-auditor`).
 
-> The `github` MCP server needs `GITHUB_PERSONAL_ACCESS_TOKEN` exported in the environment where
-> Claude Code runs. Set it via your shell profile or a secret manager — do **not** commit it.
+> **Credentials:** export all required env vars before starting Claude Code (see [`.env.example`](.env.example)).
+> The `github` MCP server needs `GITHUB_PERSONAL_ACCESS_TOKEN` at minimum. Gmail and Calendar are
+> optional but unlock `daily-briefing` and calendar-aware scheduling across the whole toolkit.
 
 ## Maintenance — adding a vetted tool
 
@@ -258,7 +307,8 @@ servers) and `/agents` (shows `coder`, `perf-tuner`, `security-auditor`).
 2. **Agent:** drop the `<name>.md` (with `name`/`description`/`model` frontmatter) into
    `plugins/agent-toolkit/agents/` — it's auto-discovered, no manifest edit needed.
 3. **MCP server:** add an entry to `plugins/agent-toolkit/.mcp.json`. Keep every credential as an
-   `${ENV_VAR}` reference, never a literal.
+   `${ENV_VAR}` reference, never a literal. Document the new server in the table above and add its
+   env vars to [`.env.example`](.env.example).
 4. **Library:** to add browsable (non-installed) reference skills, drop `SKILL.md` bundles under
    `library/<category>/<name>/` — no `plugin.json` edit (they are discovered via the index, not loaded).
 5. **Regenerate the catalogs (required):** run `python3 scripts/build_index.py` to rebuild
