@@ -1,0 +1,23 @@
+{
+  "name": "my-agent-tools",
+  "version": "1.0.0",
+  "description": "Basti's Claude Code agent toolkit — MCP server dependency tracking",
+  "private": true,
+  "dependencies": {
+    "@gongrzhe/server-gmail-autoauth-mcp": "latest",
+    "@cocal/google-calendar-mcp": "latest",
+    "@modelcontextprotocol/server-filesystem": "latest",
+    "@modelcontextprotocol/server-brave-search": "latest",
+    "@modelcontextprotocol/server-memory": "latest",
+    "@modelcontextprotocol/server-puppeteer": "latest",
+    "@modelcontextprotocol/server-sequential-thinking": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "check-mcp": "bash scripts/check-mcp.sh"
+  },
+  "keywords": ["mcp", "claude", "agent-toolkit", "hermes"],
+  "author": "Toqsick"
+}
