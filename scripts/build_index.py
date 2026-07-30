@@ -17,6 +17,7 @@ two consecutive runs on the same tree produce byte-identical output.
 Outputs (repo root):
   INDEX.json     — master catalog {schemaVersion, counts, categories, skills[], agents[], workflows[]}
   NAVIGATION.md  — category tables with counts (installed + library) + agents + workflows
+  routing/registry/* — repository-relative MCP-aware routing artifacts
 
 No third-party deps required beyond PyYAML (falls back to a minimal parser).
 """
@@ -42,7 +43,7 @@ AGENTS_DIR = REPO / "plugins" / "agent-toolkit" / "agents"
 WORKFLOWS_DIR = REPO / "workflows"
 NAMESPACE = "agent-toolkit"
 REPO_SLUG = "Toqsick/my-agent-tools"
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "2.0"  # keep in sync with scripts/build_routing.py
 
 # ---- installed-skill provenance map (best-effort) --------------------------
 MINIMAX = {
@@ -341,6 +342,8 @@ def main() -> int:
         encoding="utf-8",
     )
     write_navigation(index)
+    from build_routing import main as build_routing
+    build_routing()
     print(f"INDEX.json: {len(installed)} installed + {len(library)} library "
           f"= {len(skills)} skills, {len(agents)} agents, {len(workflows)} workflows, "
           f"{len(categories)} categories")

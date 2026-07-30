@@ -1,0 +1,20 @@
+{
+  "_comment": "Documentation template for the GitHub MCP used by agent-toolkit. The token is inherited from the host environment and is never stored here.",
+  "_schema": "ZCode stdio config uses a string command; plugin .mcp.json uses mcpServers.",
+  "mcpServers": {
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "toqsick/github-mcp-server:develop"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

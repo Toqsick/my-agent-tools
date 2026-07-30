@@ -55,7 +55,7 @@ from reportlab.platypus import (
     HRFlowable, PageBreak, Flowable, KeepTogether,
     Preformatted, Image as RLImage,
 )
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.colors import HexColor
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
@@ -136,6 +136,11 @@ class BibliographyItem(Flowable):
 class BeautifulDoc(BaseDocTemplate):
     def __init__(self, path: str, tokens: dict, **kw):
         self._t = tokens
+        # Token kann landscape + page_format überschreiben
+        if tokens.get("page_format") == "landscape":
+            kw["pagesize"] = landscape(A4)
+        else:
+            kw["pagesize"] = A4
         super().__init__(path, **kw)
         fr = Frame(
             self.leftMargin, self.bottomMargin,
@@ -153,6 +158,11 @@ class BeautifulDoc(BaseDocTemplate):
         top = ph - doc.topMargin
 
         canv.saveState()
+
+        # Wenn title leer ist: Header/Footer komplett überspringen
+        if not t.get("title"):
+            canv.restoreState()
+            return
 
         # Header accent rule
         canv.setStrokeColor(HexColor(t["accent"]))
@@ -991,9 +1001,15 @@ def build(tokens: dict, content: list, out_path: str) -> dict:
     register_fonts(tokens)
     styles = make_styles(tokens)
 
+    # pagesize: A4 portrait oder landscape wenn Token gesetzt
+    if tokens.get("page_format") == "landscape":
+        pagesize = landscape(A4)
+    else:
+        pagesize = A4
+
     doc = BeautifulDoc(
         out_path, tokens,
-        pagesize=A4,
+        pagesize=pagesize,
         leftMargin=tokens["margin_left"],
         rightMargin=tokens["margin_right"],
         topMargin=tokens["margin_top"],

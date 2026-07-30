@@ -17,12 +17,19 @@ declaration in [`plugins/agent-toolkit/.mcp.json`](plugins/agent-toolkit/.mcp.js
 2. **Match** the task against each skill record using the algorithm below (`triggers[]`, `tags[]`,
    `category`, and `name`/`description` words).
 3. **Rank** by match score and pick the top skill (or a small set for multi-domain tasks).
-4. **Fetch the skill body** at its `path` (e.g. `library/cybersecurity/…/SKILL.md`) in one more MCP
-   call, then follow it. If the skill is `tier: "installed"`, it is also directly invocable in-session
+4. **Fetch the skill body** at its `path` (e.g.
+   `library/cyber-analyzing-active-directory-acl-abuse/SKILL.md`) in one more MCP call, then follow it.
+   If the skill is `tier: "installed"`, it is also directly invocable in-session
    as its `namespace` (e.g. `agent-toolkit:superpowers-writing-plans`) — no fetch needed.
 5. **Multi-step work:** consult `workflows[]` first; a workflow names the ordered phases, the owner
    agent per phase, the skills each phase uses, and the exit criteria. Fetch the workflow's `path` for
    the full pattern.
+6. **Resolve the MCP server:** use the installed `skill-mcp-router` skill and the generated
+   [`routing/registry/registry.json`](routing/registry/registry.json) plus
+   [`routing/registry/skill-to-mcp.csv`](routing/registry/skill-to-mcp.csv). Prefer a static
+   skill→server mapping, verify that the server is actually configured, then discover only 3–5 tools.
+   If it is marked unconfigured, use a native CLI or report the missing integration rather than
+   pretending that an MCP server exists.
 
 ## Two tiers
 
@@ -71,7 +78,17 @@ ranked = sorted(index["skills"], key=lambda s: (
 best = [s for s in ranked if score(s) > 0][:5]
 ```
 
-## Keeping the index correct
+## ZCode versus Claude Code
+
+`plugins/agent-toolkit/.mcp.json` is the Claude plugin declaration. ZCode does not
+implicitly import it. For ZCode, add the equivalent canonical `stdio` server to
+`~/.zcode/cli/config.json` using the sanitized template in
+[`routing/config/mcp-template.json`](routing/config/mcp-template.json), export
+`GITHUB_PERSONAL_ACCESS_TOKEN` in the ZCode process environment, and restart ZCode.
+The repository itself is not an MCP implementation: the `github` server is the
+external Docker image `toqsick/github-mcp-server:develop`.
+
+## Keeping the routing artifacts correct
 
 `INDEX.json` and [`NAVIGATION.md`](NAVIGATION.md) are **generated** — never hand-edit them. After adding
 or changing any skill/agent/workflow:

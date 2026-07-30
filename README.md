@@ -50,9 +50,14 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 │       └── .mcp.json              # MCP server declarations (github)
 ├── library/                      # 1,244 browsable Hermes-arsenal skills (NOT session-loaded)
 │   └── <category>/<skill>/SKILL.md
+├── routing/                       # zcode-skills MCP-aware routing metadata
+│   ├── registry/                   # generated repository-relative catalogs
+│   ├── config/                     # sanitized MCP template + schema
+│   ├── bundles/                    # imported skill bundle manifests
+│   └── manifests/                  # imported provenance lockfiles
 ├── workflows/                    # machine-readable multi-skill workflow patterns
 └── scripts/
-    └── build_index.py            # regenerates INDEX.json + NAVIGATION.md
+    └── build_index.py             # regenerates catalogs + routing metadata
 ```
 
 ### Skills
@@ -176,6 +181,7 @@ MITRE ATT&CK / NIST CSF mappings where applicable.
 | Skill | Purpose |
 |---|---|
 | `zcode-subagent-team` | Hermes-Kanban multi-lane agent swarm (Queen → General/Vision/Coder/Debug/Verify/Gate). Pairs with the `zc-*` agents. |
+| `skill-mcp-router` | Resolve intent → skill → configured MCP server → filtered tools with lazy discovery. |
 
 **MiniMax (5):**
 
@@ -222,6 +228,14 @@ with owner-agent + skills + exit criteria per phase): `superpower-10x-pipeline`,
 |---|---|
 | `github` | `toqsick/github-mcp-server:develop` via Docker. Requires the `GITHUB_PERSONAL_ACCESS_TOKEN` environment variable — the token is **never** stored in this repo, only referenced as `${GITHUB_PERSONAL_ACCESS_TOKEN}`. |
 
+The repository is a Claude Code plugin marketplace; it is **not** the implementation of the MCP server.
+The plugin declaration starts the external Docker image. The ZCode CLI has a separate MCP configuration and
+must be given an equivalent `stdio` entry in `~/.zcode/cli/config.json` if you want to use `github` from ZCode.
+The sanitized, copyable template is [`routing/config/mcp-template.json`](routing/config/mcp-template.json).
+The routing skill uses [`routing/registry/`](routing/registry/) to resolve a skill first, then the configured
+server, then only the few tools needed for the request. Static mappings for unavailable servers are marked
+as fallback hints; they are not claims that those servers are installed.
+
 ## Install (on any machine)
 
 ```bash
@@ -247,8 +261,9 @@ servers) and `/agents` (shows `coder`, `perf-tuner`, `security-auditor`).
    `${ENV_VAR}` reference, never a literal.
 4. **Library:** to add browsable (non-installed) reference skills, drop `SKILL.md` bundles under
    `library/<category>/<name>/` — no `plugin.json` edit (they are discovered via the index, not loaded).
-5. **Regenerate the index (required):** run `python3 scripts/build_index.py` to rebuild
-   [`INDEX.json`](INDEX.json) + [`NAVIGATION.md`](NAVIGATION.md). Never hand-edit those two.
+5. **Regenerate the catalogs (required):** run `python3 scripts/build_index.py` to rebuild
+   [`INDEX.json`](INDEX.json), [`NAVIGATION.md`](NAVIGATION.md), and `routing/registry/*`. Never hand-edit
+   generated files.
 6. Bump `version` in `plugin.json`, commit, push. Re-sync on other machines with
    `claude plugin marketplace update my-agent-tools`.
 

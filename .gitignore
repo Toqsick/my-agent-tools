@@ -26,3 +26,8 @@ tmp/
 *.token
 *_secret*
 credentials*.json
+
+# Local configuration variants
+**/config.local.json
+**/secrets.*
+skills/*/SKILL.local.md

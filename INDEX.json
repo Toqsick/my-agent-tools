@@ -1,12 +1,12 @@
 {
-  "schemaVersion": "1.0",
-  "generated_at": "2026-07-23T22:28:49+02:00",
+  "schemaVersion": "2.0",
+  "generated_at": "2026-07-24T14:16:22+02:00",
   "repo": "Toqsick/my-agent-tools",
   "how_to_use": "See ROUTING.md. Fetch this file, match a task against each skill's triggers/tags/category, rank, then fetch the chosen skill's `path`. Installed skills also load in-session as their `namespace`. Multi-step work: see `workflows`.",
   "counts": {
-    "installed": 128,
+    "installed": 129,
     "library": 1244,
-    "skills_total": 1372,
+    "skills_total": 1373,
     "agents": 17,
     "workflows": 6,
     "categories": 43
@@ -2552,8 +2552,8 @@
     },
     {
       "id": "standalone",
-      "count": 92,
-      "installed": 59,
+      "count": 93,
+      "installed": 60,
       "library": 33
     },
     {
@@ -5448,15 +5448,23 @@
     {
       "id": "daily-briefing",
       "name": "daily-briefing",
-      "description": "Start each session with a system status + open items + recent activity summary. Use at session start, after a long break, or when context is unclear. Triggers on \"morning\", \"start of day\", \"what's open\", \"session start\".",
+      "description": "Use when user asks for starting a Hermes work session, reviewing the last session and open work, checking cron and system status, validating today daily note, or requesting a morning or daily briefing. NOT for end-of-session handoff or a standalone reminder about an empty daily note. Builds an evidence-backed session briefing from recent context, schedules, delivery health, optional news, and vault hygiene checks.",
       "tier": "installed",
       "namespace": "agent-toolkit:daily-briefing",
       "path": "plugins/agent-toolkit/skills/daily-briefing/SKILL.md",
       "category": "standalone",
       "tags": [],
-      "triggers": [],
-      "routing_hint": "Start each session with a system status + open items + recent activity summary.",
-      "source": "original"
+      "triggers": [
+        "session",
+        "daily",
+        "work",
+        "note",
+        "briefing"
+      ],
+      "routing_hint": "Use when user asks for starting a Hermes work session, reviewing the last session and open work, checking cron and system status, validating today daily note, or requesting a morni",
+      "source": "original",
+      "license": "MIT",
+      "version": "1.4.0"
     },
     {
       "id": "debugging-patterns",
@@ -6162,6 +6170,21 @@
       "triggers": [],
       "routing_hint": "Comprehensive SEO and GEO (Generative Engine Optimization) expert.",
       "source": "downloads"
+    },
+    {
+      "id": "skill-mcp-router",
+      "name": "skill-mcp-router",
+      "description": "Skill + MCP routing agent for the repository's installed and library skill tiers. Use when a task needs the right skill AND the right MCP server resolved together — converts a raw request into a (skill, MCP server, filtered tools) triple with minimal token use via lazy tool discovery. Implements the 5-step intent->skill->server-> tool->execute flow. NOT for single-skill lookup (use skill-navigator) or multi-agent dispatch (use swarm-router); this skill stitches the full chain that no other skill covers.",
+      "tier": "installed",
+      "namespace": "agent-toolkit:skill-mcp-router",
+      "path": "plugins/agent-toolkit/skills/skill-mcp-router/SKILL.md",
+      "category": "standalone",
+      "tags": [],
+      "triggers": [],
+      "routing_hint": "Skill + MCP routing agent for the repository's installed and library skill tiers.",
+      "source": "original",
+      "license": "MIT",
+      "version": "1.0.0"
     },
     {
       "id": "stealth-web-scraping",

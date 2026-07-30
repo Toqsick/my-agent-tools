@@ -1,7 +1,7 @@
 {
   "name": "agent-toolkit",
   "description": "Basti's vetted Claude Code toolkit: curated skills, subagents, and MCP server declarations bundled together. One enable → every agent on the same state.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": {
     "name": "Toqsick"
   },
@@ -134,6 +134,7 @@
     "./skills/excel-xlsx",
     "./skills/job-hunter",
     "./skills/sales-power-map",
-    "./skills/saas-niche-finder"
+    "./skills/saas-niche-finder",
+    "./skills/skill-mcp-router"
   ]
 }
