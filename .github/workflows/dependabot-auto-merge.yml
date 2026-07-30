@@ -1,0 +1,74 @@
+name: Dependabot Auto-Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Auto-merge Dependabot patch/minor PRs
+    runs-on: ubuntu-latest
+    # Only run for Dependabot PRs
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log update type
+        run: |
+          echo "Package      : ${{ steps.meta.outputs.dependency-names }}"
+          echo "Update type  : ${{ steps.meta.outputs.update-type }}"
+          echo "Ecosystem    : ${{ steps.meta.outputs.package-ecosystem }}"
+
+      # ----------------------------------------------------------------
+      # Auto-merge: patch updates (e.g. 1.2.3 → 1.2.4) — always safe
+      # ----------------------------------------------------------------
+      - name: Auto-merge patch updates
+        if: steps.meta.outputs.update-type == 'version-update:semver-patch'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ----------------------------------------------------------------
+      # Auto-merge: minor updates for @modelcontextprotocol/* only
+      # These follow semver strictly — minor = backwards compatible
+      # ----------------------------------------------------------------
+      - name: Auto-merge minor updates for trusted MCP packages
+        if: |
+          steps.meta.outputs.update-type == 'version-update:semver-minor' &&
+          (
+            contains(steps.meta.outputs.dependency-names, '@modelcontextprotocol/') ||
+            contains(steps.meta.outputs.dependency-names, 'actions/')
+          )
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ----------------------------------------------------------------
+      # Everything else (major, unknown vendors) — label for review
+      # ----------------------------------------------------------------
+      - name: Label non-auto-merged PRs for manual review
+        if: |
+          steps.meta.outputs.update-type == 'version-update:semver-major' ||
+          (
+            steps.meta.outputs.update-type == 'version-update:semver-minor' &&
+            !contains(steps.meta.outputs.dependency-names, '@modelcontextprotocol/') &&
+            !contains(steps.meta.outputs.dependency-names, 'actions/')
+          )
+        run: |
+          gh pr edit "$PR_URL" --add-label "needs-review"
+          echo "⚠️  Major or untrusted minor update — manual review required."
+          echo "PR: $PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
