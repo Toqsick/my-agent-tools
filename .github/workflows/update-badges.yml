@@ -1,0 +1,136 @@
+name: Update README Badges
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'INDEX.json'
+      - 'plugins/agent-toolkit/skills/**'
+      - 'plugins/agent-toolkit/.mcp.json'
+      - 'library/**'
+  workflow_dispatch:
+
+jobs:
+  update-badges:
+    name: Sync badges with actual counts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need full history so we can commit back
+          fetch-depth: 0
+
+      - name: Count skills + servers
+        id: counts
+        run: |
+          python3 - <<'EOF'
+          import json, os, pathlib, re
+
+          root = pathlib.Path('.')
+
+          # --- Installed skills: count subdirs in plugins/agent-toolkit/skills/
+          installed_skills_dir = root / 'plugins' / 'agent-toolkit' / 'skills'
+          installed = sum(1 for p in installed_skills_dir.iterdir() if p.is_dir()) if installed_skills_dir.exists() else 0
+
+          # --- Library skills: count from INDEX.json if available, else count dirs
+          library_count = 0
+          index_path = root / 'INDEX.json'
+          if index_path.exists():
+              with open(index_path) as f:
+                  idx = json.load(f)
+              # INDEX.json top-level: {skills: [...], workflows: [...], agents: [...]}
+              all_skills = idx.get('skills', [])
+              library_count = sum(1 for s in all_skills if str(s.get('path', '')).startswith('library/'))
+              if library_count == 0:
+                  # fallback: count library dirs
+                  lib_dir = root / 'library'
+                  if lib_dir.exists():
+                      library_count = sum(1 for p in lib_dir.rglob('SKILL.md'))
+          else:
+              lib_dir = root / 'library'
+              if lib_dir.exists():
+                  library_count = sum(1 for p in lib_dir.rglob('SKILL.md'))
+
+          # --- MCP servers: count from .mcp.json
+          mcp_path = root / 'plugins' / 'agent-toolkit' / '.mcp.json'
+          mcp_count = 0
+          if mcp_path.exists():
+              with open(mcp_path) as f:
+                  mcp = json.load(f)
+              mcp_count = len(mcp.get('mcpServers', {}))
+
+          # Write to GitHub env for next steps
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f'installed={installed}\n')
+              out.write(f'library={library_count}\n')
+              out.write(f'mcp_count={mcp_count}\n')
+
+          print(f'  Installed skills : {installed}')
+          print(f'  Library skills   : {library_count}')
+          print(f'  MCP servers      : {mcp_count}')
+          EOF
+
+      - name: Update badges in README.md
+        id: patch
+        run: |
+          python3 - <<'EOF'
+          import re, pathlib, os
+
+          installed = int(os.environ['INSTALLED'])
+          library   = int(os.environ['LIBRARY'])
+          mcp_count = int(os.environ['MCP_COUNT'])
+
+          readme = pathlib.Path('README.md')
+          content = readme.read_text()
+          original = content
+
+          # --- Skills badge
+          # Matches: ![Skills](https://img.shields.io/badge/Skills-<anything>-green)
+          skills_label = f'{installed}%20installed%20%2B{library}%20library'
+          content = re.sub(
+              r'(img\.shields\.io/badge/Skills-)([^-]+)(-green)',
+              lambda m: f'{m.group(1)}{skills_label}{m.group(3)}',
+              content
+          )
+
+          # --- MCP Servers badge
+          content = re.sub(
+              r'(img\.shields\.io/badge/MCP%20Servers-)([^-]+)(-blue)',
+              lambda m: f'{m.group(1)}{mcp_count}{m.group(3)}',
+              content
+          )
+
+          if content != original:
+              readme.write_text(content)
+              print('  README.md updated with new counts')
+              # Signal that file changed
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+                  out.write('changed=true\n')
+          else:
+              print('  README.md already up to date — no commit needed')
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+                  out.write('changed=false\n')
+          EOF
+        env:
+          INSTALLED: ${{ steps.counts.outputs.installed }}
+          LIBRARY:   ${{ steps.counts.outputs.library }}
+          MCP_COUNT: ${{ steps.counts.outputs.mcp_count }}
+
+      - name: Commit updated badges
+        if: steps.patch.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: auto-update README badges [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: No changes
+        if: steps.patch.outputs.changed == 'false'
+        run: echo "Badges already reflect current counts — nothing to commit."
