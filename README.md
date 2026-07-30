@@ -1,5 +1,10 @@
 # my-agent-tools
 
+[![MCP Health Check](https://github.com/Toqsick/my-agent-tools/actions/workflows/mcp-health-check.yml/badge.svg)](https://github.com/Toqsick/my-agent-tools/actions/workflows/mcp-health-check.yml)
+[![MCP Servers](https://img.shields.io/badge/MCP%20Servers-8-blue?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMSAxNXYtNEg3bDUtOXY0aDRsLTUgOXoiLz48L3N2Zz4=)](plugins/agent-toolkit/.mcp.json)
+[![Skills](https://img.shields.io/badge/Skills-128%20installed%20%2B%201244%20library-green)](INDEX.json)
+[![License](https://img.shields.io/badge/License-Private-lightgrey)](#)
+
 **Basti's private, version-controlled Claude Code toolkit.**
 
 One curated source of truth for the skills, subagents, and MCP servers I've actually vetted — so
@@ -58,7 +63,8 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 │   └── manifests/                  # imported provenance lockfiles
 ├── workflows/                    # machine-readable multi-skill workflow patterns
 └── scripts/
-    └── build_index.py             # regenerates catalogs + routing metadata
+    ├── build_index.py             # regenerates catalogs + routing metadata
+    └── check-mcp.sh               # local MCP server health check
 ```
 
 ### Skills
