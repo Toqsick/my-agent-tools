@@ -15,7 +15,6 @@ on:
       - '.env.example'
       - 'scripts/check-mcp.sh'
   schedule:
-    # Daily at 07:00 CEST (05:00 UTC) — morning briefing readiness check
     - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
@@ -25,10 +24,11 @@ on:
         default: 'true'
         type: boolean
 
+concurrency:
+  group: mcp-health-check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # ----------------------------------------------------------------
-  # Job 1: Validate .mcp.json structure
-  # ----------------------------------------------------------------
   validate-config:
     name: Validate .mcp.json
     runs-on: ubuntu-latest
@@ -38,78 +38,67 @@ jobs:
 
       - name: Validate JSON syntax
         run: |
-          echo "Validating plugins/agent-toolkit/.mcp.json..."
-          python3 -c "
-import json, sys
-try:
-    with open('plugins/agent-toolkit/.mcp.json') as f:
-        cfg = json.load(f)
-    servers = cfg.get('mcpServers', {})
-    print(f'  ✅ Valid JSON — {len(servers)} servers declared')
-    for name, conf in servers.items():
-        cmd = conf.get('command', 'MISSING')
-        args = conf.get('args', [])
-        print(f'  🔹 {name}: {cmd} {" ".join(str(a) for a in args[:3])}')
-except Exception as e:
-    print(f'  ❌ JSON parse error: {e}')
-    sys.exit(1)
-"
+          python3 - <<'EOF'
+          import json, sys
+          try:
+              with open('plugins/agent-toolkit/.mcp.json') as f:
+                  cfg = json.load(f)
+              servers = cfg.get('mcpServers', {})
+              print(f'  ✅ Valid JSON — {len(servers)} servers declared')
+              for name, conf in servers.items():
+                  cmd = conf.get('command', 'MISSING')
+                  args = conf.get('args', [])
+                  print(f'  🔹 {name}: {cmd} {" ".join(str(a) for a in args[:3])}')
+          except Exception as e:
+              print(f'  ❌ JSON parse error: {e}')
+              sys.exit(1)
+          EOF
 
       - name: Check all servers have command + args
         run: |
-          python3 -c "
-import json, sys
-with open('plugins/agent-toolkit/.mcp.json') as f:
-    cfg = json.load(f)
-servers = cfg.get('mcpServers', {})
-errors = []
-for name, conf in servers.items():
-    if 'command' not in conf:
-        errors.append(f'{name}: missing command')
-    if 'args' not in conf:
-        errors.append(f'{name}: missing args')
-    # Ensure no hardcoded secrets (no token/key literals)
-    env = conf.get('env', {})
-    for k, v in env.items():
-        if v and not str(v).startswith('\${'):
-            errors.append(f'{name}.env.{k}: hardcoded value detected! Use \${{{k}}} instead.')
-if errors:
-    for e in errors: print(f'  ❌ {e}')
-    sys.exit(1)
-print(f'  ✅ All {len(servers)} server configs valid — no hardcoded secrets')
-"
+          python3 - <<'EOF'
+          import json, sys
+          with open('plugins/agent-toolkit/.mcp.json') as f:
+              cfg = json.load(f)
+          servers = cfg.get('mcpServers', {})
+          errors = []
+          for name, conf in servers.items():
+              if 'command' not in conf:
+                  errors.append(f'{name}: missing command')
+              if 'args' not in conf:
+                  errors.append(f'{name}: missing args')
+              env = conf.get('env', {})
+              for k, v in env.items():
+                  if v and not str(v).startswith('\${'):
+                      errors.append(f'{name}.env.{k}: hardcoded value detected!')
+          if errors:
+              for e in errors: print(f'  ❌ {e}')
+              sys.exit(1)
+          print(f'  ✅ All {len(servers)} server configs valid — no hardcoded secrets')
+          EOF
 
       - name: Validate .env.example completeness
         run: |
-          python3 -c "
-import json, re, sys
+          python3 - <<'EOF'
+          import json, re, sys
+          with open('plugins/agent-toolkit/.mcp.json') as f:
+              cfg = json.load(f)
+          required_vars = set()
+          for name, conf in cfg.get('mcpServers', {}).items():
+              for k, v in conf.get('env', {}).items():
+                  match = re.match(r'\\\${([^}]+)}', str(v))
+                  if match:
+                      required_vars.add(match.group(1))
+          with open('.env.example') as f:
+              content = f.read()
+          example_vars = set(re.findall(r'^([A-Z_]+)=', content, re.MULTILINE))
+          missing = required_vars - example_vars
+          if missing:
+              print(f'  ❌ .env.example missing vars: {missing}')
+              sys.exit(1)
+          print(f'  ✅ .env.example covers all {len(required_vars)} required env vars')
+          EOF
 
-# Collect all env var names from .mcp.json
-with open('plugins/agent-toolkit/.mcp.json') as f:
-    cfg = json.load(f)
-required_vars = set()
-for name, conf in cfg.get('mcpServers', {}).items():
-    for k, v in conf.get('env', {}).items():
-        # Extract var name from \${VAR_NAME}
-        match = re.match(r'\\\${([^}]+)}', str(v))
-        if match:
-            required_vars.add(match.group(1))
-
-# Check .env.example covers all of them
-with open('.env.example') as f:
-    content = f.read()
-example_vars = set(re.findall(r'^([A-Z_]+)=', content, re.MULTILINE))
-
-missing = required_vars - example_vars
-if missing:
-    print(f'  ❌ .env.example missing vars: {missing}')
-    sys.exit(1)
-print(f'  ✅ .env.example covers all {len(required_vars)} required env vars')
-"
-
-  # ----------------------------------------------------------------
-  # Job 2: Check runtime dependencies & npx packages
-  # ----------------------------------------------------------------
   check-dependencies:
     name: Check Node + npx packages
     runs-on: ubuntu-latest
@@ -124,6 +113,7 @@ print(f'  ✅ .env.example covers all {len(required_vars)} required env vars')
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Check npx packages exist on npm registry
         run: |
@@ -148,14 +138,9 @@ print(f'  ✅ .env.example covers all {len(required_vars)} required env vars')
             fi
           done
           if [ $FAILED -gt 0 ]; then
-            echo ""
-            echo "$FAILED package(s) not found on npm. Update .mcp.json package names."
             exit 1
           fi
 
-  # ----------------------------------------------------------------
-  # Job 3: Check Docker image exists
-  # ----------------------------------------------------------------
   check-docker-image:
     name: Check Docker image
     runs-on: ubuntu-latest
@@ -165,21 +150,14 @@ print(f'  ✅ .env.example covers all {len(required_vars)} required env vars')
 
       - name: Check toqsick/github-mcp-server:develop on Docker Hub
         run: |
-          echo "Checking Docker Hub for toqsick/github-mcp-server:develop..."
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             "https://hub.docker.com/v2/repositories/toqsick/github-mcp-server/tags/develop")
           if [ "$HTTP_STATUS" = "200" ]; then
             echo "  ✅ toqsick/github-mcp-server:develop exists on Docker Hub"
           else
-            echo "  ⚠️  Docker Hub returned HTTP $HTTP_STATUS"
-            echo "  The image may be private or the tag may have changed."
-            echo "  Verify: https://hub.docker.com/r/toqsick/github-mcp-server/tags"
-            # Warning only — private images return 401/404 but still exist
+            echo "  ⚠️  Docker Hub returned HTTP $HTTP_STATUS (may be private)"
           fi
 
-  # ----------------------------------------------------------------
-  # Job 4: Script syntax check
-  # ----------------------------------------------------------------
   check-script:
     name: Validate check-mcp.sh syntax
     runs-on: ubuntu-latest
@@ -190,19 +168,12 @@ print(f'  ✅ .env.example covers all {len(required_vars)} required env vars')
       - name: Install shellcheck
         run: sudo apt-get install -y shellcheck
 
-      - name: Run shellcheck on check-mcp.sh
+      - name: Run shellcheck
         run: |
           shellcheck -S warning scripts/check-mcp.sh
+          bash -n scripts/check-mcp.sh
           echo "  ✅ check-mcp.sh passes shellcheck"
 
-      - name: Check script is executable (or can be made so)
-        run: |
-          bash -n scripts/check-mcp.sh
-          echo "  ✅ check-mcp.sh syntax valid"
-
-  # ----------------------------------------------------------------
-  # Job 5: Summary
-  # ----------------------------------------------------------------
   summary:
     name: Health Check Summary
     runs-on: ubuntu-latest

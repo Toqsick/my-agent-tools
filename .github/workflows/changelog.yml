@@ -3,16 +3,14 @@ name: Generate CHANGELOG
 on:
   push:
     branches: [ main ]
-    # Only run when real code/config changes, not auto-commits
     paths-ignore:
       - 'CHANGELOG.md'
       - 'README.md'
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to generate changelog up to (leave empty for unreleased)'
-        required: false
-        default: ''
+
+concurrency:
+  group: changelog-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   changelog:
@@ -40,7 +38,7 @@ jobs:
       - name: Commit updated CHANGELOG
         run: |
           if git diff --quiet CHANGELOG.md; then
-            echo "CHANGELOG.md unchanged — nothing to commit."
+            echo "CHANGELOG.md unchanged."
           else
             git config user.name  "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
