@@ -1,0 +1,55 @@
+# Dependabot configuration for Toqsick/my-agent-tools
+# Keeps MCP server npm packages and GitHub Actions up to date
+# Docs: https://docs.github.com/en/code-security/dependabot
+
+version: 2
+
+updates:
+
+  # ------------------------------------------------------------------
+  # 1. GitHub Actions — keep all uses: actions/xxx@vN pinned to latest
+  # ------------------------------------------------------------------
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Berlin
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "chore(actions)"
+    reviewers: []
+    open-pull-requests-limit: 5
+
+  # ------------------------------------------------------------------
+  # 2. npm — MCP server packages declared in package.json (root)
+  #    We create a minimal package.json to let Dependabot track the
+  #    exact npx package versions used in .mcp.json
+  # ------------------------------------------------------------------
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Berlin
+    labels:
+      - dependencies
+      - mcp-servers
+    commit-message:
+      prefix: "chore(mcp)"
+    # Group all MCP server updates into a single PR per week
+    groups:
+      mcp-servers:
+        patterns:
+          - "@modelcontextprotocol/*"
+          - "@gongrzhe/*"
+          - "@cocal/*"
+    open-pull-requests-limit: 3
+    # Ignore major version bumps — only auto-update patch + minor
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

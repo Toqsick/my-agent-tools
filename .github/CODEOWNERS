@@ -1,0 +1,25 @@
+# CODEOWNERS for Toqsick/my-agent-tools
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# These owners are automatically requested for review when a PR
+# touches the matching paths — including Dependabot PRs that
+# are NOT auto-merged (major updates, untrusted minor).
+
+# Default owner for everything
+*                                               @Toqsick
+
+# MCP configuration — always review manually
+plugins/agent-toolkit/.mcp.json                @Toqsick
+.env.example                                   @Toqsick
+
+# CI/CD workflows
+.github/workflows/                             @Toqsick
+.github/dependabot.yml                         @Toqsick
+
+# Security-sensitive
+.github/workflows/secret-scanning.yml          @Toqsick
+.github/workflows/dependabot-auto-merge.yml    @Toqsick
+
+# Core index — generated but critical
+INDEX.json                                     @Toqsick
+ROUTING.md                                     @Toqsick

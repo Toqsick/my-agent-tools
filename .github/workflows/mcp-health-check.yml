@@ -1,0 +1,194 @@
+name: MCP Server Health Check
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'plugins/agent-toolkit/.mcp.json'
+      - '.env.example'
+      - 'scripts/check-mcp.sh'
+      - '.github/workflows/mcp-health-check.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'plugins/agent-toolkit/.mcp.json'
+      - '.env.example'
+      - 'scripts/check-mcp.sh'
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+    inputs:
+      full_check:
+        description: 'Run full check including npx package resolution'
+        required: false
+        default: 'true'
+        type: boolean
+
+concurrency:
+  group: mcp-health-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-config:
+    name: Validate .mcp.json
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate JSON syntax
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          try:
+              with open('plugins/agent-toolkit/.mcp.json') as f:
+                  cfg = json.load(f)
+              servers = cfg.get('mcpServers', {})
+              print(f'  ✅ Valid JSON — {len(servers)} servers declared')
+              for name, conf in servers.items():
+                  cmd = conf.get('command', 'MISSING')
+                  args = conf.get('args', [])
+                  print(f'  🔹 {name}: {cmd} {" ".join(str(a) for a in args[:3])}')
+          except Exception as e:
+              print(f'  ❌ JSON parse error: {e}')
+              sys.exit(1)
+          EOF
+
+      - name: Check all servers have command + args
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          with open('plugins/agent-toolkit/.mcp.json') as f:
+              cfg = json.load(f)
+          servers = cfg.get('mcpServers', {})
+          errors = []
+          for name, conf in servers.items():
+              if 'command' not in conf:
+                  errors.append(f'{name}: missing command')
+              if 'args' not in conf:
+                  errors.append(f'{name}: missing args')
+              env = conf.get('env', {})
+              for k, v in env.items():
+                  if v and not str(v).startswith('\${'):
+                      errors.append(f'{name}.env.{k}: hardcoded value detected!')
+          if errors:
+              for e in errors: print(f'  ❌ {e}')
+              sys.exit(1)
+          print(f'  ✅ All {len(servers)} server configs valid — no hardcoded secrets')
+          EOF
+
+      - name: Validate .env.example completeness
+        run: |
+          python3 - <<'EOF'
+          import json, re, sys
+          with open('plugins/agent-toolkit/.mcp.json') as f:
+              cfg = json.load(f)
+          required_vars = set()
+          for name, conf in cfg.get('mcpServers', {}).items():
+              for k, v in conf.get('env', {}).items():
+                  match = re.match(r'\\\${([^}]+)}', str(v))
+                  if match:
+                      required_vars.add(match.group(1))
+          with open('.env.example') as f:
+              content = f.read()
+          example_vars = set(re.findall(r'^([A-Z_]+)=', content, re.MULTILINE))
+          missing = required_vars - example_vars
+          if missing:
+              print(f'  ❌ .env.example missing vars: {missing}')
+              sys.exit(1)
+          print(f'  ✅ .env.example covers all {len(required_vars)} required env vars')
+          EOF
+
+  check-dependencies:
+    name: Check Node + npx packages
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['18', '20', '22']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Check npx packages exist on npm registry
+        run: |
+          echo "Checking npm registry for all npx-based MCP packages..."
+          PACKAGES=(
+            "@gongrzhe/server-gmail-autoauth-mcp"
+            "@cocal/google-calendar-mcp"
+            "@modelcontextprotocol/server-filesystem"
+            "@modelcontextprotocol/server-brave-search"
+            "@modelcontextprotocol/server-memory"
+            "@modelcontextprotocol/server-puppeteer"
+            "@modelcontextprotocol/server-sequential-thinking"
+          )
+          FAILED=0
+          for PKG in "${PACKAGES[@]}"; do
+            VERSION=$(npm view "$PKG" version 2>/dev/null)
+            if [ -n "$VERSION" ]; then
+              echo "  ✅ $PKG@$VERSION"
+            else
+              echo "  ❌ $PKG — NOT FOUND on npm registry"
+              FAILED=$((FAILED+1))
+            fi
+          done
+          if [ $FAILED -gt 0 ]; then
+            exit 1
+          fi
+
+  check-docker-image:
+    name: Check Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check toqsick/github-mcp-server:develop on Docker Hub
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://hub.docker.com/v2/repositories/toqsick/github-mcp-server/tags/develop")
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "  ✅ toqsick/github-mcp-server:develop exists on Docker Hub"
+          else
+            echo "  ⚠️  Docker Hub returned HTTP $HTTP_STATUS (may be private)"
+          fi
+
+  check-script:
+    name: Validate check-mcp.sh syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run shellcheck
+        run: |
+          shellcheck -S warning scripts/check-mcp.sh
+          bash -n scripts/check-mcp.sh
+          echo "  ✅ check-mcp.sh passes shellcheck"
+
+  summary:
+    name: Health Check Summary
+    runs-on: ubuntu-latest
+    needs: [validate-config, check-dependencies, check-docker-image, check-script]
+    if: always()
+    steps:
+      - name: Print result
+        run: |
+          echo "## MCP Health Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| .mcp.json validation | ${{ needs.validate-config.result == 'success' && '✅ passed' || '❌ failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| npx packages (Node 18/20/22) | ${{ needs.check-dependencies.result == 'success' && '✅ passed' || '❌ failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker image | ${{ needs.check-docker-image.result == 'success' && '✅ passed' || '⚠️ warning' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Script syntax | ${{ needs.check-script.result == 'success' && '✅ passed' || '❌ failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Triggered: ${{ github.event_name }} · $(date -u '+%Y-%m-%d %H:%M UTC')_" >> $GITHUB_STEP_SUMMARY

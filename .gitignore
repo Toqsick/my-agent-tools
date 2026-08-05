@@ -2,18 +2,24 @@
 node_modules/
 npm-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
+*.egg-info/
+dist/
 
 # OS / editor
 .DS_Store
 Thumbs.db
 *.swp
 *~
+.idea/
+.vscode/
+*.code-workspace
 
 # Logs / caches / local state
 *.log
@@ -21,20 +27,31 @@ Thumbs.db
 tmp/
 .pytest_cache/
 .ruff_cache/
+.tmp/
 
 # Hermes Agent lokale Daten (Pläne, Cache — nicht fürs Repo)
 .hermes/
 
 # uv lockfile wird NICHT ignoriert (reproducible builds)
 
-# Never commit secrets
+# Never commit secrets — .env is a template ONLY via .env.example
 .env
 .env.*
+!.env.example
 *.token
 *_secret*
 credentials*.json
+token*.json
+auth*.json
+gtoken*.json
 
 # Local configuration variants
 **/config.local.json
 **/secrets.*
 skills/*/SKILL.local.md
+
+# gitleaks / secret scanning artifacts
+.gitleaks-report.json
+
+# Claude Code local state
+.claude/

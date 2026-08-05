@@ -22,6 +22,79 @@
         "${CLAUDE_PROJECT_ROOT}",
         "mcp-server-basti"
       ]
+    },
+
+    "gmail": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gongrzhe/server-gmail-autoauth-mcp"
+      ],
+      "env": {
+        "GMAIL_OAUTH_CLIENT_ID": "${GMAIL_OAUTH_CLIENT_ID}",
+        "GMAIL_OAUTH_CLIENT_SECRET": "${GMAIL_OAUTH_CLIENT_SECRET}",
+        "GMAIL_OAUTH_REFRESH_TOKEN": "${GMAIL_OAUTH_REFRESH_TOKEN}"
+      }
+    },
+
+    "google-calendar": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cocal/google-calendar-mcp"
+      ],
+      "env": {
+        "GOOGLE_CLIENT_ID": "${GOOGLE_CLIENT_ID}",
+        "GOOGLE_CLIENT_SECRET": "${GOOGLE_CLIENT_SECRET}",
+        "GOOGLE_REFRESH_TOKEN": "${GOOGLE_REFRESH_TOKEN}"
+      }
+    },
+
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${WORKSPACE_PATH:-/workspace}"
+      ]
+    },
+
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    },
+
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "${MEMORY_FILE_PATH:-~/.agent-memory/memory.json}"
+      }
+    },
+
+    "puppeteer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ]
+    },
+
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     }
   }
 }
