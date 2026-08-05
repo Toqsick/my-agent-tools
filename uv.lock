@@ -772,6 +772,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
+    { name = "typing-extensions" },
 ]
 
 [package.optional-dependencies]
@@ -789,6 +790,7 @@ requires-dist = [
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
+    { name = "typing-extensions", specifier = ">=4.12" },
 ]
 provides-extras = ["dev"]
 

@@ -8,7 +8,12 @@ strikteres ``additionalProperties: False`` gewünscht ist.
 
 from __future__ import annotations
 
-from typing import TypedDict
+# typing_extensions.TypedDict statt typing.TypedDict: pydantic 2.x benötigt auf
+# Python < 3.12 die typing_extensions-Variante, damit das __pydantic_core_schema__
+#-Attribut gesetzt ist (sonst PydanticUserError bei der Schema-Ableitung durch
+# FastMCP). Auf 3.12+ ist typing_extensions.TypedDict ein Superset — sicher auf
+# beiden.
+from typing_extensions import TypedDict
 
 
 class SystemStatus(TypedDict):
