@@ -18,13 +18,29 @@ from mcp_server_basti.server import DEFAULT_REPO_PATH, get_repo_info
 
 
 def _git_branch() -> str:
-    """Aktuellen Branch-Namen aus dem Server-Repo ermitteln."""
-    return subprocess.check_output(
-        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+    """Aktuellen Branch-Namen aus dem Server-Repo ermitteln.
+
+    Verwendet symbolic-ref, da der Server diese Variante bevorzugt.
+    Im detached-HEAD-State gibt symbolic-ref einen non-zero exit zurück
+    und der Aufrufer muss mit dem 'detached@<sha>'-Format umgehen.
+    """
+    proc = subprocess.run(
+        ["git", "symbolic-ref", "--short", "HEAD"],
+        capture_output=True,
+        text=True,
+        cwd=str(DEFAULT_REPO_PATH),
+        check=False,
+    )
+    if proc.returncode == 0 and proc.stdout:
+        return proc.stdout.strip()
+    # Detached HEAD — fall back to rev-parse
+    short_sha = subprocess.check_output(
+        ["git", "rev-parse", "--short", "HEAD"],
         text=True,
         stderr=subprocess.DEVNULL,
         cwd=str(DEFAULT_REPO_PATH),
     ).strip()
+    return f"detached@{short_sha}"
 
 
 def _git_commit_short() -> str:

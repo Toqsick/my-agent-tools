@@ -2,7 +2,12 @@
 
 Architektur:
 - Transport: stdio (fd 0/1), Logging nach stderr (fd 2) — niemals stdout.
-- Tool-Errors: fastmcp.ToolResult mit is_error=True, NICHT mcp.types.CallToolResult.
+- Tool-Errors: werden via ToolError-Exception signalisiert.
+  Hintergrund: Der mcp-shim-Pfad (mcp.server.fastmcp.*) baut Wire-Antworten
+  in mcp/server/lowlevel/server.py:589 — nur Exceptions werden zu
+  CallToolResult(isError=True). Return-Werte werden in Zeile 579
+  pauschal mit isError=False gewrappt, auch wenn sie einen fastmcp-ToolResult
+  mit is_error=True enthalten. Daher raise statt return.
 - Subprocess-Aufrufe via asyncio.to_thread, um den Event-Loop nicht zu blockieren.
 """
 
@@ -15,9 +20,8 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from fastmcp.tools.base import ToolResult
 from mcp.server.fastmcp import FastMCP
-from mcp.types import TextContent
+from mcp.server.fastmcp.exceptions import ToolError
 
 from mcp_server_basti.logging_setup import LOGGER
 
@@ -36,19 +40,6 @@ def _log_context(tool_name: str, request_id: str, **extra: Any) -> dict[str, Any
         "tool_name": tool_name,
         **extra,
     }
-
-
-def _structured_error(message: str) -> ToolResult:
-    """Liefert einen FastMCP-konformen Tool-Fehler (isError=True).
-
-    WICHTIG: FastMCP v3 erwartet fastmcp.tools.base.ToolResult mit snake_case.
-    mcp.types.CallToolResult wird von FastMCP nicht erkannt und als Text serialisiert.
-    """
-    return ToolResult(
-        content=[TextContent(type="text", text=message)],
-        is_error=True,
-        structured_content=None,
-    )
 
 
 def _log_completion(
@@ -73,7 +64,7 @@ def _log_completion(
 
 
 @mcp.tool()
-async def get_system_status() -> str | ToolResult:
+async def get_system_status() -> str:
     """Gibt den aktuellen Systemstatus aus dem Programm ``uptime`` zurück."""
     tool_name = "get_system_status"
     request_id = str(uuid4())
@@ -91,9 +82,9 @@ async def get_system_status() -> str | ToolResult:
         )
     except (OSError, subprocess.SubprocessError, UnicodeDecodeError) as exc:
         _log_completion(tool_name, request_id, started_at, is_error=True)
-        return _structured_error(
+        raise ToolError(
             f"Systemstatus konnte nicht ermittelt werden: {exc}"
-        )
+        ) from exc
 
     _log_completion(tool_name, request_id, started_at, is_error=False)
     return result.stdout
@@ -115,7 +106,7 @@ async def echo_tool(text: str) -> str:
 
 
 @mcp.tool()
-async def get_repo_info() -> str | ToolResult:
+async def get_repo_info() -> str:
     """Gibt den aktuellen Git-Branch und den letzten Commit des Server-Repos zurück."""
     tool_name = "get_repo_info"
     request_id = str(uuid4())
@@ -125,17 +116,34 @@ async def get_repo_info() -> str | ToolResult:
     try:
         # Subprocess-Aufrufe in Thread auslagern, um Event-Loop nicht zu blockieren.
         # cwd= garantiert, dass immer dasselbe Repo abgefragt wird (Server-Repo).
-        branch = (
-            await asyncio.to_thread(
-                subprocess.run,
-                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=10,
-                cwd=str(DEFAULT_REPO_PATH),
-            )
-        ).stdout.strip()
+        # symbolic-ref --short gibt im detached-HEAD-State einen non-zero exit zurück,
+        # sodass wir die echte Detached-Branch erkennen können.
+        branch_proc = await asyncio.to_thread(
+            subprocess.run,
+            ["git", "symbolic-ref", "--short", "HEAD"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=str(DEFAULT_REPO_PATH),
+        )
+        if branch_proc.returncode == 0:
+            branch = branch_proc.stdout.strip()
+        else:
+            # Detached HEAD — symbolic-ref schlägt fehl, fallback auf rev-parse
+            short_sha = (
+                await asyncio.to_thread(
+                    subprocess.run,
+                    ["git", "rev-parse", "--short", "HEAD"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                    cwd=str(DEFAULT_REPO_PATH),
+                )
+            ).stdout.strip()
+            branch = f"detached@{short_sha}"
+
         last_commit = (
             await asyncio.to_thread(
                 subprocess.run,
@@ -149,9 +157,9 @@ async def get_repo_info() -> str | ToolResult:
         ).stdout.strip()
     except (OSError, subprocess.SubprocessError, UnicodeDecodeError) as exc:
         _log_completion(tool_name, request_id, started_at, is_error=True)
-        return _structured_error(
+        raise ToolError(
             f"Repository-Informationen konnten nicht ermittelt werden: {exc}"
-        )
+        ) from exc
 
     _log_completion(tool_name, request_id, started_at, is_error=False)
     return f"Branch: {branch}\nLetzter Commit: {last_commit}"
