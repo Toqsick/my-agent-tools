@@ -16,7 +16,7 @@ from mcp_server_basti.server import echo_tool
 
 @pytest.mark.asyncio
 async def test_echo_tool_hello() -> None:
-    """Standard-ASCII-Input wird exakt (stripped) zurückgegeben."""
+    """Standard-ASCII-Input wird exakt zurückgegeben."""
     result = await echo_tool("hello")
     assert result == "hello", f"Erwartet 'hello', bekam {result!r}"
 
