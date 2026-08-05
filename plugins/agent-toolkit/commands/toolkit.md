@@ -28,7 +28,7 @@ Read that manifest, then behave according to the argument:
   argument is not a known pack name, say so and fall back to the default overview.
 
 - **`doctor`**: Run a health check and report status. Do **not** print any tokens.
-  1. Count installed skills: `ls plugins/agent-toolkit/skills/ | wc -l` (expect 129).
+  1. Count installed skills: `find plugins/agent-toolkit/skills -maxdepth 2 -name SKILL.md -type f | wc -l` (expect 129).
   2. Count agents: `ls plugins/agent-toolkit/agents/*.md | wc -l` (expect 17).
   3. Count packs listed in `packs/manifest.json` (expect 8) and report per-pack
      skill counts.
