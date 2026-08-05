@@ -1,0 +1,23 @@
+name: hermes-dev
+description: Build Hermes/Yuno platform features — CLI internals, gateway protocol/clients, mobile clients, Ariadne memory, gateway adapters, desktop plugins, messaging gateways, themes, and the ModelHub dashboard.
+skills:
+  - hermes-cli-internals
+  - hermes-client-development
+  - hermes-gateway-integration
+  - hermes-gateway-client-development
+  - hermes-contribution-workflows
+  - hermes-mobile-development
+  - hermes-mobile-client-development
+  - hermes-ariadne-memory
+  - hermes-gateway-protocol
+  - modelhub-dashboard
+  - hermes-agent-environment-passthrough
+  - hermes-free-tier-setup
+  - gateway-adapter-development
+  - ariadne-memory
+  - hermes-mcp-integration
+  - hermes-desktop-plugins
+  - messaging-gateway-setup
+  - hermes-themes
+instruction: |
+  Tasks in the Hermes / Yuno Platform domain route to the hermes-dev pack. Representative skills: hermes-cli-internals, hermes-client-development, hermes-gateway-integration, hermes-gateway-client-development, hermes-contribution-workflows, hermes-mobile-development…. See packs/hermes-dev/README.md for the full roster and triggers.

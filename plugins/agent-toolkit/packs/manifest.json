@@ -1,0 +1,594 @@
+{
+  "version": 1,
+  "generated_from": "packs/manifest.json (hand-curated partition)",
+  "packs": [
+    {
+      "name": "core",
+      "title": "Core & Personal",
+      "category": "productivity",
+      "description": "Personal seed skills, productivity, and routing meta — the daily-driver layer for Basti's workstation: Obsidian second-brain, Yuno cleaner, 3D printing, Yuno team orchestration/routing/preferences, model selection, folder tidy, daily briefing, and the skill↔MCP router.",
+      "skill_count": 10,
+      "skills": [
+        {
+          "name": "second-brain",
+          "description": "Bastis Obsidian Vault als Domän-Wissensbank nutzen. Verwenden bei Fragen zu Bastis Wissen/Notizen (\"was weiß ich über X\", \"steht dazu was im Vault?\"), zum Nachschlagen von System-/Projekt-Kontext (Gaming-Performance, KI-Architektur, Security, Yuno/Hermes), zum Erfassen neuer Notizen/Erkenntnisse, für Daily Notes, oder zum Erstellen/Lesen von Excalidraw-Skizzen im Vault."
+        },
+        {
+          "name": "yuno-cleaner",
+          "description": "Use when user asks to run Yuno Cleaner for a Linux scan, cleanup, status check, scheduled cleanup, JSON report, Telegram notification, or handoff. NOT for destructive cleanup without the tool’s safety flow or app-specific uninstall work. Provides the Hermes integration, command forms, dry/report modes, scheduling, and safety guardrails."
+        },
+        {
+          "name": "drucker-experte",
+          "description": "3D-Druck-Experte für Bastis Bambu Lab A1 mini (0.4mm Düse, Bett 180x180x180). Triggers on STL, Bambu Lab, 3D-Druck, Slicer-Setting, Druckzeit, Mesh-Repair, G-Code."
+        },
+        {
+          "name": "tidy-folder",
+          "description": "Professional folder cleanup and organization assistant. Safely organizes and cleans up directories by scanning contents, recommending cleanup rules, creating mandatory backups before any operation, and using move-to-trash instead of delete. Supports Linux/macOS and Windows (PowerShell). Trigger keywords: tidy, cleanup, organize folder, clean directory, folder organization."
+        },
+        {
+          "name": "daily-briefing",
+          "description": "Use when user asks for starting a Hermes work session, reviewing the last session and open work, checking cron and system status, validating today daily note, or requesting a morning or daily briefing. NOT for end-of-session handoff or a standalone reminder about an empty daily note. Builds an evidence-backed session briefing from recent context, schedules, delivery health, optional news, and vault hygiene checks."
+        },
+        {
+          "name": "model-selector",
+          "description": "Use when user asks for choosing an LLM from the Nous Portal, comparing models by speed, reasoning, code ability, or price, resolving provider-specific model names, or selecting a local model for limited VRAM. NOT for running formal benchmark evaluations or deploying a model server. Provides workload-based recommendations, price checks, provider naming rules, fallback considerations, and model-switch handoffs."
+        },
+        {
+          "name": "skill-mcp-router",
+          "description": "Skill + MCP routing agent for the repository's installed and library skill tiers. Use when a task needs the right skill AND the right MCP server resolved together — converts a raw request into a (skill, MCP server, filtered tools) triple with minimal token use via lazy tool discovery. Implements the 5-step intent->skill->server-> tool->execute flow. NOT for single-skill lookup (use skill-navigator) or multi-agent dispatch (use swarm-router); this skill stitches the full chain that no other skill covers."
+        },
+        {
+          "name": "yuno-team-orchestrator",
+          "description": "Use when orchestrating Yunos 7-agent team for multi-domain tasks."
+        },
+        {
+          "name": "yuno-team-routing",
+          "description": "Use when user asks which Yuno team agent should handle a task, how to decompose a multi-domain request, or how to hand work between the seven specialized agents. NOT for performing the task itself or maintaining a generic organization chart. Applies the authoritative trigger-to-agent routing table, ownership rules, handoff patterns, and anti-patterns."
+        },
+        {
+          "name": "yuno-user-preferences",
+          "description": "Use when user asks how to apply Basti’s working-style preferences, honest testing standard, recommendation-first decisions, concrete options, scope checks, or communication and documentation conventions. NOT for inventing preferences or overriding an explicit current instruction. Guides tone, verification, safe edits, GreyHack workflows, and disciplined task completion."
+        }
+      ]
+    },
+    {
+      "name": "hermes-dev",
+      "title": "Hermes / Yuno Platform",
+      "category": "development",
+      "description": "Build Hermes/Yuno platform features — CLI internals, gateway protocol/clients, mobile clients, Ariadne memory, gateway adapters, desktop plugins, messaging gateways, themes, and the ModelHub dashboard.",
+      "skill_count": 18,
+      "skills": [
+        {
+          "name": "hermes-cli-internals",
+          "description": "Hermes CLI architecture patterns — pre-argparse flag handling, environment propagation, profile overrides, and subprocess inheritance."
+        },
+        {
+          "name": "hermes-client-development",
+          "description": "Build custom clients (mobile, desktop, web, CLI, IDE plugins) that connect to a remote Hermes Agent via its JSON-RPC WebSocket protocol. Covers the hermes serve backend, auth flows, the tui_gateway protocol, and the @hermes/shared TypeScript client library."
+        },
+        {
+          "name": "hermes-gateway-integration",
+          "description": "Build clients that connect to Hermes Agent via the tui_gateway JSON-RPC WebSocket protocol — mobile apps, web clients, custom UIs, and automations that drive a remote Hermes backend."
+        },
+        {
+          "name": "hermes-gateway-client-development",
+          "description": "Build mobile, desktop, or CLI clients that connect to a remote Hermes Agent (hermes serve) via WebSocket JSON-RPC."
+        },
+        {
+          "name": "hermes-contribution-workflows",
+          "description": "Git/PR/terminal tool patterns for contributing to the Hermes Agent codebase. Covers fork-PR gotchas, terminal atomicity, and patch-tool pitfalls."
+        },
+        {
+          "name": "hermes-mobile-development",
+          "description": "Build native mobile clients (iOS/Android) that connect remotely to a Hermes Agent backend via WebSocket JSON-RPC."
+        },
+        {
+          "name": "hermes-mobile-client-development",
+          "description": "Building native mobile clients (React Native / Expo) that connect to a remote Hermes Agent gateway via WebSocket JSON-RPC."
+        },
+        {
+          "name": "hermes-ariadne-memory",
+          "description": "Install, configure, and use Ariadne memory provider for Hermes Agent — local-first hybrid search (FAISS + FTS5 + RRF), knowledge graph, cognitive retention, auto-deduplication. Zero infrastructure, single SQLite file."
+        },
+        {
+          "name": "hermes-gateway-protocol",
+          "description": "Build custom clients against the Hermes tui_gateway JSON-RPC protocol — remote connection, WebSocket transport, auth, and the @hermes/shared client library."
+        },
+        {
+          "name": "modelhub-dashboard",
+          "description": "ModelHub AI Model Benchmark Dashboard - operations, data refresh, and management"
+        },
+        {
+          "name": "hermes-agent-environment-passthrough",
+          "description": "Ensuring environment variables are correctly passed to Hermes agent terminal backends, especially Daytona."
+        },
+        {
+          "name": "hermes-free-tier-setup",
+          "description": "Class-level skill for configuring Hermes Agent with 100% free LLM providers, intelligent fallback chains, and optimized auxiliary models"
+        },
+        {
+          "name": "gateway-adapter-development",
+          "description": "Develop, debug, and maintain Hermes gateway platform adapters (Telegram, Discord, Slack, Raft, etc.)"
+        },
+        {
+          "name": "ariadne-memory",
+          "description": "Set up and use Ariadne as the local-first hybrid search memory provider for Hermes Agent."
+        },
+        {
+          "name": "hermes-mcp-integration",
+          "description": "Use when integrating Hermes V7 native MCP client (stdio/HTTP servers, tool discovery, config.yaml setup)."
+        },
+        {
+          "name": "hermes-desktop-plugins",
+          "description": "Use when user asks for writing Hermes desktop plugins, UI panes, custom commands inside Hermes desktop app. NOT for Hermes CLI plugins or non-Hermes desktop extensions. Write desktop app plugins that add UI panes and commands."
+        },
+        {
+          "name": "messaging-gateway-setup",
+          "description": "Use when user asks for setting up Telegram, WhatsApp, Discord, Signal, or Matrix, configuring the Hermes messaging gateway, checking or restarting gateway status, or removing a messaging platform safely. NOT for sending routine chat messages or changing model-provider configuration. Guides platform setup, environment and persisted-state cleanup, lifecycle commands, and connection verification."
+        },
+        {
+          "name": "hermes-themes",
+          "description": "Author a Hermes color theme that skins every surface."
+        }
+      ]
+    },
+    {
+      "name": "cybersecurity",
+      "title": "Cybersecurity",
+      "category": "security",
+      "description": "50 defensive-security and DFIR skills — CIS hardening, Docker/K8s and container security, network detection & hunting (Zeek/Suricata/Wireshark), forensics (Volatility/disk/IR), and compliance/supply-chain (SBOM/SLSA/gitleaks).",
+      "skill_count": 50,
+      "skills": [
+        {
+          "name": "hardening-linux-endpoint-with-cis-benchmark",
+          "description": "Hardens Linux endpoints using CIS Benchmark recommendations for Ubuntu, RHEL, and CentOS to reduce attack surface, enforce security baselines, and meet compliance requirements. Use when deploying new Linux servers, remediating audit findings, or establishing security baselines for Linux infrastructure. Activates for requests involving Linux hardening, CIS benchmarks for Linux, server security baselines, or Linux configuration compliance. '"
+        },
+        {
+          "name": "analyzing-linux-audit-logs-for-intrusion",
+          "description": "Uses the Linux Audit framework (auditd) with ausearch and aureport utilities to detect intrusion attempts, unauthorized access, privilege escalation, and suspicious system activity. Covers audit rule configuration, log querying, timeline reconstruction, and integration with SIEM platforms. Activates for requests involving auditd analysis, Linux audit log investigation, ausearch queries, aureport summaries, or host-based intrusion detection on Linux. '"
+        },
+        {
+          "name": "analyzing-linux-system-artifacts",
+          "description": "Examine Linux system artifacts including auth logs, cron jobs, shell history, and system configuration to uncover evidence of compromise or unauthorized activity."
+        },
+        {
+          "name": "analyzing-persistence-mechanisms-in-linux",
+          "description": "Detect and analyze Linux persistence mechanisms including crontab entries, systemd service units, LD_PRELOAD hijacking, bashrc modifications, and authorized_keys backdoors using auditd and file integrity monitoring"
+        },
+        {
+          "name": "detecting-rootkit-activity",
+          "description": "Detects rootkit presence on compromised systems by identifying hidden processes, hooked system calls, modified kernel structures, hidden files, and covert network connections using memory forensics, cross-view detection, and integrity checking techniques. Activates for requests involving rootkit detection, hidden process discovery, kernel integrity checking, or system call hook analysis. '"
+        },
+        {
+          "name": "analyzing-linux-kernel-rootkits",
+          "description": "Detect kernel-level rootkits in Linux memory dumps using Volatility3 linux plugins (check_syscall, lsmod, hidden_modules), rkhunter system scanning, and /proc vs /sys discrepancy analysis to identify hooked syscalls, hidden kernel modules, and tampered system structures."
+        },
+        {
+          "name": "performing-linux-log-forensics-investigation",
+          "description": "Perform forensic investigation of Linux system logs including syslog, auth.log, systemd journal, kern.log, and application logs to reconstruct user activity, detect unauthorized access, and establish event timelines on compromised Linux systems."
+        },
+        {
+          "name": "detecting-port-scanning-with-fail2ban",
+          "description": "Configures Fail2ban with custom filters and actions to detect port scanning activity, SSH brute force attempts, and network reconnaissance, automatically banning offending IP addresses and alerting security teams to suspicious network probing. '"
+        },
+        {
+          "name": "implementing-network-segmentation-with-firewall-zones",
+          "description": "Design and implement network segmentation using firewall security zones, VLANs, ACLs, and microsegmentation policies to restrict lateral movement and enforce least-privilege network access."
+        },
+        {
+          "name": "hardening-docker-containers-for-production",
+          "description": "Hardening Docker containers for production involves applying security best practices aligned with CIS Docker Benchmark v1.8.0 to minimize attack surface, prevent privilege escalation, and enforce leas"
+        },
+        {
+          "name": "hardening-docker-daemon-configuration",
+          "description": "Harden the Docker daemon by configuring daemon.json with user namespace remapping, TLS authentication, rootless mode, and CIS benchmark controls."
+        },
+        {
+          "name": "performing-docker-bench-security-assessment",
+          "description": "Docker Bench for Security is an open-source script that checks dozens of common best practices around deploying Docker containers in production. Based on the CIS Docker Benchmark, it audits host confi"
+        },
+        {
+          "name": "analyzing-docker-container-forensics",
+          "description": "Investigate compromised Docker containers by analyzing images, layers, volumes, logs, and runtime artifacts to identify malicious activity and evidence."
+        },
+        {
+          "name": "detecting-container-escape-attempts",
+          "description": "Container escape is a critical attack technique where an adversary breaks out of container isolation to access the host system or other containers. Detection involves monitoring for escape indicators"
+        },
+        {
+          "name": "detecting-container-runtime-threats-with-falco",
+          "description": "Write and deploy Falco rules with the modern eBPF driver to detect container escape, namespace abuse, privileged mounts, and anomalous syscalls at runtime in Kubernetes and Docker."
+        },
+        {
+          "name": "scanning-docker-images-with-trivy",
+          "description": "Trivy is a comprehensive open-source vulnerability scanner by Aqua Security that detects vulnerabilities in OS packages, language-specific dependencies, misconfigurations, secrets, and license violati"
+        },
+        {
+          "name": "performing-container-security-scanning-with-trivy",
+          "description": "Scan container images, filesystems, and Kubernetes manifests for vulnerabilities, misconfigurations, exposed secrets, and license compliance issues using Aqua Security Trivy with SBOM generation and CI/CD integration."
+        },
+        {
+          "name": "implementing-container-image-minimal-base-with-distroless",
+          "description": "Reduce container attack surface by building application images on Google distroless base images that contain only the application runtime with no shell, package manager, or unnecessary OS utilities."
+        },
+        {
+          "name": "securing-container-registry-with-harbor",
+          "description": "Harbor is an open-source container registry that provides security features including vulnerability scanning (integrated Trivy), image signing (Notary/Cosign), RBAC, content trust policies, replicatio"
+        },
+        {
+          "name": "implementing-kubernetes-pod-security-standards",
+          "description": "Pod Security Standards (PSS) define three levels of security policies -- Privileged, Baseline, and Restricted -- enforced by the Pod Security Admission (PSA) controller built into Kubernetes 1.25+. PS"
+        },
+        {
+          "name": "analyzing-network-packets-with-scapy",
+          "description": "Craft, send, sniff, and dissect network packets using Scapy for protocol analysis, network reconnaissance, and traffic anomaly detection in authorized security testing"
+        },
+        {
+          "name": "analyzing-network-traffic-with-wireshark",
+          "description": "Captures and analyzes network packet data using Wireshark and tshark to identify malicious traffic patterns, diagnose protocol issues, extract artifacts, and support incident response investigations on authorized network segments. '"
+        },
+        {
+          "name": "performing-network-forensics-with-wireshark",
+          "description": "Capture and analyze network traffic using Wireshark and tshark to reconstruct network events, extract artifacts, and identify malicious communications."
+        },
+        {
+          "name": "configuring-suricata-for-network-monitoring",
+          "description": "Deploys and configures Suricata IDS/IPS with Emerging Threats rulesets, EVE JSON logging, and custom rules for real-time network traffic inspection, threat detection, and integration with SIEM platforms for centralized security monitoring. '"
+        },
+        {
+          "name": "detecting-network-anomalies-with-zeek",
+          "description": "Deploys and configures Zeek (formerly Bro) network security monitor to passively analyze network traffic, generate structured logs, detect anomalous behavior, and create custom detection scripts for threat hunting and incident response. '"
+        },
+        {
+          "name": "detecting-beaconing-patterns-with-zeek",
+          "description": "Performs statistical analysis of Zeek conn.log connection intervals to detect C2 beaconing patterns. Uses the ZAT library to load Zeek logs into Pandas DataFrames, calculates inter-arrival time standard deviation, and flags periodic connections with low jitter. Use when hunting for command-and-control callbacks in network data. '"
+        },
+        {
+          "name": "detecting-dns-exfiltration-with-dns-query-analysis",
+          "description": "Detect data exfiltration through DNS tunneling by analyzing query entropy, subdomain length, query volume, TXT record abuse, and response payload sizes using passive DNS monitoring."
+        },
+        {
+          "name": "deploying-osquery-for-endpoint-monitoring",
+          "description": "Deploys and configures osquery for real-time endpoint monitoring using SQL-based queries to inspect running processes, open ports, installed software, and system configuration. Use when building visibility into endpoint state, threat hunting across fleet, or implementing compliance monitoring. Activates for requests involving osquery deployment, endpoint visibility, fleet management, or SQL-based endpoint querying. '"
+        },
+        {
+          "name": "building-detection-rules-with-sigma",
+          "description": "Builds vendor-agnostic detection rules using the Sigma rule format for threat detection across SIEM platforms including Splunk, Elastic, and Microsoft Sentinel. Use when creating portable detection logic from threat intelligence, mapping rules to MITRE ATT&CK techniques, or converting community Sigma rules into platform-specific queries using sigmac or pySigma backends. '"
+        },
+        {
+          "name": "performing-malware-triage-with-yara",
+          "description": "Performs rapid malware triage and classification using YARA rules to match file patterns, strings, byte sequences, and structural characteristics against known malware families and suspicious indicators. Covers rule writing, scanning, and integration with analysis pipelines. Activates for requests involving YARA rule creation, malware classification, pattern matching, sample triage, or signature-based detection. '"
+        },
+        {
+          "name": "hunting-advanced-persistent-threats",
+          "description": "Proactively hunts for Advanced Persistent Threat (APT) activity within enterprise environments using hypothesis-driven searches across endpoint telemetry, network logs, and memory artifacts. Use when conducting scheduled threat hunting cycles, investigating anomalous behavior flagged by UEBA, or validating that known APT TTPs are not present in the environment. Activates for requests involving MITRE ATT&CK, Velociraptor, osquery, Zeek, or threat hunting playbooks. '"
+        },
+        {
+          "name": "building-threat-hunt-hypothesis-framework",
+          "description": "Build a systematic threat hunt hypothesis framework that transforms threat intelligence, attack patterns, and environmental data into testable hunting hypotheses."
+        },
+        {
+          "name": "conducting-memory-forensics-with-volatility",
+          "description": "Performs memory forensics analysis using Volatility 3 to extract evidence of malware execution, process injection, network connections, and credential theft from RAM dumps captured during incident response. Covers memory acquisition, process analysis, DLL inspection, and malware detection. Activates for requests involving memory forensics, RAM analysis, Volatility framework, memory dump investigation, volatile evidence analysis, or live memory acquisition. '"
+        },
+        {
+          "name": "performing-memory-forensics-with-volatility3",
+          "description": "Analyze volatile memory dumps using Volatility 3 to extract running processes, network connections, loaded modules, and evidence of malicious activity."
+        },
+        {
+          "name": "performing-disk-forensics-investigation",
+          "description": "Conducts disk forensics investigations using forensic imaging, file system analysis, artifact recovery, and timeline reconstruction to support incident response cases. Utilizes tools such as FTK Imager, Autopsy, and The Sleuth Kit for evidence acquisition, deleted file recovery, and artifact examination. Activates for requests involving disk forensics, hard drive analysis, forensic imaging, file recovery, evidence acquisition, or digital forensic investigation. '"
+        },
+        {
+          "name": "performing-endpoint-forensics-investigation",
+          "description": "Performs digital forensics investigation on compromised endpoints including memory acquisition, disk imaging, artifact analysis, and timeline reconstruction. Use when investigating security incidents, collecting evidence for legal proceedings, or analyzing endpoint compromise scope. Activates for requests involving endpoint forensics, memory analysis, disk forensics, or incident investigation. '"
+        },
+        {
+          "name": "performing-log-analysis-for-forensic-investigation",
+          "description": "Collect, parse, and correlate system, application, and security logs to reconstruct events and establish timelines during forensic investigations."
+        },
+        {
+          "name": "building-incident-response-playbook",
+          "description": "Designs and documents structured incident response playbooks that define step-by-step procedures for specific incident types aligned with NIST SP 800-61r3 and SANS PICERL frameworks. Covers playbook structure, decision trees, escalation criteria, RACI matrices, and integration with SOAR platforms. Activates for requests involving IR playbook creation, incident response procedure documentation, response runbook development, or SOAR playbook design. '"
+        },
+        {
+          "name": "triaging-security-incident-with-ir-playbook",
+          "description": "Classify and prioritize security incidents using structured IR playbooks to determine severity, assign response teams, and initiate appropriate response procedures."
+        },
+        {
+          "name": "recovering-deleted-files-with-photorec",
+          "description": "Recover deleted files from disk images and storage media using PhotoRec's file signature-based carving engine regardless of file system damage."
+        },
+        {
+          "name": "performing-file-carving-with-foremost",
+          "description": "Recover files from disk images and unallocated space using Foremost's header-footer signature carving to extract evidence regardless of file system state."
+        },
+        {
+          "name": "performing-nist-csf-maturity-assessment",
+          "description": "The NIST Cybersecurity Framework (CSF) 2.0, released in February 2024, provides a comprehensive taxonomy for managing cybersecurity risk through six core Functions - Govern, Identify, Protect, Detect, Respond, and Recover. This skill covers conducting a maturity assessment against the CSF using Implementation Tiers to measure organizational cybersecurity posture and create improvement roadmaps."
+        },
+        {
+          "name": "implementing-attack-surface-management",
+          "description": "Implements external attack surface management (EASM) using Shodan, Censys, and ProjectDiscovery tools (subfinder, httpx, nuclei) for asset discovery, subdomain enumeration, service fingerprinting, and exposure scoring. Includes a weighted risk scoring algorithm based on OWASP attack surface analysis methodology and the Relative Attack Surface Quotient (RSQ). Use when building continuous ASM programs or performing external reconnaissance for security assessments. '"
+        },
+        {
+          "name": "auditing-cloud-with-cis-benchmarks",
+          "description": "This skill details how to conduct cloud security audits using Center for Internet Security benchmarks for AWS, Azure, and GCP. It covers interpreting CIS Foundations Benchmark controls, running automated assessments with tools like Prowler and ScoutSuite, remediating failed controls, and maintaining continuous compliance monitoring against CIS v5 for AWS, v4 for Azure, and v4 for GCP. '"
+        },
+        {
+          "name": "implementing-secret-scanning-with-gitleaks",
+          "description": "This skill covers implementing Gitleaks for detecting and preventing hardcoded secrets in git repositories. It addresses configuring pre-commit hooks, CI/CD pipeline integration, custom rule authoring for organization-specific secrets, baseline management for existing repositories, and remediation workflows for exposed credentials. '"
+        },
+        {
+          "name": "detecting-aws-credential-exposure-with-trufflehog",
+          "description": "Detecting exposed AWS credentials in source code repositories, CI/CD pipelines, and configuration files using TruffleHog, git-secrets, and AWS-native detection mechanisms to prevent credential theft and unauthorized account access. '"
+        },
+        {
+          "name": "generating-and-analyzing-sboms",
+          "description": "Produce and ingest CycloneDX and SPDX SBOMs and correlate them to vulnerability intelligence."
+        },
+        {
+          "name": "analyzing-sbom-for-supply-chain-vulnerabilities",
+          "description": "Parses Software Bill of Materials (SBOM) in CycloneDX and SPDX JSON formats to identify supply chain vulnerabilities by correlating components against the NVD CVE database via the NVD 2.0 API. Builds dependency graphs, calculates risk scores, identifies transitive vulnerability paths, and generates compliance reports. Activates for requests involving SBOM analysis, software composition analysis, supply chain security assessment, dependency vulnerability scanning, CycloneDX/SPDX parsing, or CVE correlation. '"
+        },
+        {
+          "name": "verifying-build-provenance-with-slsa-sigstore",
+          "description": "Verify signed artifacts and SLSA build provenance with Sigstore cosign and slsa-verifier, enforce keyless OIDC identity, and apply SLSA Build levels to harden the software supply chain."
+        },
+        {
+          "name": "performing-authenticated-vulnerability-scan",
+          "description": "Authenticated (credentialed) vulnerability scanning uses valid system credentials to log into target hosts and perform deep inspection of installed software, patches, configurations, and security sett"
+        }
+      ]
+    },
+    {
+      "name": "methodology",
+      "title": "Engineering Methodology",
+      "category": "development",
+      "description": "Engineering methodology and multi-agent orchestration — the Superpowers workflow set (brainstorm→plan→TDD→debug→verify→finish), subagent-driven development, the ZCode SubAgent Team, Queen-Bee swarm dispatch, and the multi-agent master workflow.",
+      "skill_count": 18,
+      "skills": [
+        {
+          "name": "superpower-10x",
+          "description": "Use when building software, planning features, debugging issues, or executing development workflows - enhances agent productivity 10x through systematic processes, automated workflows, and intelligent task orchestration"
+        },
+        {
+          "name": "superpowers-brainstorming",
+          "description": "Use when you have a vague problem statement or open-ended request, before writing any spec — tease out goals, constraints, and scope through structured questioning"
+        },
+        {
+          "name": "superpowers-dispatching-parallel-agents",
+          "description": "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies — spawn parallel subagents with isolated context"
+        },
+        {
+          "name": "superpowers-executing-plans",
+          "description": "Use when you have a written implementation plan to execute — load plan, review critically, execute tasks with review checkpoints"
+        },
+        {
+          "name": "superpowers-finishing-a-development-branch",
+          "description": "Use when wrapping up a development branch before PR — run tests, lint, verify, clean up, and squash"
+        },
+        {
+          "name": "superpowers-receiving-code-review",
+          "description": "Use when receiving code review feedback — evaluate suggestions with technical rigor, don't blindly implement"
+        },
+        {
+          "name": "superpowers-requesting-code-review",
+          "description": "Use before submitting any PR or merge request — do a final pass for security, quality, and consistency"
+        },
+        {
+          "name": "superpowers-subagent-driven-development",
+          "description": "Execute implementation plans by dispatching subagents per task with review checkpoints — the core autonomous development workflow"
+        },
+        {
+          "name": "superpowers-systematic-debugging",
+          "description": "Use when encountering any bug, test failure, or unexpected behavior — find root cause before proposing fixes"
+        },
+        {
+          "name": "superpowers-test-driven-development",
+          "description": "Use when implementing any feature or bugfix — write the test first, watch it fail, write minimal code to pass"
+        },
+        {
+          "name": "superpowers-using-git-worktrees",
+          "description": "Use when starting feature work that needs isolation from current workspace — creates isolated worktrees so multiple branches can be worked on without interference"
+        },
+        {
+          "name": "superpowers-using-superpowers",
+          "description": "Use when starting a new session or task — loads the Superpowers methodology and reminds the agent to follow the process"
+        },
+        {
+          "name": "superpowers-verification-before-completion",
+          "description": "Use before declaring any task done — verify against spec, check edge cases, confirm tests pass, ensure no regressions"
+        },
+        {
+          "name": "superpowers-writing-plans",
+          "description": "Use when you have a spec or requirements for a multi-step task, before touching code — write comprehensive bite-sized implementation plans"
+        },
+        {
+          "name": "superpowers-writing-skills",
+          "description": "Use when creating or significantly updating a skill — write structured, reusable workflows with clear triggers and tested procedures"
+        },
+        {
+          "name": "zcode-subagent-team",
+          "description": "ZCode SubAgent Team — a Hermes-Kanban multi-lane agent swarm where a Queen (GLM ZCode orchestrator/verifier) delegates bulk work to MiniMax-M3 workers across General / Vision / Coder / Debug / Verify / Quality-Gate lanes, all routed through Hermes. Use when orchestrating a staged, multi-lane coding or debugging pipeline; pairs with the zc-* subagents shipped in this toolkit."
+        },
+        {
+          "name": "multi-agent-master-workflow",
+          "description": "Use when user asks for designing a master-controller and subagent workflow, parallelizing independent workstreams, coordinating cross-repository cleanup, or auditing a cron fleet with workers. NOT for a deterministic single-worker task or a request that only needs a written plan. Provides reusable phases, scope verification, briefing templates, ReAct reflection, conflict controls, and queen-side synthesis."
+        },
+        {
+          "name": "queen-bee-schwarm-dispatch",
+          "description": "Use when user asks to orchestrate parallel subagents, dispatch a Queen-Bee swarm, run orthogonal scouts, or audit separate artifacts concurrently. NOT for one-file sequential edits or parallel writers with overlapping targets. Provides affinity-safe briefs, wave dispatch, Queen verification, and report-integration patterns."
+        }
+      ]
+    },
+    {
+      "name": "media",
+      "title": "Media & Generation",
+      "category": "creative",
+      "description": "Media generation via MiniMax and image models — the mmx CLI, MiniMax agent builder, crypto trading, DOCX/PDF, and Nano Banana Pro image gen.",
+      "skill_count": 6,
+      "skills": [
+        {
+          "name": "mmx-cli",
+          "description": "Use mmx to generate text, images, video, speech, and music via the MiniMax AI platform. Use when the user wants to create media content, chat with MiniMax models, perform web search, or manage MiniMax API resources from the terminal."
+        },
+        {
+          "name": "minimax-ai-agent-builder",
+          "description": "A comprehensive guide to building your first AI agent using MiniMax. Use when users ask how to create AI agents, build autonomous assistants, develop LLM-powered applications, or get started with MiniMax agent development. Triggers include phrases like \"build an AI agent\", \"create a MiniMax agent\", \"how to make an agent\", \"AI agent tutorial\", \"MiniMax development guide\", or \"autonomous AI assistant setup\"."
+        },
+        {
+          "name": "minimax-crypto-trading",
+          "description": "A professional-grade crypto trading decision agent for BTC/ETH/SOL. Uses multi-layer analysis (Macro Gatekeeper, Anti-Consensus Filter, SFP Liquidity Hunter, Committee Decision, Minimax Executor, Risk Governor) to identify asymmetric trades. Prioritizes survival over profit, outputs only EXECUTE or NO TRADE decisions. Trigger keywords: crypto, trading, BTC, ETH, SOL, trade signal, market analysis, SFP, swing failure pattern, funding rate, liquidity."
+        },
+        {
+          "name": "minimax-docx",
+          "description": "Professional DOCX document creation, editing, and formatting using OpenXML SDK (.NET). Three pipelines: (A) create new documents from scratch, (B) fill/edit content in existing documents, (C) apply template formatting with XSD validation gate-check. MUST use this skill whenever the user wants to produce, modify, or format a Word document — including when they say \"write a report\", \"draft a proposal\", \"make a contract\", \"fill in this form\", \"reformat to match this template\", or any task whose final output is a .docx file. Even if the user doesn't mention \"docx\" explicitly, if the task implies a printable/formal document, use this skill."
+        },
+        {
+          "name": "minimax-pdf",
+          "description": "Use this skill when visual quality and design identity matter for a PDF. CREATE (generate from scratch): \"make a PDF\", \"generate a report\", \"write a proposal\", \"create a resume\", \"beautiful PDF\", \"professional document\", \"cover page\", \"polished PDF\", \"client-ready document\". FILL (complete form fields): \"fill in the form\", \"fill out this PDF\", \"complete the form fields\", \"write values into PDF\", \"what fields does this PDF have\". REFORMAT (apply design to an existing doc): \"reformat this document\", \"apply our style\", \"convert this Markdown/text to PDF\", \"make this doc look good\", \"re-style this PDF\". This skill uses a token-based design system: color, typography, and spacing are derived from the document type and flow through every page. The output is print-ready. Prefer this skill when appearance matters, not just when any PDF output is needed."
+        },
+        {
+          "name": "nano-banana-pro",
+          "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use for image create/modify requests incl. edits. Supports text-to-image + image-to-image; 1K/2K/4K; use --input-image."
+        }
+      ]
+    },
+    {
+      "name": "docs-web-research",
+      "title": "Docs, Web & Research",
+      "category": "productivity",
+      "description": "Document generation, web, SEO, and business research — PPT/McKinsey decks, research papers, frontend design, web scraping, Excel, n8n, SEO/GEO, job hunting, sales power maps, SaaS niches, NotebookLM, knowledge digest, and prompt engineering.",
+      "skill_count": 15,
+      "skills": [
+        {
+          "name": "pptx-generator",
+          "description": "Generate, edit, and read PowerPoint presentations. Create from scratch with PptxGenJS (cover, TOC, content, section divider, summary slides), edit existing PPTX via XML workflows, or extract text with markitdown. Triggers: PPT, PPTX, PowerPoint, presentation, slide, deck, slides."
+        },
+        {
+          "name": "mckinsey-presentation-generator",
+          "description": "A professional McKinsey consulting-style multi-page HTML presentation generator. Creates data-rich, research-backed slide decks with SVG charts, market analysis, and industry insights. Produces formal, information-dense slides with proper source citations. TRIGGERS: presentation, slide deck, PPT, McKinsey, consulting deck, data presentation, business slides, market analysis presentation."
+        },
+        {
+          "name": "research-paper-generator",
+          "description": "Autonomously produces doctorate-level research papers (12,000-15,000 words) as formatted Word documents (.docx). Covers the full pipeline: topic analysis, research question formulation, literature discovery and evaluation, critical synthesis, theoretical/methodological framework development, data analysis (if empirical), academic writing of all sections, quality assurance, citation formatting, visual content sourcing, and professional document production. Trigger: research paper, academic paper, dissertation, thesis writing, literature review, scholarly paper, doctorate-level paper, .docx research document."
+        },
+        {
+          "name": "frontend-design",
+          "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use when users ask to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics."
+        },
+        {
+          "name": "seo-geo-optimization-expert",
+          "description": "Comprehensive SEO and GEO (Generative Engine Optimization) expert. Use when the user asks to: audit content quality, EEAT score, CORE-EEAT audit, audit domain authority, CITE audit, domain trust score, optimize for AI, get cited by ChatGPT, AI optimization, make content AI-quotable, find keywords, keyword research, topic ideas, audit page SEO, on-page SEO check, SEO score, why is this page not ranking, write SEO content, create a blog post, write an article, draft optimized content, content gap analysis, competitor analysis, SERP analysis, schema markup, meta tags, internal linking, content refresh, rank tracking, backlink analysis, or performance reporting."
+        },
+        {
+          "name": "web-scraper",
+          "description": "Scrape, crawl, and extract data from websites. Use when users ask to scrape web pages, extract content, crawl websites, or collect data from the internet."
+        },
+        {
+          "name": "excel-xlsx",
+          "description": "Build and manage Microsoft Excel spreadsheets with precision. Create, modify, and audit workbooks featuring formulas, formatting, and data integrity while preserving templates. Use when working with Excel files, .xlsx, .xlsm, .csv, or .tsv formats where formulas, formatting, and workbook reliability are essential."
+        },
+        {
+          "name": "n8n",
+          "description": "Manage n8n workflows and automations via API. Use when working with n8n workflows, executions, or automation tasks - listing workflows, activating/deactivating, checking execution status, manually triggering workflows, or debugging automation issues."
+        },
+        {
+          "name": "deep-research-agent",
+          "description": "Comprehensive research agent for in-depth investigation. Use when users ask for deep research, comprehensive analysis, market research, academic surveys, competitive analysis, technology trends, or any topic requiring 100+ source verification. Triggers on requests like \"調査して\", \"research\", \"分析して\", \"レポートを作成\", \"comprehensive report\", \"deep dive\", \"thorough analysis\"."
+        },
+        {
+          "name": "prompt-engineer",
+          "description": "Expert prompt engineering agent that helps users craft, critique, refine, and debug prompts for LLMs and AI systems. Use this skill whenever the user needs help writing a prompt, improving an existing prompt, debugging why a prompt produces bad output, creating system prompts, designing few-shot examples, or learning prompt techniques. Also trigger when the user mentions \"prompt\", \"system prompt\", \"instructions for AI\", \"make it respond better\", \"the AI keeps doing X\", or asks how to get better results from an AI model. This skill covers prompt generation, analysis, refinement, and education on prompting strategies."
+        },
+        {
+          "name": "job-hunter",
+          "description": "Comprehensive job hunting and career assistant. Handles the full job search lifecycle: profile collection, multi-platform job discovery, relevance scoring, resume optimization, cover letter writing, application preparation, application tracking, interview preparation, and strategy optimization. Trigger keywords: job search, find jobs, apply, resume, cover letter, interview prep, job hunt, career, application, hiring."
+        },
+        {
+          "name": "sales-power-map",
+          "description": "B2B sales intelligence assistant: parse vague sales intent, discover target companies, mine org structures, build decision-maker Power Maps with contact info and flanking strategies. Trigger on: 'sell', 'find customers', 'power map', 'decision makers', 'target company'."
+        },
+        {
+          "name": "saas-niche-finder",
+          "description": "Discovers profitable SaaS niches and generates validated business ideas. Use when finding untapped market opportunities, analyzing competitor gaps, identifying customer pain points, or generating SaaS product ideas backed by market research. Trigger keywords: SaaS idea, niche finder, market opportunity, competitor gap, pain point discovery, startup idea, business validation."
+        },
+        {
+          "name": "notebooklm-bridge",
+          "description": "Use when user asks for managing NotebookLM notebooks and sources, asking citation-grounded questions over uploaded material, generating audio briefings or artifacts, or troubleshooting nblm authentication. NOT for general Google Drive editing or ungrounded open-web research. Operates NotebookLM through the nblm CLI for source ingestion, cited synthesis, artifact generation, auth refresh, and repo-doc Q&A."
+        },
+        {
+          "name": "knowledge-digest",
+          "description": "Converts textbooks or PDFs into personalized, multimodal interactive learning materials including handwritten notes, quiz webpages, slides, audio courses, and mind maps. Trigger: learning materials, convert textbook, study notes, quiz generation, slides from PDF, mind map, audio course."
+        }
+      ]
+    },
+    {
+      "name": "computer-use",
+      "title": "Computer-Use & GreyHack",
+      "category": "automation",
+      "description": "Desktop and game GUI automation — the GreyHack Computer-Use suite plus game and desktop-window reconnaissance.",
+      "skill_count": 3,
+      "skills": [
+        {
+          "name": "greyhack-computer-use-suite",
+          "description": "Use when driving GreyHack gameplay via Computer-Use automation suite."
+        },
+        {
+          "name": "computer-use-game-reconnaissance",
+          "description": "Use when user asks for computer use game reconnaissance, Computer-Use Game Reconnaissance, When to Use This Skill, Why Bother? (Cost vs Value). NOT for unrelated tasks, simple questions. Reconnoiters game executables via static file analysis before GUI automation."
+        },
+        {
+          "name": "desktop-window-reconnaissance",
+          "description": "Use when exploring a desktop application or game window for reconnaissance."
+        }
+      ]
+    },
+    {
+      "name": "dev-essentials",
+      "title": "Dev Essentials",
+      "category": "development",
+      "description": "Engineering fundamentals — debugging patterns, defensive programming, config-propagation bugs, reference-architecture research, open-source extraction, stealth web scraping, web-content recon, competitive-landscape research, and ClickHouse best practices.",
+      "skill_count": 9,
+      "skills": [
+        {
+          "name": "stealth-web-scraping",
+          "description": "| Bypass bot detection and anti-scraping measures when browser automation is blocked. Covers CloakBrowser, undetected-chromedriver, and Firecrawl self-hosted as the three pillars: stealth browsers, patched drivers, and headless scraping-as-a-service."
+        },
+        {
+          "name": "open-source-extraction",
+          "description": "Extract specific packages from large open-source monorepos and adapt them for standalone use. Covers dependency mapping, stripping cloud/infra deps, creating shim packages, and iterative build fixing."
+        },
+        {
+          "name": "reference-architecture-research",
+          "description": "Systematic deep-architecture research of reference repositories before greenfield implementation — clone, audit, feature parity, ADRs, provenance, skeleton."
+        },
+        {
+          "name": "debugging-patterns",
+          "description": "Concrete debugging tactics for error classification, library API verification, and multi-location bug fixes. Supplements systematic-debugging with pattern-level techniques."
+        },
+        {
+          "name": "defensive-programming",
+          "description": "Defensive programming practices to prevent bugs and increase code resilience"
+        },
+        {
+          "name": "config-propagation-bugs",
+          "description": "Detect and fix silent data loss from incomplete model serialization, wholesale overwrites, and live-probe replacement of configured values."
+        },
+        {
+          "name": "web-content-reconnaissance",
+          "description": "| Systematic discovery of hidden content across websites — subdomain enumeration, JavaScript Easter-egg hunting, Git commit archeology, API endpoint discovery, and client-side crypto reverse-engineering. For when the user asks you to \"find hidden stuff\" or \"solve a puzzle\" spread across multiple pages/sites."
+        },
+        {
+          "name": "competitive-software-landscape",
+          "description": "Systematic multi-registry research of open-source tools and products across categories — GitHub star queries, npm/PyPI/cargo fallback, and saturation scoring."
+        },
+        {
+          "name": "clickhouse-best-practices",
+          "description": "MUST USE when reviewing ClickHouse schemas, queries, or configurations. Specialized expert for ClickHouse database optimization covering schema design, query optimization, JOIN strategies, partition strategies, data type selection, insert performance tuning, and troubleshooting. Contains 28 rules that MUST be checked before providing recommendations. Triggers on: CREATE TABLE, ALTER TABLE, ORDER BY, PRIMARY KEY, slow query, JOIN optimization, data ingestion, update/delete strategy, ReplacingMergeTree, partitioning."
+        }
+      ]
+    }
+  ]
+}

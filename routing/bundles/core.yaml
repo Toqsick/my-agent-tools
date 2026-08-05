@@ -1,0 +1,15 @@
+name: core
+description: Personal seed skills, productivity, and routing meta — the daily-driver layer for Basti's workstation: Obsidian second-brain, Yuno cleaner, 3D printing, Yuno team orchestration/routing/preferences, model selection, folder tidy, daily briefing, and the skill↔MCP router.
+skills:
+  - second-brain
+  - yuno-cleaner
+  - drucker-experte
+  - tidy-folder
+  - daily-briefing
+  - model-selector
+  - skill-mcp-router
+  - yuno-team-orchestrator
+  - yuno-team-routing
+  - yuno-user-preferences
+instruction: |
+  Tasks in the Core & Personal domain route to the core pack. Representative skills: second-brain, yuno-cleaner, drucker-experte, tidy-folder, daily-briefing, model-selector…. See packs/core/README.md for the full roster and triggers.

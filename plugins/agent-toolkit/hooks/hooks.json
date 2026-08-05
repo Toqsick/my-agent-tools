@@ -1,0 +1,17 @@
+{
+  "description": "agent-toolkit session banner — on session start, print a one-line status of the installed toolkit (skill/pack/agent/MCP counts) with a hint to run /toolkit. Sensor only: emits a message, never returns a permission decision.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/toolkit-status.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

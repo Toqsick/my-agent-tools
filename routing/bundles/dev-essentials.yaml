@@ -1,0 +1,14 @@
+name: dev-essentials
+description: Engineering fundamentals — debugging patterns, defensive programming, config-propagation bugs, reference-architecture research, open-source extraction, stealth web scraping, web-content recon, competitive-landscape research, and ClickHouse best practices.
+skills:
+  - stealth-web-scraping
+  - open-source-extraction
+  - reference-architecture-research
+  - debugging-patterns
+  - defensive-programming
+  - config-propagation-bugs
+  - web-content-reconnaissance
+  - competitive-software-landscape
+  - clickhouse-best-practices
+instruction: |
+  Tasks in the Dev Essentials domain route to the dev-essentials pack. Representative skills: stealth-web-scraping, open-source-extraction, reference-architecture-research, debugging-patterns, defensive-programming, config-propagation-bugs…. See packs/dev-essentials/README.md for the full roster and triggers.

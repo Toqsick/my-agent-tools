@@ -1,0 +1,23 @@
+name: methodology
+description: Engineering methodology and multi-agent orchestration — the Superpowers workflow set (brainstorm→plan→TDD→debug→verify→finish), subagent-driven development, the ZCode SubAgent Team, Queen-Bee swarm dispatch, and the multi-agent master workflow.
+skills:
+  - superpower-10x
+  - superpowers-brainstorming
+  - superpowers-dispatching-parallel-agents
+  - superpowers-executing-plans
+  - superpowers-finishing-a-development-branch
+  - superpowers-receiving-code-review
+  - superpowers-requesting-code-review
+  - superpowers-subagent-driven-development
+  - superpowers-systematic-debugging
+  - superpowers-test-driven-development
+  - superpowers-using-git-worktrees
+  - superpowers-using-superpowers
+  - superpowers-verification-before-completion
+  - superpowers-writing-plans
+  - superpowers-writing-skills
+  - zcode-subagent-team
+  - multi-agent-master-workflow
+  - queen-bee-schwarm-dispatch
+instruction: |
+  Tasks in the Engineering Methodology domain route to the methodology pack. Representative skills: superpower-10x, superpowers-brainstorming, superpowers-dispatching-parallel-agents, superpowers-executing-plans, superpowers-finishing-a-development-branch, superpowers-receiving-code-review…. See packs/methodology/README.md for the full roster and triggers.

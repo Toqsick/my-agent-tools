@@ -1,0 +1,11 @@
+name: media
+description: Media generation via MiniMax and image models — the mmx CLI, MiniMax agent builder, crypto trading, DOCX/PDF, and Nano Banana Pro image gen.
+skills:
+  - mmx-cli
+  - minimax-ai-agent-builder
+  - minimax-crypto-trading
+  - minimax-docx
+  - minimax-pdf
+  - nano-banana-pro
+instruction: |
+  Tasks in the Media & Generation domain route to the media pack. Representative skills: mmx-cli, minimax-ai-agent-builder, minimax-crypto-trading, minimax-docx, minimax-pdf, nano-banana-pro. See packs/media/README.md for the full roster and triggers.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "2.0",
-  "generated_at": "2026-07-24T14:16:22+02:00",
+  "generated_at": "2026-08-05T03:41:38+00:00",
   "repo": "Toqsick/my-agent-tools",
   "how_to_use": "See ROUTING.md. Fetch this file, match a task against each skill's triggers/tags/category, rank, then fetch the chosen skill's `path`. Installed skills also load in-session as their `namespace`. Multi-step work: see `workflows`.",
   "counts": {
