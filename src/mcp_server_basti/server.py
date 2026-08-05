@@ -26,7 +26,18 @@ from fastmcp.exceptions import ToolError
 from mcp.types import ToolAnnotations
 
 from mcp_server_basti.instrumentation import with_tool_logging
-from mcp_server_basti.schemas import RepoInfo, SystemStatus
+from mcp_server_basti.schemas import (
+    BlameEntry,
+    BootTiming,
+    DiskStatus,
+    FailedUnits,
+    Filesystem,
+    GpuStatus,
+    MemoryStatus,
+    PowerProfile,
+    RepoInfo,
+    SystemStatus,
+)
 
 # Standard-Repository für get_repo_info — wird relativ zu dieser Datei bestimmt.
 # (Portabel; kein Env-Override notwendig, da der Server immer im Repo läuft.)
@@ -45,6 +56,31 @@ _READ_ONLY = ToolAnnotations(
 _SYSTEM_TAGS = {"system", "read-only"}
 _TOOL_TIMEOUT = 15.0
 _SUBPROC_TIMEOUT = 10
+
+
+def _run(
+    argv: list[str],
+    *,
+    cwd: str | None = None,
+    check: bool = True,
+    timeout: int = _SUBPROC_TIMEOUT,
+) -> subprocess.CompletedProcess[str]:
+    """Führt ein Kommando aus; übersetzt Subprocess-Fehler in ToolError.
+
+    Zentraler Helfer, damit die Tool-Body reine Parsing-Logik bleiben.
+    """
+    try:
+        return subprocess.run(
+            argv,
+            check=check,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            cwd=cwd,
+        )
+    except (OSError, subprocess.SubprocessError, UnicodeDecodeError) as exc:
+        cmd = " ".join(argv)
+        raise ToolError(f"Kommando '{cmd}' fehlgeschlagen: {exc}") from exc
 
 
 @mcp.tool(
@@ -138,6 +174,193 @@ def get_repo_info() -> RepoInfo:
         ) from exc
 
     return RepoInfo(branch=branch, last_commit=last_commit, detached=detached)
+
+
+@mcp.tool(
+    tags=_SYSTEM_TAGS,
+    annotations=_READ_ONLY,
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_disk_status() -> DiskStatus:
+    """Liefert Belegung aller Dateisysteme (``df -h``).
+
+    /mnt/DATA ist auf dieser Workstation kritisch (95%+); das Tool macht keine
+    teure ``du``-Analyse der Home-Consumer (zu langsam für ein MCP-Tool) — dafür
+    gibt es ``yuno-cleaner scan``.
+    """
+    proc = _run(
+        ["df", "-h", "--output=source,fstype,size,used,avail,pcent,target"],
+        check=False,
+    )
+    filesystems: list[Filesystem] = []
+    lines = proc.stdout.splitlines()
+    # Erste Zeile ist der Header von df --output.
+    for line in lines[1:]:
+        parts = line.split()
+        if len(parts) != 7:
+            continue
+        filesystems.append(
+            Filesystem(
+                source=parts[0],
+                fstype=parts[1],
+                size=parts[2],
+                used=parts[3],
+                avail=parts[4],
+                pcent=parts[5],
+                target=parts[6],
+            )
+        )
+    return DiskStatus(filesystems=filesystems)
+
+
+@mcp.tool(
+    tags=_SYSTEM_TAGS,
+    annotations=_READ_ONLY,
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_gpu_status() -> GpuStatus:
+    """Liefert NVIDIA GPU-Status (Treiber, Temp, Auslastung, VRAM, Power-Limits).
+
+    Verwendet ``nvidia-smi`` (NVML-Pfad, funktioniert unter Wayland). power_limit/
+    power_default/power_max sind ``None`` falls der POWER-Abschnitt nicht auslesbar ist.
+    """
+    proc = _run(
+        [
+            "nvidia-smi",
+            (
+                "--query-gpu=driver_version,name,temperature.gpu,"
+                "utilization.gpu,memory.used,memory.total,pstate"
+            ),
+            "--format=csv,noheader,nounits",
+        ],
+    )
+    fields = [f.strip() for f in proc.stdout.strip().split(",")]
+    if len(fields) < 7:
+        raise ToolError(
+            f"nvidia-smi lieferte unerwartetes Format: {proc.stdout!r}"
+        )
+
+    power_limit = power_default = power_max = None
+    power_proc = _run(["nvidia-smi", "-q", "-d", "POWER"], check=False)
+    for line in power_proc.stdout.splitlines():
+        stripped = line.strip()
+        # nvidia-smi listet pro GPU einen Abschnitt; bei mehreren GPUs gewinnt
+        # der erste Abschnitt (GPU 0) — später Abschnitte (iGPU, oft N/A) nicht
+        # überschreiben. "Current Power Limit" ist der Live-Wert.
+        value = stripped.split(":", 1)[1].strip() if ":" in stripped else ""
+        if stripped.startswith("Current Power Limit") and power_limit is None:
+            power_limit = value
+        elif stripped.startswith("Default Power Limit") and power_default is None:
+            power_default = value
+        elif stripped.startswith("Max Power Limit") and power_max is None:
+            power_max = value
+
+    return GpuStatus(
+        driver_version=fields[0],
+        name=fields[1],
+        temperature_gpu=fields[2],
+        utilization_gpu=fields[3],
+        memory_used=fields[4],
+        memory_total=fields[5],
+        pstate=fields[6],
+        power_limit=power_limit,
+        power_default=power_default,
+        power_max=power_max,
+    )
+
+
+@mcp.tool(
+    tags=_SYSTEM_TAGS,
+    annotations=_READ_ONLY,
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_memory_status() -> MemoryStatus:
+    """Liefert RAM/Swap-Belegung (``free -h``), zram und Swaps als rohe Text-Blöcke."""
+    free = _run(["free", "-h"]).stdout
+    zram = _run(["zramctl"], check=False).stdout
+    swaps = _run(["swapon", "--show"], check=False).stdout
+    return MemoryStatus(free=free, zram=zram, swaps=swaps)
+
+
+@mcp.tool(
+    tags=_SYSTEM_TAGS,
+    annotations=_READ_ONLY,
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_failed_units() -> FailedUnits:
+    """Liefert fehlgeschlagene systemd-Units (``systemctl --failed``).
+
+    systemctl beendet non-zero, falls Units fehlgeschlagen sind — das ist für
+    uns kein Fehler, sondern genau der zu reportende Zustand.
+    """
+    proc = _run(["systemctl", "--failed", "--no-pager"], check=False)
+    failed: list[str] = []
+    for line in proc.stdout.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("UNIT"):
+            continue
+        # Überspringe die Summary-Zeile ("N loaded units listed.") — echte
+        # Unit-Namen enthalten immer ein Suffix wie .service/.mount/.timer.
+        first = stripped.split()[0]
+        if "." in first:
+            failed.append(first)
+    return FailedUnits(failed=failed, raw=proc.stdout)
+
+
+@mcp.tool(
+    tags=_SYSTEM_TAGS,
+    annotations=_READ_ONLY,
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_kernel_warnings() -> str:
+    """Liefert Kernel-Warning-Logs des aktuellen Boot (``journalctl -b -p warning``).
+
+    Bewusst roher Text — journalctl parsen ist fragil (Timestamps, multiline
+    Stack-Traces, PAM-Rauschen). Clients filtern selbst.
+    """
+    proc = _run(["journalctl", "-b", "-p", "warning", "--no-pager"], check=False)
+    return proc.stdout
+
+
+@mcp.tool(
+    tags=_SYSTEM_TAGS,
+    annotations=_READ_ONLY,
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_boot_timing() -> BootTiming:
+    """Liefert Boot-Timing (``systemd-analyze blame`` + ``critical-chain``)."""
+    blame_proc = _run(["systemd-analyze", "blame", "--no-pager"], check=False)
+    blame: list[BlameEntry] = []
+    for line in blame_proc.stdout.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        parts = stripped.split(maxsplit=1)
+        if len(parts) == 2:
+            blame.append(BlameEntry(time=parts[0], unit=parts[1]))
+
+    chain_proc = _run(
+        ["systemd-analyze", "critical-chain", "--no-pager"], check=False
+    )
+    return BootTiming(blame=blame, critical_chain=chain_proc.stdout)
+
+
+@mcp.tool(
+    tags=_SYSTEM_TAGS,
+    annotations=_READ_ONLY,
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_power_profile() -> PowerProfile:
+    """Liefert den aktiven power-profiles-daemon Modus (``powerprofilesctl get``)."""
+    proc = _run(["powerprofilesctl", "get"])
+    return PowerProfile(profile=proc.stdout.strip())
 
 
 def main() -> None:

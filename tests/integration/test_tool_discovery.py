@@ -1,7 +1,7 @@
 """Integration-Test: Tool-Discovery über stdio_client.
 
 Startet den MCP-Server als Subprozess, initialisiert die Session und
-verifiziert, dass exakt die 3 Tools aus dem Server-Contract advertised werden.
+verifiziert, dass exakt die Tools aus dem Server-Contract advertised werden.
 """
 
 from __future__ import annotations
@@ -13,11 +13,24 @@ from mcp.client.stdio import stdio_client
 
 from tests.integration.conftest import STDIO_TIMEOUT
 
-EXPECTED_TOOLS = {"get_system_status", "echo_tool", "get_repo_info"}
+# Server-Contract: alle advertised Tools. Bei Änderungen hier pflegen, dann
+# test_tool_discovery_exactly_expected_tools automatisch grün.
+EXPECTED_TOOLS = {
+    "get_system_status",
+    "echo_tool",
+    "get_repo_info",
+    "get_disk_status",
+    "get_gpu_status",
+    "get_memory_status",
+    "get_failed_units",
+    "get_kernel_warnings",
+    "get_boot_timing",
+    "get_power_profile",
+}
 
 
-async def test_tool_discovery_lists_all_three_tools(server_params) -> None:
-    """Nach session.initialize() sind alle 3 Server-Tools discoverable."""
+async def test_tool_discovery_lists_all_expected_tools(server_params) -> None:
+    """Nach session.initialize() sind alle erwarteten Tools discoverable."""
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
             await asyncio.wait_for(session.initialize(), timeout=STDIO_TIMEOUT)
@@ -33,8 +46,8 @@ async def test_tool_discovery_lists_all_three_tools(server_params) -> None:
             )
 
 
-async def test_tool_discovery_exactly_three_tools(server_params) -> None:
-    """Der Server advertised exakt 3 Tools — keine Extra-Tools, keine fehlenden."""
+async def test_tool_discovery_exactly_expected_tools(server_params) -> None:
+    """Der Server advertised exakt die erwarteten Tools — keine Extra, keine fehlenden."""
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
             await asyncio.wait_for(session.initialize(), timeout=STDIO_TIMEOUT)

@@ -23,3 +23,71 @@ class RepoInfo(TypedDict):
     branch: str
     last_commit: str
     detached: bool
+
+
+class Filesystem(TypedDict):
+    """Eine Zeile aus ``df -h --output=...``."""
+
+    source: str
+    fstype: str
+    size: str
+    used: str
+    avail: str
+    pcent: str
+    target: str
+
+
+class DiskStatus(TypedDict):
+    """Ergebnis von ``get_disk_status``."""
+
+    filesystems: list[Filesystem]
+
+
+class GpuStatus(TypedDict):
+    """Ergebnis von ``get_gpu_status`` (eine GPU)."""
+
+    driver_version: str
+    name: str
+    temperature_gpu: str
+    utilization_gpu: str
+    memory_used: str
+    memory_total: str
+    pstate: str
+    power_limit: str | None
+    power_default: str | None
+    power_max: str | None
+
+
+class MemoryStatus(TypedDict):
+    """Ergebnis von ``get_memory_status`` (rohe Text-Blöcke, unflexible Formate)."""
+
+    free: str
+    zram: str
+    swaps: str
+
+
+class FailedUnits(TypedDict):
+    """Ergebnis von ``get_failed_units``."""
+
+    failed: list[str]
+    raw: str
+
+
+class BlameEntry(TypedDict):
+    """Eine Zeile aus ``systemd-analyze blame``."""
+
+    unit: str
+    time: str
+
+
+class BootTiming(TypedDict):
+    """Ergebnis von ``get_boot_timing``."""
+
+    blame: list[BlameEntry]
+    critical_chain: str
+
+
+class PowerProfile(TypedDict):
+    """Ergebnis von ``get_power_profile``."""
+
+    profile: str
