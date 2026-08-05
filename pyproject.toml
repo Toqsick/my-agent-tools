@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-server-basti"
+version = "0.1.0"
+description = "Privater lokaler stdio-MCP-Server mit FastMCP"
+requires-python = ">=3.11"
+dependencies = ["mcp[cli]>=1.0", "fastmcp>=2.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+mcp-server-basti = "mcp_server_basti.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_server_basti"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["src"]

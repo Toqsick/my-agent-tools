@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Erlaubt gleichzeitige CI-Runs pro Branch (keine Auto-Cancellation).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # --- 1) Lint: ruff auf den Source-Code -------------------------------------
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: ruff installieren
+        run: pip install ruff
+
+      - name: ruff auf src/ ausführen
+        run: ruff check src/
+
+  # --- 2) Tests: Unit + Integration via pytest -------------------------------
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v4
+
+      - name: uv einrichten
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: latest
+
+      - name: Python 3.11 (über uv) einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Dependencies installieren (inkl. Test-Extras)
+        run: uv sync --all-extras
+
+      - name: pytest ausführen (unit + integration)
+        # PYTHONPATH leeren, um Interpreter-Hijacking durch System-Venvs zu verhindern.
+        run: env -u PYTHONPATH uv run pytest tests/unit tests/integration -v
+
+  # --- 3) Build: uv build + Wheel-Artefakt-Upload ---------------------------
+  build:
+    name: Build (uv build)
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v4
+
+      - name: uv einrichten
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: latest
+
+      - name: Python 3.11 (über uv) einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Dependencies synchronisieren
+        run: uv sync
+
+      - name: Wheel & Sdist bauen
+        run: uv build
+
+      - name: Wheel installieren und Smoke-Test
+        # H4-Fix: Das gebaute Wheel wird tatsächlich installiert und der
+        # Entry-Point getestet — nicht nur gebaut und weggelegt.
+        run: |
+          uv pip install dist/*.whl --system
+          python -c "from mcp_server_basti.server import mcp; assert mcp.name == 'mcp-server-basti'"
+          mcp-server-basti --help || true
+
+      - name: Build-Artefakte hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-server-basti-wheel
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14

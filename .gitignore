@@ -19,6 +19,13 @@ Thumbs.db
 *.log
 .cache/
 tmp/
+.pytest_cache/
+.ruff_cache/
+
+# Hermes Agent lokale Daten (Pläne, Cache — nicht fürs Repo)
+.hermes/
+
+# uv lockfile wird NICHT ignoriert (reproducible builds)
 
 # Never commit secrets
 .env
