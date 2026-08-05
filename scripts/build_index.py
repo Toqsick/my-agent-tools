@@ -409,7 +409,8 @@ def write_navigation(index: dict, packs: list[dict] | None = None) -> None:
     if packs:
         lines.append("## Skill Packs (installed-skill grouping)")
         lines.append("")
-        lines.append(f"The {sum(p['skill_count'] for p in packs)} installed skills are grouped "
+        packed_skill_total = sum(p.get("skill_count", len(p.get("skills", []))) for p in packs)
+        lines.append(f"The {packed_skill_total} installed skills are grouped "
                      f"into {len(packs)} themed packs. Browse with the `/toolkit` command; "
                      f"see [PACKS.md](PACKS.md) for the pack roadmap.")
         lines.append("")
