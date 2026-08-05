@@ -134,5 +134,5 @@ JSON-Syntax, `command`, `args`, `cwd` prüfen. Den Befehl `uv run mcp-server-bas
 ### MCP-Handshake oder JSON-Parse-Fehler
 Der Server schreibt Logs nach stderr. Wenn andere Komponenten auf stdout schreiben, wird der JSON-RPC-Stream beschädigt. Sicherstellen, dass nur der MCP-Server auf stdout zugreift.
 
-### `get_repo_info` liefert unerwartete Daten
-Das Tool fragt immer das Server-Repo ab (`DEFAULT_REPO_PATH` in `server.py`), nicht das CWD des aufrufenden Prozesses. Bei Clones an anderen Pfaden: `DEFAULT_REPO_PATH` in `server.py` anpassen.
+Das Tool fragt immer das Server-Repo ab (`DEFAULT_REPO_PATH` in `server.py`), nicht das CWD des aufrufenden Prozesses.
+Bei normalen Clones ist keine Anpassung nötig, da `DEFAULT_REPO_PATH` relativ zur Datei bestimmt wird.
