@@ -28,7 +28,7 @@ class JsonFormatter(logging.Formatter):
 
 
 def setup_json_logging() -> logging.Logger:
-"""Konfiguriert den Server-Logger einmalig auf INFO und stderr."""
+    """Konfiguriert den Server-Logger einmalig auf INFO und stderr."""
     logger = logging.getLogger("mcp_server_basti")
     logger.setLevel(logging.INFO)
     logger.propagate = False
