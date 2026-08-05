@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import asyncio
 
-import pytest
 from mcp import ClientSession
 from mcp.client.stdio import stdio_client
 

@@ -7,7 +7,7 @@ name = "mcp-server-basti"
 version = "0.1.0"
 description = "Privater lokaler stdio-MCP-Server mit FastMCP"
 requires-python = ">=3.11"
-dependencies = ["mcp[cli]>=1.0", "fastmcp>=2.0"]
+dependencies = ["fastmcp>=3.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
