@@ -14,6 +14,15 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
+    "basti-tools": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "${CLAUDE_PROJECT_ROOT}",
+        "mcp-server-basti"
+      ]
+    },
 
     "gmail": {
       "command": "npx",

@@ -1,201 +1,145 @@
-#!/bin/bash
-# =============================================================
-# MCP Server Health Check
-# Toqsick/my-agent-tools
+#!/usr/bin/env bash
+# check-mcp.sh — Health-Check für alle in plugins/agent-toolkit/.mcp.json
+# deklarierten MCP-Server.
 #
-# Usage:
-#   chmod +x scripts/check-mcp.sh
+# Pro Server wird geprüft:
+#   1. ist der command (binary) überhaupt im PATH verfügbar?
+#   2. sind alle referenzierten env-Vars gesetzt (non-empty)?
+#
+# Output: JSON-Array von Objekten {server, status, detail}.
+# Exit-Code:
+#   0 — alle Server "ok"
+#   1 — mindestens ein Server "down"
+#   2 — Skript-/Konfigurationsfehler (z. B. .mcp.json nicht lesbar)
+#
+# Nutzung:
 #   ./scripts/check-mcp.sh
-#
-# Optional: source your .env first
-#   set -a && source .env && set +a && ./scripts/check-mcp.sh
-# =============================================================
+#   ./scripts/check-mcp.sh --pretty   # menschenlesbares JSON
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-BOLD='\033[1m'
-NC='\033[0m' # No Color
+set -euo pipefail
 
-PASS=0
-FAIL=0
-WARN=0
-
-ok()   { echo -e "  ${GREEN}✅ $1${NC}";  ((PASS++)); }
-fail() { echo -e "  ${RED}❌ $1${NC}";   ((FAIL++)); }
-warn() { echo -e "  ${YELLOW}⚠️  $1${NC}"; ((WARN++)); }
-info() { echo -e "  ${BLUE}ℹ️  $1${NC}"; }
-
-echo ""
-echo -e "${BOLD}╔══════════════════════════════════════════╗${NC}"
-echo -e "${BOLD}║     MCP Server Health Check              ║${NC}"
-echo -e "${BOLD}║     Toqsick/my-agent-tools               ║${NC}"
-echo -e "${BOLD}╚══════════════════════════════════════════╝${NC}"
-echo ""
-
-# -------------------------------------------------------------
-echo -e "${BOLD}── 1. Runtime Dependencies ─────────────────${NC}"
-# -------------------------------------------------------------
-
-# Docker
-if docker info > /dev/null 2>&1; then
-  DOCKER_VER=$(docker --version | awk '{print $3}' | tr -d ',')
-  ok "Docker running ($DOCKER_VER)"
-else
-  fail "Docker not running — required for 'github' MCP server"
-  info "Install: https://docs.docker.com/get-docker/"
-fi
-
-# Node / npx
-if command -v npx > /dev/null 2>&1; then
-  NODE_VER=$(node -v 2>/dev/null || echo 'unknown')
-  NPX_VER=$(npx --version 2>/dev/null || echo 'unknown')
-  if [[ "$NODE_VER" =~ ^v([0-9]+) ]] && [ "${BASH_REMATCH[1]}" -ge 18 ]; then
-    ok "Node.js $NODE_VER + npx $NPX_VER"
-  else
-    warn "Node.js $NODE_VER detected — recommend Node 18+ for all MCP servers"
-  fi
-else
-  fail "Node.js / npx not found — required for 7 MCP servers"
-  info "Install: https://nodejs.org"
-fi
-echo ""
-
-# -------------------------------------------------------------
-echo -e "${BOLD}── 2. Environment Variables ─────────────────${NC}"
-# -------------------------------------------------------------
-
-check_var() {
-  local VAR_NAME="$1"
-  local SERVER="$2"
-  local OPTIONAL="${3:-false}"
-  local VAL="${!VAR_NAME}"
-  if [ -n "$VAL" ]; then
-    # Show only first 8 chars + masked
-    PREVIEW="${VAL:0:8}..."
-    ok "$VAR_NAME set ($PREVIEW) [$SERVER]"
-  else
-    if [ "$OPTIONAL" = "true" ]; then
-      warn "$VAR_NAME not set (optional, default used) [$SERVER]"
-    else
-      fail "$VAR_NAME missing [$SERVER]"
-    fi
-  fi
-}
-
-# GitHub
-check_var "GITHUB_PERSONAL_ACCESS_TOKEN" "github"
-
-# Gmail
-check_var "GMAIL_OAUTH_CLIENT_ID"     "gmail"
-check_var "GMAIL_OAUTH_CLIENT_SECRET" "gmail"
-check_var "GMAIL_OAUTH_REFRESH_TOKEN" "gmail"
-
-# Google Calendar
-check_var "GOOGLE_CLIENT_ID"     "google-calendar"
-check_var "GOOGLE_CLIENT_SECRET" "google-calendar"
-check_var "GOOGLE_REFRESH_TOKEN" "google-calendar"
-
-# Brave Search
-check_var "BRAVE_API_KEY" "brave-search"
-
-# Optional
-check_var "WORKSPACE_PATH"    "filesystem"        "true"
-check_var "MEMORY_FILE_PATH"  "memory"            "true"
-echo ""
-
-# -------------------------------------------------------------
-echo -e "${BOLD}── 3. MCP Package Availability ─────────────${NC}"
-# -------------------------------------------------------------
-
-check_npx_pkg() {
-  local PKG="$1"
-  local SERVER="$2"
-  # Dry-run: check if package resolves without installing
-  if npx --yes --quiet "$PKG" --version > /dev/null 2>&1 || \
-     npm view "$PKG" version > /dev/null 2>&1; then
-    LATEST=$(npm view "$PKG" version 2>/dev/null || echo 'unknown')
-    ok "$PKG@$LATEST [$SERVER]"
-  else
-    warn "$PKG — not yet cached (will auto-install on first use) [$SERVER]"
-  fi
-}
-
-check_npx_pkg "@gongrzhe/server-gmail-autoauth-mcp"         "gmail"
-check_npx_pkg "@cocal/google-calendar-mcp"                  "google-calendar"
-check_npx_pkg "@modelcontextprotocol/server-filesystem"     "filesystem"
-check_npx_pkg "@modelcontextprotocol/server-brave-search"   "brave-search"
-check_npx_pkg "@modelcontextprotocol/server-memory"         "memory"
-check_npx_pkg "@modelcontextprotocol/server-puppeteer"      "puppeteer"
-check_npx_pkg "@modelcontextprotocol/server-sequential-thinking" "sequential-thinking"
-echo ""
-
-# -------------------------------------------------------------
-echo -e "${BOLD}── 4. Docker Image ──────────────────────────${NC}"
-# -------------------------------------------------------------
-
-if docker info > /dev/null 2>&1; then
-  if docker image inspect toqsick/github-mcp-server:develop > /dev/null 2>&1; then
-    ok "toqsick/github-mcp-server:develop image cached locally [github]"
-  else
-    warn "toqsick/github-mcp-server:develop not cached — will pull on first use [github]"
-    info "Pre-pull: docker pull toqsick/github-mcp-server:develop"
-  fi
-else
-  fail "Cannot check Docker image — Docker not running"
-fi
-echo ""
-
-# -------------------------------------------------------------
-echo -e "${BOLD}── 5. Config Files ──────────────────────────${NC}"
-# -------------------------------------------------------------
-
+# --- Pfade & Argumente -------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "$SCRIPT_DIR")"
-MCP_JSON="$REPO_ROOT/plugins/agent-toolkit/.mcp.json"
-ENV_EXAMPLE="$REPO_ROOT/.env.example"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+MCP_CONFIG="${REPO_ROOT}/plugins/agent-toolkit/.mcp.json"
 
-if [ -f "$MCP_JSON" ]; then
-  SERVER_COUNT=$(grep -c '"command"' "$MCP_JSON" 2>/dev/null || echo 0)
-  ok ".mcp.json found ($SERVER_COUNT servers declared)"
-else
-  fail ".mcp.json not found at $MCP_JSON"
+PRETTY=0
+for arg in "$@"; do
+    case "${arg}" in
+        --pretty) PRETTY=1 ;;
+        -h|--help)
+            echo "Usage: $0 [--pretty]" >&2
+            exit 0
+            ;;
+        *) echo "Unknown argument: ${arg}" >&2; exit 2 ;;
+    esac
+done
+
+# --- Vorbedingungen prüfen ----------------------------------------------------
+if [[ ! -f "${MCP_CONFIG}" ]]; then
+    echo "MCP config nicht gefunden: ${MCP_CONFIG}" >&2
+    exit 2
 fi
 
-if [ -f "$ENV_EXAMPLE" ]; then
-  ok ".env.example present"
-else
-  warn ".env.example not found — run: git pull"
+if ! command -v jq >/dev/null 2>&1; then
+    echo "jq wird benötigt, ist aber nicht installiert." >&2
+    exit 2
 fi
 
-if [ -f "$REPO_ROOT/.env" ]; then
-  ok ".env file exists locally"
-else
-  warn ".env file missing — copy: cp .env.example .env"
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "python3 wird benötigt, ist aber nicht installiert." >&2
+    exit 2
 fi
-echo ""
 
-# -------------------------------------------------------------
-echo -e "${BOLD}── Summary ──────────────────────────────────${NC}"
-# -------------------------------------------------------------
+# --- MCP-Server parsen --------------------------------------------------------
+# jq liefert pro Server: name, command, args[], env{}. Wir bauen daraus
+# eine flache Liste von Objekten {server, command, args, env_keys}.
+mapfile -t SERVERS < <(jq -r '.mcpServers | keys[]' "${MCP_CONFIG}")
 
-TOTAL=$((PASS + FAIL + WARN))
-echo -e "  Checks: $TOTAL  |  ${GREEN}✅ $PASS passed${NC}  |  ${RED}❌ $FAIL failed${NC}  |  ${YELLOW}⚠️  $WARN warnings${NC}"
-echo ""
-
-if [ "$FAIL" -eq 0 ] && [ "$WARN" -eq 0 ]; then
-  echo -e "  ${GREEN}${BOLD}🎉 All systems go — all 8 MCP servers should start cleanly.${NC}"
-elif [ "$FAIL" -eq 0 ]; then
-  echo -e "  ${YELLOW}${BOLD}⚠️  Core checks passed but some warnings need attention.${NC}"
-  echo -e "  ${YELLOW}Optional servers with missing tokens will be skipped by the MCP client.${NC}"
-else
-  echo -e "  ${RED}${BOLD}❌ $FAIL critical issue(s) found. Fix before starting Claude Desktop.${NC}"
-  echo ""
-  echo -e "  ${BOLD}Quick fix guide:${NC}"
-  echo -e "  1. Missing env vars  → cp .env.example .env  then fill in values"
-  echo -e "  2. Docker not running → open Docker Desktop"
-  echo -e "  3. Node.js missing   → brew install node  (macOS)"
-  echo -e "  4. Gmail tokens      → npx @gongrzhe/server-gmail-autoauth-mcp auth"
+if [[ ${#SERVERS[@]} -eq 0 ]]; then
+    echo "Keine MCP-Server in ${MCP_CONFIG} konfiguriert." >&2
+    exit 2
 fi
-echo ""
+
+# --- Pro Server prüfen --------------------------------------------------------
+results_json="["
+first=1
+# overall_ok = 0 (alles ok), wird auf 1 gesetzt sobald ein Server down ist.
+overall_ok=0
+
+for server in "${SERVERS[@]}"; do
+    cmd="$(jq -r ".mcpServers[\"${server}\"].command // \"\"" "${MCP_CONFIG}")"
+    # `.env // {}` ist nötig, weil `keys[]` auf null wirft — erst mit leerem
+    # Objekt fallbacken, dann die Schlüssel auflisten.
+    readarray -t env_keys < <(jq -r ".mcpServers[\"${server}\"].env // {} | keys[]" "${MCP_CONFIG}")
+
+    detail_parts=()
+    status="ok"
+
+    # (1) command muss im PATH liegen
+    if [[ -z "${cmd}" ]]; then
+        status="down"
+        detail_parts+=("command fehlt in .mcp.json")
+    elif ! command -v "${cmd}" >/dev/null 2>&1; then
+        status="down"
+        detail_parts+=("binary '${cmd}' nicht im PATH")
+    fi
+
+    # (2) env-Vars müssen gesetzt sein
+    missing_env=()
+    for key in "${env_keys[@]}"; do
+        # Wert '${VAR}' bedeutet: Var aus env, nicht aus .mcp.json lesen.
+        if [[ -z "${!key:-}" ]]; then
+            missing_env+=("${key}")
+        fi
+    done
+    if [[ ${#missing_env[@]} -gt 0 ]]; then
+        status="down"
+        detail_parts+=("env nicht gesetzt: ${missing_env[*]}")
+    fi
+
+    if [[ "${status}" == "ok" ]]; then
+        # (3) Smoke-Test: für uv-basierte Server, prüfe dass der Entry-Point
+        # tatsächlich startbar ist (nicht nur dass uv im PATH liegt).
+        # Dies fängt falsche Pfade, fehlende Installationen und kaputte Deps auf.
+        if [[ "${cmd}" == "uv" ]] && [[ "${server}" == "basti-tools" ]]; then
+            # PYTHONPATH leeren, da Hermes-Runtime einen System-Venv-Pfad setzt,
+            # der den Projekt-Venv kapert (Known-Issue in Basti's Environment).
+            if ! timeout 10 env -u PYTHONPATH uv run --directory "${REPO_ROOT}" python -c "from mcp_server_basti.server import mcp; print(mcp.name)" >/dev/null 2>&1; then
+                status="down"
+                detail_parts+=("smoke-test fehlgeschlagen: Server nicht startbar")
+            fi
+        fi
+    fi
+
+    if [[ "${status}" == "ok" ]]; then
+        detail="command '${cmd}' verfügbar; alle env-Vars gesetzt; smoke-test ok"
+    else
+        detail=$(IFS='; '; echo "${detail_parts[*]}")
+    fi
+
+    if [[ ${first} -eq 0 ]]; then
+        results_json+=","
+    fi
+    # jq für sauberes Escaping der Detail-Strings
+    results_json+="$(jq -nc \
+        --arg server "${server}" \
+        --arg status "${status}" \
+        --arg detail "${detail}" \
+        '{server:$server, status:$status, detail:$detail}')"
+    first=0
+
+# `overall_ok` wird auf 1 gesetzt, sobald ein Server down ist (Status != "ok").
+[[ "${status}" == "ok" ]] || overall_ok=1
+done
+
+results_json+="]"
+
+# --- Output -------------------------------------------------------------------
+if [[ ${PRETTY} -eq 1 ]]; then
+    echo "${results_json}" | jq .
+else
+    echo "${results_json}"
+fi
+
+exit "${overall_ok}"

@@ -1,0 +1,45 @@
+{
+  "name": "mcp-server-basti",
+  "description": "Basti's privater MCP-Server: System-Status, Echo-Tool und Repo-Info via stdio.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "git+https://github.com/Toqsick/my-agent-tools.git",
+    "directory": "."
+  },
+  "runtime": "python",
+  "transport": "stdio",
+  "tools": [
+    {
+      "name": "get_system_status",
+      "description": "Gibt den aktuellen Systemstatus (uptime) als Text zurück.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "echo_tool",
+      "description": "Gibt den übergebenen Text unverändert zurück.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text, der zurückgegeben werden soll."
+          }
+        },
+        "required": ["text"]
+      }
+    },
+    {
+      "name": "get_repo_info",
+      "description": "Liefert Informationen über das konfigurierte Repository.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}

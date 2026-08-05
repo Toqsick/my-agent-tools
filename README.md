@@ -305,6 +305,83 @@ servers) and `/agents` (shows `coder`, `perf-tuner`, `security-auditor`).
 > The `github` MCP server needs `GITHUB_PERSONAL_ACCESS_TOKEN` at minimum. Gmail and Calendar are
 > optional but unlock `daily-briefing` and calendar-aware scheduling across the whole toolkit.
 
+## Basti's MCP Server
+
+Zusätzlich zum externen `github`-Server bringt dieses Repo einen **lokalen MCP-Server**
+namens `mcp-server-basti` mit. Er läuft über **stdio**, ist in Python/FastMCP
+implementiert und wird via [`uv`](https://docs.astral.sh/uv/) gestartet — kein Docker,
+kein Netzwerk-Listener, keine externen Secrets in der Default-Konfiguration.
+
+### Tools
+
+| Tool | Zweck |
+|---|---|
+| `get_system_status` | Führt `uptime` aus und gibt den Systemstatus zurück (lokal, ohne Netzwerk). |
+| `echo_tool` | Smoke-Test-Tool — gibt Eingabe unverändert zurück. Nützlich zum Verifizieren, dass der Server überhaupt antwortet. |
+| `get_repo_info` | Liefert Git-Branch und letzten Commit des Server-Repos. |
+
+### Installation
+
+Der Server liegt im Repo-Root. Es gibt zwei Install-Wege:
+
+```bash
+# 1. Global via uvx (empfohlen — keine lokale venv nötig):
+uvx git+https://github.com/Toqsick/my-agent-tools.git
+
+# 2. Lokal aus dem Repo (für Entwicklung/Debugging):
+cd /path/to/my-agent-tools
+uv run mcp-server-basti
+```
+
+### `.mcp.json`-Konfiguration
+
+Der Server ist bereits in `plugins/agent-toolkit/.mcp.json` als `basti-tools`
+eingetragen. Der `github`-Eintrag bleibt unverändert daneben bestehen:
+
+```json
+{
+  "mcpServers": {
+    "github":      { "command": "docker", "args": [...], "env": {...} },
+    "basti-tools": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory", "/home/bratan/ZCodeProject/my-agent-tools",
+        "mcp-server-basti"
+      ]
+    }
+  }
+}
+```
+
+Beim Plugin-Start wird der Server automatisch hochgefahren — keine weiteren
+Schritte erforderlich.
+
+### Tests ausführen
+
+```bash
+cd /home/bratan/ZCodeProject/my-agent-tools
+uv sync --all-extras
+uv run pytest tests/unit tests/integration -v
+```
+
+### Architektur
+
+- **Transport:** stdio (kein HTTP, kein Port). Der Parent-Prozess (Claude Code)
+  startet den Server als Subprozess und spricht JSON-RPC über stdin/stdout.
+- **Framework:** [FastMCP](https://github.com/jlowin/fastmcp) auf Basis von
+  [`mcp`](https://pypi.org/project/mcp/) — deklarative Tool-Definition via
+  Python-Decorators.
+- **Sandboxing:** läuft mit den Rechten des aufrufenden Users. Schreibt nur in
+  Bereiche, in denen der User schreiben darf.
+- **CI:** `.github/workflows/ci.yml` führt auf jedem Push/PR nach `main` Lint
+  (`ruff`), Tests (`pytest`) und Build (`uv build`) aus und lädt das Wheel
+  als Artefakt hoch.
+- **Health-Check:** `scripts/check-mcp.sh` prüft für **jeden** in `.mcp.json`
+  konfigurierten Server, ob `command` im PATH ist und alle `env`-Vars gesetzt
+  sind, und gibt ein JSON-Array mit `{server, status, detail}` zurück
+  (Exit-Code 1 wenn ein Server down ist).
+
 ## Maintenance — adding a vetted tool
 
 1. **Skill:** copy the skill folder into `plugins/agent-toolkit/skills/<name>/` (a `SKILL.md` plus any
