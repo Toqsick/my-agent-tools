@@ -25,7 +25,7 @@ from mcp.server.fastmcp.exceptions import ToolError
 
 from mcp_server_basti.logging_setup import LOGGER
 
-# Standard-Repository für get_repo_info — kann via Env überschrieben werden.
+# Standard-Repository für get_repo_info — wird relativ zu dieser Datei bestimmt.
 DEFAULT_REPO_PATH = Path(__file__).resolve().parent.parent.parent
 
 CONNECTION_ID = "local-stdio"
