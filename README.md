@@ -329,7 +329,7 @@ Der Server liegt im Repo-Root. Es gibt zwei Install-Wege:
 uvx git+https://github.com/Toqsick/my-agent-tools.git
 
 # 2. Lokal aus dem Repo (für Entwicklung/Debugging):
-cd /home/bratan/ZCodeProject/my-agent-tools
+cd /path/to/my-agent-tools
 uv run mcp-server-basti
 ```
 
