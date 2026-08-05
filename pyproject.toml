@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 dependencies = ["fastmcp>=3.0"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "pytest-cov>=4.1", "ruff>=0.6"]
 
 [project.scripts]
 mcp-server-basti = "mcp_server_basti.server:main"
@@ -22,3 +22,18 @@ packages = ["src/mcp_server_basti"]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 pythonpath = ["src"]
+addopts = "--cov=src/mcp_server_basti --cov-report=term-missing --cov-report=xml"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# select (nicht extend-select) ersetzt das ruff-Default-Set deterministisch;
+# ISC/SIM/etc. bleiben bewusst aus.
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# Test-Dateien enthalten häufig lange Kommando-Strings/fixture-Dicts, die
+# nicht umbrechbar sind. Ein Coverage-Gate kommt, sobald eine Baseline steht.
+"tests/**" = ["E501"]
