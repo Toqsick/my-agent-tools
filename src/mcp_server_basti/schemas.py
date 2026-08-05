@@ -91,3 +91,15 @@ class PowerProfile(TypedDict):
     """Ergebnis von ``get_power_profile``."""
 
     profile: str
+
+
+class FirewallState(TypedDict):
+    """Ergebnis von ``get_firewall_state`` (rohe Text-Blöcke).
+
+    Beide Felder sind rohe Kommando-Outputs (UFW-Status, lauschende Ports).
+    Erfordert eine NOPASSWD-sudoers-Regel — siehe
+    ``docs/mcp-server/SUDOERS_SETUP.md``.
+    """
+
+    ufw: str
+    listening_ports: str

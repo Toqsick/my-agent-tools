@@ -26,6 +26,7 @@ EXPECTED_TOOLS = {
     "get_kernel_warnings",
     "get_boot_timing",
     "get_power_profile",
+    "get_firewall_state",
 }
 
 

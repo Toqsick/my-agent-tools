@@ -32,6 +32,7 @@ from mcp_server_basti.schemas import (
     DiskStatus,
     FailedUnits,
     Filesystem,
+    FirewallState,
     GpuStatus,
     MemoryStatus,
     PowerProfile,
@@ -361,6 +362,67 @@ def get_power_profile() -> PowerProfile:
     """Liefert den aktiven power-profiles-daemon Modus (``powerprofilesctl get``)."""
     proc = _run(["powerprofilesctl", "get"])
     return PowerProfile(profile=proc.stdout.strip())
+
+
+# Absolute Pfade für die sudoers-geschützten Firewall-Kommandos.
+# sudoers matcht auf argv[0]; Pfade sind host-verifiziert (command -v ufw ss).
+_UFW_BIN = "/usr/sbin/ufw"
+_SS_BIN = "/usr/bin/ss"
+
+
+@mcp.tool(
+    tags={"security", "read-only"},
+    annotations=ToolAnnotations(
+        title="Firewall-Status (UFW + lauschende Ports)",
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=True,
+        openWorldHint=False,
+    ),
+    timeout=_TOOL_TIMEOUT,
+)
+@with_tool_logging()
+def get_firewall_state() -> FirewallState:
+    """Liefert UFW-Status und lauschende TCP-Ports.
+
+    Erfordert eine NOPASSWD-sudoers-Regel für ``ufw status verbose`` und
+    ``ss -tlnp`` (root-only). Ohne die Regel degradiert der Tool sauber zu
+    einem ToolError, der auf ``docs/mcp-server/SUDOERS_SETUP.md`` verweist —
+    kein stiller Partial-Result. Siehe SUDOERS_SETUP.md für die Installation.
+    """
+    out: dict[str, str] = {}
+    commands: dict[str, list[str]] = {
+        "ufw": ["sudo", "-n", "--", _UFW_BIN, "status", "verbose"],
+        "listening_ports": ["sudo", "-n", "--", _SS_BIN, "-tlnp"],
+    }
+    for key, argv in commands.items():
+        try:
+            proc = subprocess.run(
+                argv,
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=_SUBPROC_TIMEOUT,
+            )
+        except subprocess.CalledProcessError as exc:
+            stderr = (exc.stderr or "").lower()
+            # sudo -n scheitert non-zero, wenn ein Passwort nötig wäre.
+            if "password" in stderr or "a password is needed" in stderr:
+                raise ToolError(
+                    "get_firewall_state benötigt eine NOPASSWD-sudoers-Regel "
+                    "(siehe docs/mcp-server/SUDOERS_SETUP.md). "
+                    f"Kommando: {' '.join(argv)}"
+                ) from exc
+            raise ToolError(
+                f"Firewall-Status konnte nicht ermittelt werden "
+                f"({' '.join(argv)}): {exc.stderr or exc}"
+            ) from exc
+        except (OSError, subprocess.SubprocessError, UnicodeDecodeError) as exc:
+            raise ToolError(
+                f"Firewall-Status konnte nicht ermittelt werden: {exc}"
+            ) from exc
+        out[key] = proc.stdout
+    return FirewallState(ufw=out["ufw"], listening_ports=out["listening_ports"])
 
 
 def main() -> None:
