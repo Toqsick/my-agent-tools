@@ -272,7 +272,7 @@ Credentials are **always** referenced as `${ENV_VAR}` — never stored here. Cop
 | `memory` | npx (`@modelcontextprotocol/server-memory`) | Persistent knowledge graph across sessions | `MEMORY_FILE_PATH` (default `~/.agent-memory/memory.json`) |
 | `puppeteer` | npx (`@modelcontextprotocol/server-puppeteer`) | Headless browser / web automation | — |
 | `sequential-thinking` | npx (`@modelcontextprotocol/server-sequential-thinking`) | Structured multi-step reasoning | — |
-| `basti-tools` | `uv run mcp-server-basti` (FastMCP/stdio, local) | Local system-status tools (`get_system_status`, `echo_tool`, `get_repo_info`) | — |
+| `basti-tools` | `uv run mcp-server-basti` (FastMCP/stdio, local) | Local read-only system diagnostics (`get_system_status`, `get_disk_status`, `get_gpu_status`, `get_memory_status`, `get_failed_units`, `get_kernel_warnings`, `get_boot_timing`, `get_power_profile`, `get_firewall_state`, `get_repo_info`, `echo_tool`) | — (sudoers rule for `get_firewall_state`, see `docs/mcp-server/SUDOERS_SETUP.md`) |
 
 #### Gmail + Google Calendar — Quick OAuth2 Setup
 
@@ -342,11 +342,23 @@ kein Netzwerk-Listener, keine externen Secrets in der Default-Konfiguration.
 
 ### Tools
 
+Alle Tools advertise `readOnlyHint=True` (keine Mutationen). Strukturierte Rückgaben
+sind TypedDicts (Schema-Ableitung via FastMCP); `echo_tool`/`get_kernel_warnings`
+geben rohen Text zurück.
+
 | Tool | Zweck |
 |---|---|
-| `get_system_status` | Führt `uptime` aus und gibt den Systemstatus zurück (lokal, ohne Netzwerk). |
-| `echo_tool` | Smoke-Test-Tool — gibt Eingabe unverändert zurück. Nützlich zum Verifizieren, dass der Server überhaupt antwortet. |
-| `get_repo_info` | Liefert Git-Branch und letzten Commit des Server-Repos. |
+| `get_system_status` | `uptime`-Output (lokal, ohne Netzwerk). |
+| `echo_tool` | Smoke-Test — gibt Eingabe unverändert zurück. |
+| `get_repo_info` | Git-Branch + letzter Commit des Server-Repos (strukturiert `{branch,last_commit,detached}`). |
+| `get_disk_status` | `df -h` über alle Dateisysteme. |
+| `get_gpu_status` | `nvidia-smi` Treiber/Temp/Auslastung/VRAM + Power-Limits. |
+| `get_memory_status` | `free -h` + `zramctl` + `swapon --show`. |
+| `get_failed_units` | Fehlgeschlagene systemd-Units (`systemctl --failed`). |
+| `get_kernel_warnings` | `journalctl -b -p warning` (roher Text). |
+| `get_boot_timing` | `systemd-analyze blame` + `critical-chain`. |
+| `get_power_profile` | `powerprofilesctl get`. |
+| `get_firewall_state` | `sudo -n ufw status verbose` + `ss -tlnp` — **benötigt eine NOPASSWD-sudoers-Regel** (siehe [`docs/mcp-server/SUDOERS_SETUP.md`](docs/mcp-server/SUDOERS_SETUP.md)); ohne sie degradiert der Aufruf sauber zu einem `ToolError`. |
 
 ### Installation
 
@@ -374,7 +386,7 @@ eingetragen. Der `github`-Eintrag bleibt unverändert daneben bestehen:
       "command": "uv",
       "args": [
         "run",
-        "--directory", "/home/bratan/ZCodeProject/my-agent-tools",
+        "--directory", "${CLAUDE_PROJECT_ROOT}",
         "mcp-server-basti"
       ]
     }
@@ -383,23 +395,25 @@ eingetragen. Der `github`-Eintrag bleibt unverändert daneben bestehen:
 ```
 
 Beim Plugin-Start wird der Server automatisch hochgefahren — keine weiteren
-Schritte erforderlich.
+Schritte erforderlich. Für `get_firewall_state` muss additionally die
+sudoers-Regel aus [`docs/mcp-server/SUDOERS_SETUP.md`](docs/mcp-server/SUDOERS_SETUP.md)
+installiert sein; alle anderen 10 Tools laufen ohne Voraussetzung.
 
 ### Tests ausführen
 
 ```bash
-cd /home/bratan/ZCodeProject/my-agent-tools
 uv sync --all-extras
-uv run pytest tests/unit tests/integration -v
+uv run --extra dev pytest tests/unit tests/integration -v
 ```
 
 ### Architektur
 
 - **Transport:** stdio (kein HTTP, kein Port). Der Parent-Prozess (Claude Code)
   startet den Server als Subprozess und spricht JSON-RPC über stdin/stdout.
-- **Framework:** [FastMCP](https://github.com/jlowin/fastmcp) auf Basis von
-  [`mcp`](https://pypi.org/project/mcp/) — deklarative Tool-Definition via
-  Python-Decorators.
+- **Framework:** [FastMCP](https://github.com/jlowin/fastmcp) (standalone `>=3.0`,
+  nicht der `mcp[cli]`-Shim) auf Basis von [`mcp`](https://pypi.org/project/mcp/) —
+  deklarative Tool-Definition via Python-Decorators mit `tags`, `annotations`
+  (`readOnlyHint=True`), `timeout` und per-TypedDict abgeleiteten `output_schema`s.
 - **Sandboxing:** läuft mit den Rechten des aufrufenden Users. Schreibt nur in
   Bereiche, in denen der User schreiben darf.
 - **CI:** `.github/workflows/ci.yml` führt auf jedem Push/PR nach `main` Lint
