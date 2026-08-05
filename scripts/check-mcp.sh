@@ -129,8 +129,8 @@ for server in "${SERVERS[@]}"; do
         '{server:$server, status:$status, detail:$detail}')"
     first=0
 
-    # `overall_ok` = 0 nur, wenn dieser Server down ist (Status != "ok").
-    [[ "${status}" == "ok" ]] || overall_ok=1
+# `overall_ok` wird auf 1 gesetzt, sobald ein Server down ist (Status != "ok").
+[[ "${status}" == "ok" ]] || overall_ok=1
 done
 
 results_json+="]"
