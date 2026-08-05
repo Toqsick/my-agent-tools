@@ -1,0 +1,8 @@
+name: computer-use
+description: Desktop and game GUI automation — the GreyHack Computer-Use suite plus game and desktop-window reconnaissance.
+skills:
+  - greyhack-computer-use-suite
+  - computer-use-game-reconnaissance
+  - desktop-window-reconnaissance
+instruction: |
+  Tasks in the Computer-Use & GreyHack domain route to the computer-use pack. Representative skills: greyhack-computer-use-suite, computer-use-game-reconnaissance, desktop-window-reconnaissance. See packs/computer-use/README.md for the full roster and triggers.

@@ -51,9 +51,12 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 │   └── agent-toolkit/
 │       ├── .claude-plugin/
 │       │   └── plugin.json        # plugin manifest (registers the installed skills)
-│       ├── skills/                # 128 installed skills (SKILL.md bundles) — session-loaded
+│       ├── skills/                # 129 installed skills (SKILL.md bundles) — session-loaded
 │       ├── agents/                # 17 subagents (coder, perf-tuner, security-auditor + 14 zc-*)
-│       └── .mcp.json              # MCP server declarations (8 servers)
+│       ├── commands/              # /toolkit — browse packs + health check (auto-discovered)
+│       ├── hooks/                 # SessionStart banner: skills · packs · agents · MCP counts
+│       ├── packs/                 # 8 themed skill packs (manifest.json + per-pack READMEs)
+│       └── .mcp.json              # MCP server declarations (9 servers)
 ├── library/                      # 1,244 browsable Hermes-arsenal skills (NOT session-loaded)
 │   └── <category>/<skill>/SKILL.md
 ├── routing/                       # zcode-skills MCP-aware routing metadata
@@ -63,9 +66,33 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 │   └── manifests/                  # imported provenance lockfiles
 ├── workflows/                    # machine-readable multi-skill workflow patterns
 └── scripts/
-    ├── build_index.py             # regenerates catalogs + routing metadata
+    ├── build_index.py             # regenerates catalogs + routing metadata (calls build_packs)
+    ├── build_packs.py             # validates packs/manifest.json + emits routing/bundles/*.yaml
     └── check-mcp.sh               # local MCP server health check
 ```
+
+## Skill packs (installed-skill grouping)
+
+The 129 installed skills are grouped into **8 themed packs** — a navigation layer over the one
+plugin, so the wall of skills becomes scannable by domain. Every skill still loads in every
+session and is invokable as `agent-toolkit:<name>`; packs just make browsing and routing
+easier. See [`PACKS.md`](PACKS.md) for the full pack index, the per-pack skill rosters, and the
+future "install only what you need" split roadmap.
+
+| Pack | Skills | Theme |
+|---|---:|---|
+| `core` | 10 | Daily-driver layer — Obsidian second-brain, Yuno cleaner, 3D printing, Yuno team orchestration, model selection, daily briefing, skill↔MCP router |
+| `hermes-dev` | 18 | Hermes/Yuno platform — CLI internals, gateway protocol/clients, mobile, Ariadne memory, adapters, themes |
+| `cybersecurity` | 50 | Defensive security & DFIR — CIS hardening, Docker/K8s, network hunting, forensics, compliance/supply-chain |
+| `methodology` | 18 | Superpowers + ZCode team orchestration — brainstorm→plan→TDD→debug→verify→finish, swarm dispatch |
+| `media` | 6 | MiniMax + generation — `mmx` CLI, agent builder, crypto trading, DOCX/PDF, Nano Banana Pro |
+| `docs-web-research` | 15 | Docs, web & research — PPT/decks, research papers, frontend design, scraping, Excel, n8n, SEO/GEO, business research |
+| `computer-use` | 3 | Computer-use & GreyHack — GUI automation + game/desktop-window reconnaissance |
+| `dev-essentials` | 9 | Engineering originals — debugging patterns, defensive programming, recon, extraction, ClickHouse |
+
+Browse live in any session with the `/toolkit` slash command: `/toolkit` (overview),
+`/toolkit <pack>` (a pack's skills), or `/toolkit doctor` (health check). A `SessionStart` hook
+prints a compact `skills · packs · agents · MCP servers` banner at session open.
 
 ### Skills
 
@@ -232,7 +259,7 @@ with owner-agent + skills + exit criteria per phase): `superpower-10x-pipeline`,
 
 ### MCP servers
 
-All 8 servers are declared in [`plugins/agent-toolkit/.mcp.json`](plugins/agent-toolkit/.mcp.json).
+All 9 servers are declared in [`plugins/agent-toolkit/.mcp.json`](plugins/agent-toolkit/.mcp.json).
 Credentials are **always** referenced as `${ENV_VAR}` — never stored here. Copy [`.env.example`](.env.example) to `.env` and fill in your values.
 
 | Server | Transport | Purpose | Required env vars |
@@ -245,6 +272,7 @@ Credentials are **always** referenced as `${ENV_VAR}` — never stored here. Cop
 | `memory` | npx (`@modelcontextprotocol/server-memory`) | Persistent knowledge graph across sessions | `MEMORY_FILE_PATH` (default `~/.agent-memory/memory.json`) |
 | `puppeteer` | npx (`@modelcontextprotocol/server-puppeteer`) | Headless browser / web automation | — |
 | `sequential-thinking` | npx (`@modelcontextprotocol/server-sequential-thinking`) | Structured multi-step reasoning | — |
+| `basti-tools` | `uv run mcp-server-basti` (FastMCP/stdio, local) | Local system-status tools (`get_system_status`, `echo_tool`, `get_repo_info`) | — |
 
 #### Gmail + Google Calendar — Quick OAuth2 Setup
 

@@ -1,7 +1,7 @@
 {
   "name": "agent-toolkit",
-  "description": "Basti's vetted Claude Code toolkit: curated skills, subagents, and MCP server declarations bundled together. One enable → every agent on the same state.",
-  "version": "0.5.0",
+  "description": "Basti's vetted Claude Code toolkit: 129 skills in 8 themed packs, 17 subagents, 9 MCP server declarations, a /toolkit browse command, and a session-start status hook. One enable → every agent on the same state.",
+  "version": "0.6.0",
   "author": {
     "name": "Toqsick"
   },

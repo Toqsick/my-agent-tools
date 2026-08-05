@@ -1,0 +1,20 @@
+name: docs-web-research
+description: Document generation, web, SEO, and business research — PPT/McKinsey decks, research papers, frontend design, web scraping, Excel, n8n, SEO/GEO, job hunting, sales power maps, SaaS niches, NotebookLM, knowledge digest, and prompt engineering.
+skills:
+  - pptx-generator
+  - mckinsey-presentation-generator
+  - research-paper-generator
+  - frontend-design
+  - seo-geo-optimization-expert
+  - web-scraper
+  - excel-xlsx
+  - n8n
+  - deep-research-agent
+  - prompt-engineer
+  - job-hunter
+  - sales-power-map
+  - saas-niche-finder
+  - notebooklm-bridge
+  - knowledge-digest
+instruction: |
+  Tasks in the Docs, Web & Research domain route to the docs-web-research pack. Representative skills: pptx-generator, mckinsey-presentation-generator, research-paper-generator, frontend-design, seo-geo-optimization-expert, web-scraper…. See packs/docs-web-research/README.md for the full roster and triggers.

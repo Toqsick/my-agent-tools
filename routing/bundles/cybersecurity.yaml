@@ -1,0 +1,55 @@
+name: cybersecurity
+description: 50 defensive-security and DFIR skills — CIS hardening, Docker/K8s and container security, network detection & hunting (Zeek/Suricata/Wireshark), forensics (Volatility/disk/IR), and compliance/supply-chain (SBOM/SLSA/gitleaks).
+skills:
+  - hardening-linux-endpoint-with-cis-benchmark
+  - analyzing-linux-audit-logs-for-intrusion
+  - analyzing-linux-system-artifacts
+  - analyzing-persistence-mechanisms-in-linux
+  - detecting-rootkit-activity
+  - analyzing-linux-kernel-rootkits
+  - performing-linux-log-forensics-investigation
+  - detecting-port-scanning-with-fail2ban
+  - implementing-network-segmentation-with-firewall-zones
+  - hardening-docker-containers-for-production
+  - hardening-docker-daemon-configuration
+  - performing-docker-bench-security-assessment
+  - analyzing-docker-container-forensics
+  - detecting-container-escape-attempts
+  - detecting-container-runtime-threats-with-falco
+  - scanning-docker-images-with-trivy
+  - performing-container-security-scanning-with-trivy
+  - implementing-container-image-minimal-base-with-distroless
+  - securing-container-registry-with-harbor
+  - implementing-kubernetes-pod-security-standards
+  - analyzing-network-packets-with-scapy
+  - analyzing-network-traffic-with-wireshark
+  - performing-network-forensics-with-wireshark
+  - configuring-suricata-for-network-monitoring
+  - detecting-network-anomalies-with-zeek
+  - detecting-beaconing-patterns-with-zeek
+  - detecting-dns-exfiltration-with-dns-query-analysis
+  - deploying-osquery-for-endpoint-monitoring
+  - building-detection-rules-with-sigma
+  - performing-malware-triage-with-yara
+  - hunting-advanced-persistent-threats
+  - building-threat-hunt-hypothesis-framework
+  - conducting-memory-forensics-with-volatility
+  - performing-memory-forensics-with-volatility3
+  - performing-disk-forensics-investigation
+  - performing-endpoint-forensics-investigation
+  - performing-log-analysis-for-forensic-investigation
+  - building-incident-response-playbook
+  - triaging-security-incident-with-ir-playbook
+  - recovering-deleted-files-with-photorec
+  - performing-file-carving-with-foremost
+  - performing-nist-csf-maturity-assessment
+  - implementing-attack-surface-management
+  - auditing-cloud-with-cis-benchmarks
+  - implementing-secret-scanning-with-gitleaks
+  - detecting-aws-credential-exposure-with-trufflehog
+  - generating-and-analyzing-sboms
+  - analyzing-sbom-for-supply-chain-vulnerabilities
+  - verifying-build-provenance-with-slsa-sigstore
+  - performing-authenticated-vulnerability-scan
+instruction: |
+  Tasks in the Cybersecurity domain route to the cybersecurity pack. Representative skills: hardening-linux-endpoint-with-cis-benchmark, analyzing-linux-audit-logs-for-intrusion, analyzing-linux-system-artifacts, analyzing-persistence-mechanisms-in-linux, detecting-rootkit-activity, analyzing-linux-kernel-rootkits…. See packs/cybersecurity/README.md for the full roster and triggers.

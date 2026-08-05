@@ -8,9 +8,65 @@
     {
       "name": "agent-toolkit",
       "source": "./plugins/agent-toolkit",
-      "description": "One bundled plugin shipping Basti's vetted skills (second-brain, yuno-cleaner, mmx-cli, drucker-experte), subagents (coder, perf-tuner, security-auditor), and MCP server declarations (github). Enable once to sync the whole toolkit.",
+      "description": "One bundled plugin shipping Basti's vetted skills (129 skills in 8 themed packs), 17 subagents (coder, perf-tuner, security-auditor, zc-* team), 9 MCP server declarations (github, gmail, calendar, …), a /toolkit browse command, and a session-start status hook. Enable once to sync the whole toolkit.",
       "category": "productivity",
       "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit"
+    },
+    {
+      "name": "agent-toolkit-core",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Core & Personal: the daily-driver layer — Obsidian second-brain, Yuno cleaner, 3D printing, Yuno team orchestration/routing/preferences, model selection, folder tidy, daily briefing, skill↔MCP router. Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "productivity",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/core"
+    },
+    {
+      "name": "agent-toolkit-hermes-dev",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Hermes / Yuno Platform: CLI internals, gateway protocol/clients, mobile clients, Ariadne memory, gateway adapters, desktop plugins, messaging gateways, themes, ModelHub. Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "development",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/hermes-dev"
+    },
+    {
+      "name": "agent-toolkit-cybersecurity",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Cybersecurity: 50 defensive-security and DFIR skills — CIS hardening, Docker/K8s, network hunting (Zeek/Suricata/Wireshark), forensics (Volatility/IR), compliance/supply-chain (SBOM/SLSA/gitleaks). Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "security",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/cybersecurity"
+    },
+    {
+      "name": "agent-toolkit-methodology",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Engineering Methodology: the Superpowers workflow set (brainstorm→plan→TDD→debug→verify→finish), subagent-driven development, ZCode SubAgent Team, Queen-Bee swarm dispatch, multi-agent master workflow. Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "development",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/methodology"
+    },
+    {
+      "name": "agent-toolkit-media",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Media & Generation: MiniMax mmx CLI, agent builder, crypto trading, DOCX/PDF, Nano Banana Pro image gen. Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "creative",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/media"
+    },
+    {
+      "name": "agent-toolkit-docs-web-research",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Docs, Web & Research: PPT/McKinsey decks, research papers, frontend design, web scraping, Excel, n8n, SEO/GEO, job hunting, sales Power Maps, SaaS niches, NotebookLM, knowledge digest, prompt engineering. Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "productivity",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/docs-web-research"
+    },
+    {
+      "name": "agent-toolkit-computer-use",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Computer-Use & GreyHack: GreyHack Computer-Use suite plus game and desktop-window reconnaissance. Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "automation",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/computer-use"
+    },
+    {
+      "name": "agent-toolkit-dev-essentials",
+      "source": "./plugins/agent-toolkit",
+      "description": "[PACK STUB — themed split pending; see PACKS.md] Dev Essentials: debugging patterns, defensive programming, config-propagation bugs, reference-architecture research, open-source extraction, stealth web scraping, web-content recon, competitive-landscape research, ClickHouse best practices. Installing this handle currently installs the full agent-toolkit plugin.",
+      "category": "development",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit/packs/dev-essentials"
     }
   ]
 }

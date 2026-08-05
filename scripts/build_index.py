@@ -337,20 +337,39 @@ def main() -> int:
         "workflows": workflows,
     }
 
+    # Packs: validate the installed-skill partition + emit routing/bundles/*.yaml
+    from build_packs import main as build_packs
+    rc = build_packs()
+    if rc != 0:
+        return rc
+    packs = _load_packs()
+
     (REPO / "INDEX.json").write_text(
         json.dumps(index, indent=2, ensure_ascii=False, sort_keys=False) + "\n",
         encoding="utf-8",
     )
-    write_navigation(index)
+    write_navigation(index, packs)
     from build_routing import main as build_routing
     build_routing()
     print(f"INDEX.json: {len(installed)} installed + {len(library)} library "
           f"= {len(skills)} skills, {len(agents)} agents, {len(workflows)} workflows, "
-          f"{len(categories)} categories")
+          f"{len(categories)} categories, {len(packs)} packs")
     return 0
 
 
-def write_navigation(index: dict) -> None:
+def _load_packs() -> list[dict]:
+    """Read the curated packs/manifest.json; return [] if absent."""
+    p = REPO / "plugins" / "agent-toolkit" / "packs" / "manifest.json"
+    if not p.exists():
+        return []
+    try:
+        return json.loads(p.read_text(encoding="utf-8")).get("packs", [])
+    except Exception as e:
+        print(f"WARN: could not parse packs/manifest.json: {e}", file=sys.stderr)
+        return []
+
+
+def write_navigation(index: dict, packs: list[dict] | None = None) -> None:
     c = index["counts"]
     lines: list[str] = []
     lines.append("# NAVIGATION — my-agent-tools skill index")
@@ -384,6 +403,23 @@ def write_navigation(index: dict) -> None:
         for s in sorted(by_cat[cat], key=lambda x: x["id"]):
             hint = (s["routing_hint"] or s["description"]).replace("|", "\\|")[:120]
             lines.append(f"| `{s['id']}` | `{s['namespace']}` | {hint} |")
+        lines.append("")
+
+    # Skill packs — installed-skill grouping (curated in packs/manifest.json)
+    if packs:
+        lines.append("## Skill Packs (installed-skill grouping)")
+        lines.append("")
+        packed_skill_total = sum(p.get("skill_count", len(p.get("skills", []))) for p in packs)
+        lines.append(f"The {packed_skill_total} installed skills are grouped "
+                     f"into {len(packs)} themed packs. Browse with the `/toolkit` command; "
+                     f"see [PACKS.md](PACKS.md) for the pack roadmap.")
+        lines.append("")
+        lines.append("| Pack | Title | Category | Skills |")
+        lines.append("|---|---|---|---|")
+        for p in packs:
+            lines.append(f"| [`{p['name']}`](plugins/agent-toolkit/packs/{p['name']}/README.md) "
+                         f"| {p.get('title', p['name'])} | {p.get('category', '')} | "
+                         f"{p.get('skill_count', len(p.get('skills', [])))} |")
         lines.append("")
 
     # Library, category table only (too large to list individually)
