@@ -29,6 +29,12 @@ tmp/
 .ruff_cache/
 .tmp/
 
+# Coverage / pytest-cov Artefakte
+.coverage
+coverage.xml
+*.cover
+htmlcov/
+
 # Hermes Agent lokale Daten (Pläne, Cache — nicht fürs Repo)
 .hermes/
 

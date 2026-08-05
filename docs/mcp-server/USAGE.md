@@ -1,6 +1,11 @@
 # MCP-Server Basti – Nutzung
 
-`mcp-server-basti` ist ein privater MCP-Server für drei Aufgaben: Systemstatus abfragen, Text echoen und Repository-Informationen lesen. Der Server nutzt **stdio**; der MCP-Client startet ihn als lokalen Unterprozess und kommuniziert über stdin/stdout.
+`mcp-server-basti` ist ein privater MCP-Server mit **11 read-only Werkzeugen** für
+lokale System-Diagnose: Systemstatus, Disk/GPU/Memory, fehlgeschlagene systemd-Units,
+Kernel-Warnings, Boot-Timing, Power-Profil, Firewall-Status sowie ein Repo-Info- und
+ein Echo-Tool. Der Server nutzt **stdio**; der MCP-Client startet ihn als lokalen
+Unterprozess und kommuniziert über stdin/stdout. Strukturierte Rückgaben sind
+TypedDicts (Schema-Ableitung via FastMCP); `echo_tool` gibt rohen Text zurück.
 
 ## Voraussetzungen
 
@@ -86,13 +91,20 @@ Details zur Hermes-MCP-Konfiguration: `hermes mcp` CLI oder `hermes setup tools`
 ## Tests ausführen
 
 ```bash
-uv run pytest tests/unit tests/integration -v
+uv run --extra dev pytest tests/unit tests/integration -v
 ```
 
 Linting:
 
 ```bash
-ruff check src/
+ruff check src/ tests/
+```
+
+Der lokale Firewall-Integrationstest ist standardmäßig übersprungen (benötigt die
+installierte sudoers-Regel). Aktivieren via `BASTI_FW_TESTS=1`:
+
+```bash
+BASTI_FW_TESTS=1 uv run --extra dev pytest tests/integration/test_firewall_integration.py -v
 ```
 
 ## Logging analysieren
@@ -113,12 +125,23 @@ MCP-Client (Claude/Cursor/Hermes)
         │ JSON-RPC über stdin/stdout (stdio)
         ▼
 mcp-server-basti (stderr = JSON-Logs)
-   ├── get_system_status  (uptime-Subprocess, read-only)
-   ├── echo_tool          (reine Eingabe → Ausgabe, no side-effects)
-   └── get_repo_info      (git branch + commit, read-only)
+   ├── get_system_status   (uptime, read-only)
+   ├── echo_tool           (Smoke-Test, no side-effects)
+   ├── get_repo_info       (git symbolic-ref + log, read-only)
+   ├── get_disk_status     (df -h, read-only)
+   ├── get_gpu_status      (nvidia-smi + -q -d POWER, read-only)
+   ├── get_memory_status   (free -h + zramctl + swapon, read-only)
+   ├── get_failed_units    (systemctl --failed, read-only)
+   ├── get_kernel_warnings (journalctl -b -p warning, read-only)
+   ├── get_boot_timing     (systemd-analyze blame/critical-chain, read-only)
+   ├── get_power_profile   (powerprofilesctl get, read-only)
+   └── get_firewall_state  (sudo -n ufw status + ss -tlnp, read-only; sudoers nötig)
 ```
 
 Der Client startet pro Konfiguration einen Prozess. Tool-Aufrufe bleiben innerhalb dieses Prozesses.
+Alle Tools advertise `readOnlyHint=True`. `get_firewall_state` benötigt eine
+NOPASSWD-sudoers-Regel (siehe `SUDOERS_SETUP.md`); ohne sie degradiert es sauber zu
+einem `ToolError`.
 
 ## Troubleshooting
 

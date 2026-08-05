@@ -1,10 +1,10 @@
 """Unit-Tests für get_repo_info.
 
-Prüft die reine Business-Logik:
-- Rückgabetyp str
-- Enthält "Branch:" und "Letzter Commit:" Label
-- Der Branch stimmt mit dem echten Git-Branch überein
-- Der Commit-Hash stimmt mit `git rev-parse --short` überein
+Prüft die reine Business-Logik der strukturierten Rückgabe:
+- Rückgabetyp RepoInfo (dict mit branch/last_commit/detached)
+- branch stimmt mit dem echten Git-Branch überein (bzw. detached@<sha>)
+- last_commit stimmt mit ``git log -1 --oneline`` überein
+- detached ist ein bool und korrekt zum Head-State
 """
 
 from __future__ import annotations
@@ -14,16 +14,12 @@ import subprocess
 import pytest
 
 pytest.importorskip("mcp_server_basti.server")
+from mcp_server_basti.schemas import RepoInfo
 from mcp_server_basti.server import DEFAULT_REPO_PATH, get_repo_info
 
 
-def _git_branch() -> str:
-    """Aktuellen Branch-Namen aus dem Server-Repo ermitteln.
-
-    Verwendet symbolic-ref, da der Server diese Variante bevorzugt.
-    Im detached-HEAD-State gibt symbolic-ref einen non-zero exit zurück
-    und der Aufrufer muss mit dem 'detached@<sha>'-Format umgehen.
-    """
+def _git_branch_and_detached() -> tuple[str, bool]:
+    """Aktuellen Branch-Namen und Detached-Flag aus dem Server-Repo ermitteln."""
     proc = subprocess.run(
         ["git", "symbolic-ref", "--short", "HEAD"],
         capture_output=True,
@@ -32,7 +28,7 @@ def _git_branch() -> str:
         check=False,
     )
     if proc.returncode == 0 and proc.stdout:
-        return proc.stdout.strip()
+        return proc.stdout.strip(), False
     # Detached HEAD — fall back to rev-parse
     short_sha = subprocess.check_output(
         ["git", "rev-parse", "--short", "HEAD"],
@@ -40,56 +36,58 @@ def _git_branch() -> str:
         stderr=subprocess.DEVNULL,
         cwd=str(DEFAULT_REPO_PATH),
     ).strip()
-    return f"detached@{short_sha}"
+    return f"detached@{short_sha}", True
 
 
-def _git_commit_short() -> str:
-    """Kurzen Commit-Hash aus dem Server-Repo ermitteln."""
+def _git_last_commit() -> str:
+    """Letzten Commit (oneline) aus dem Server-Repo ermitteln."""
     return subprocess.check_output(
-        ["git", "rev-parse", "--short", "HEAD"],
+        ["git", "log", "-1", "--oneline"],
         text=True,
         stderr=subprocess.DEVNULL,
         cwd=str(DEFAULT_REPO_PATH),
     ).strip()
 
 
-@pytest.mark.asyncio
-async def test_get_repo_info_returns_text() -> None:
-    """get_repo_info() liefert einen nicht-leeren String."""
-    result = await get_repo_info()
-    assert isinstance(result, str), f"Erwartet str, bekam {type(result).__name__}"
-    assert len(result) > 0, "Repo-Info darf nicht leer sein"
+def test_get_repo_info_returns_typed_dict() -> None:
+    """get_repo_info() liefert ein dict mit den RepoInfo-Schlüsseln."""
+    result = get_repo_info()
+    assert isinstance(result, dict), f"Erwartet dict, bekam {type(result).__name__}"
+    for key in ("branch", "last_commit", "detached"):
+        assert key in result, f"Schlüssel {key!r} fehlt in {result!r}"
 
 
-@pytest.mark.asyncio
-async def test_get_repo_info_contains_branch_label() -> None:
-    """Output enthält das Label 'Branch:' — strukturelles Format des Tools."""
-    result = await get_repo_info()
-    assert "Branch:" in result, f"'Branch:' fehlt in Output: {result!r}"
-
-
-@pytest.mark.asyncio
-async def test_get_repo_info_contains_commit_label() -> None:
-    """Output enthält das Label 'Letzter Commit:' — strukturelles Format."""
-    result = await get_repo_info()
-    assert "Letzter Commit:" in result, f"'Letzter Commit:' fehlt in Output: {result!r}"
-
-
-@pytest.mark.asyncio
-async def test_get_repo_info_branch_matches_actual() -> None:
-    """Der im Output enthaltene Branch stimmt mit dem echten Git-Branch überein."""
-    branch = _git_branch()
-    result = await get_repo_info()
-    assert branch in result, (
-        f"Echter Branch {branch!r} nicht im Output: {result!r}"
+def test_get_repo_info_branch_matches_actual() -> None:
+    """Der branch-Wert stimmt mit dem echten Git-Branch überein."""
+    branch, _ = _git_branch_and_detached()
+    result = get_repo_info()
+    assert result["branch"] == branch, (
+        f"Echter Branch {branch!r} != tool-branch {result['branch']!r}"
     )
 
 
-@pytest.mark.asyncio
-async def test_get_repo_info_commit_matches_actual() -> None:
-    """Der im Output enthaltene Commit-Hash stimmt mit git rev-parse überein."""
-    actual_short = _git_commit_short()
-    result = await get_repo_info()
-    assert actual_short in result, (
-        f"Kurzer Commit-Hash {actual_short!r} nicht im Output: {result!r}"
+def test_get_repo_info_last_commit_matches_actual() -> None:
+    """Der last_commit-Wert stimmt mit ``git log -1 --oneline`` überein."""
+    actual = _git_last_commit()
+    result = get_repo_info()
+    assert result["last_commit"] == actual, (
+        f"Echter Commit {actual!r} != tool-commit {result['last_commit']!r}"
     )
+
+
+def test_get_repo_info_detached_is_bool_and_consistent() -> None:
+    """detached ist ein bool und stimmt mit dem Head-State überein."""
+    _, detached = _git_branch_and_detached()
+    result = get_repo_info()
+    assert isinstance(result["detached"], bool), (
+        f"detached muss bool sein, bekam {type(result['detached']).__name__}"
+    )
+    assert result["detached"] == detached, (
+        f"Echter detached-State {detached} != tool-detached {result['detached']}"
+    )
+
+
+def test_repo_info_schema_is_typed_dict() -> None:
+    """RepoInfo ist eine TypedDict-Klasse (statischer Contract)."""
+    # __annotations__ ist das TypedDict-Merkmal (3.11+).
+    assert set(RepoInfo.__annotations__) == {"branch", "last_commit", "detached"}

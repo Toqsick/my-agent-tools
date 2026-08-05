@@ -4,7 +4,7 @@ Diese Tests verifizieren, dass Tool-Fehler als strukturierte Tool-Errors
 (isError=True auf der Wire) zurückgegeben werden — NICHT als Crashes oder
 nicht-Markierte Success-Results.
 
-Wire-Verhalten wird getestet durch echten stdio_client, weil der mcp-shim-Pfad
+Wire-Verhalten wird getestet durch echten stdio_client, weil der mcp-lowlevel-Pfad
 (lowlevel/server.py) isError-Flags in einem separaten Codepfad setzt.
 Nur echte subprocess-Failures landen im ToolError-Pfad des Tools.
 """
@@ -13,29 +13,25 @@ from __future__ import annotations
 
 import asyncio
 import os
+from collections.abc import Iterator
 from pathlib import Path
 
-from collections.abc import Iterator
 import pytest
 from mcp import ClientSession
 from mcp.client.stdio import StdioServerParameters, stdio_client
 
-# Repo-Root = zwei Ebenen über dieser Datei (tests/integration/ → repo-root).
-REPO_ROOT = str(Path(__file__).resolve().parent.parent.parent)
-
-
-# Timeout für stdio-Operationen.
-STDIO_TIMEOUT = 15.0
+from tests.integration.conftest import REPO_ROOT, STDIO_TIMEOUT
 
 
 @pytest.fixture
-def not_git_wrapper() -> Iterator[str]:
+def not_git_wrapper(tmp_path: Path) -> Iterator[str]:
     """Erstellt ein Python-Wrapper-Script das den Server mit nicht-Git-cwd startet.
 
     Das provoziert einen echten subprocess-failure im Tool-Body,
-    sodass wir den echten ToolError→Wire-Pfad testen.
+    sodass wir den echten ToolError→Wire-Pfad testen. Schreibt ins tmp_path
+    (pytest-managed), nicht ins Repo-Root.
     """
-    wrapper_path = Path(REPO_ROOT) / ".tmp-test-not-repo.py"
+    wrapper_path = tmp_path / "not-repo-wrapper.py"
     wrapper_content = f"""
 import sys, tempfile
 from pathlib import Path
@@ -46,7 +42,8 @@ srv.main()
 """
     wrapper_path.write_text(wrapper_content)
     yield str(wrapper_path)
-    # Cleanup
+    # Cleanup (tmp_path wird von pytest ohnehin geräumt, aber der Wrapper
+    # könnte theoretisch schon weg sein).
     try:
         wrapper_path.unlink()
     except OSError:
@@ -59,7 +56,7 @@ async def test_get_repo_info_returns_structured_error_on_git_failure(
     """Wenn git in der Repo-cwd fehlschlägt, returnt der Server isError=True.
 
     Verifiziert den echten Wire-Pfad: Tool ruft subprocess auf, subprocess
-    schlägt fehl, Tool wirft ToolError, mcp-shim-Pfad baut
+    schlägt fehl, Tool wirft ToolError, mcp-lowlevel-Pfad baut
     CallToolResult(isError=True). Das ist die Korrektur des Run-1-C1-Fixes.
     """
     params = StdioServerParameters(
