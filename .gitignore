@@ -61,3 +61,9 @@ skills/*/SKILL.local.md
 
 # Claude Code local state
 .claude/
+
+# Security-Fix 2026-08-16 (Audit data-exposure/001-003): echte Secrets & Production-Daten
+ebay_tokens.txt
+*_tokens.txt
+*.token.json
+library/ebay-api-integration/scripts/*.csv
