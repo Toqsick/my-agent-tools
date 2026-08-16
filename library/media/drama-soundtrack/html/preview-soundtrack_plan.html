@@ -116,6 +116,12 @@ const PREVIEW_DATA = null;  /* __PREVIEW_DATA__ */
 <script>
 const data = JSON.parse(PREVIEW_DATA);
 
+// Fix #2 — XSS-Schutz: PREVIEW_DATA-Felder sind untrusted (vom Agent eingespeist).
+// esc() maskiert HTML, damit Track-Namen, Emotion, Tags etc. nicht als Markup geparst werden.
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 const emotionMap = {
   '紧张': 'tense', '权谋': 'tense', '悬疑': 'tense',
   '浪漫': 'romantic', '心动': 'romantic', '深情': 'romantic',
@@ -141,29 +147,31 @@ function renderTags(styleTags, instruments, vocalStyle) {
   let html = '<div class="tag-row">';
   if (styleTags) {
     styleTags.split(',').forEach(t => {
-      html += `<span class="tag">${t.trim()}</span>`;
+      html += `<span class="tag">${esc(t.trim())}</span>`;
     });
   }
   if (instruments) {
     instruments.split('、').slice(0, 4).forEach(t => {
-      html += `<span class="tag instrument">${t.trim()}</span>`;
+      html += `<span class="tag instrument">${esc(t.trim())}</span>`;
     });
   }
   if (vocalStyle) {
-    html += `<span class="tag vocal">${vocalStyle.split(',')[0].trim()}</span>`;
+    html += `<span class="tag vocal">${esc(vocalStyle.split(',')[0].trim())}</span>`;
   }
   html += '</div>';
   return html;
 }
 
 function renderTrackCard(track, category) {
-  const citeRef = `@${category}/${track.name}`;
+  const safeName = esc(track.name);
+  // Fix #2 — citeRef wird in onclick="cite('...')" eingebettet, daher JS-String-Escape nötig (apos + backslash).
+  const citeRef = escJsAttr(`@${category}/${track.name}`);
   let html = `<div class="track-card">`;
   html += `<button class="cite-btn" title="引用" onclick="cite('${citeRef}')">@</button>`;
-  html += `<div class="track-name">${track.name}`;
+  html += `<div class="track-name">${safeName}`;
   if (track.emotion_type) {
     const cls = getEmotionClass(track.emotion_type);
-    html += `<span class="emotion-indicator ${cls}">${track.emotion_type}</span>`;
+    html += `<span class="emotion-indicator ${cls}">${esc(track.emotion_type)}</span>`;
   }
   html += `</div>`;
   html += renderTags(track.style_tags, track.instruments, track.vocal_style);
@@ -179,19 +187,24 @@ function renderTrackCard(track, category) {
   ];
   fields.forEach(([label, value]) => {
     if (value) {
-      html += `<div class="field"><span class="field-label">${label}：</span><span class="field-value">${value}</span></div>`;
+      html += `<div class="field"><span class="field-label">${esc(label)}：</span><span class="field-value">${esc(value)}</span></div>`;
     }
   });
 
   if (track.rationale) {
-    html += `<div class="rationale">${track.rationale}</div>`;
+    html += `<div class="rationale">${esc(track.rationale)}</div>`;
   }
   html += '</div>';
   return html;
 }
 
+// Fix #2 — minimaler JS-String-Escape für Werte, die in ein onclick="..."-Attribut landen.
+function escJsAttr(s) {
+  return String(s == null ? '' : s).replace(/['"\\<>&\n\r]/g, c => ({ "'": "\\'", '"': '\\"', '\\': '\\\\', '<': '\\x3c', '>': '\\x3e', '&': '\\x26', '\n': '\\n', '\r': '\\r' }[c]));
+}
+
 function render() {
-  let html = `<h1>${data.title || '原声音乐蓝图'}</h1>`;
+  let html = `<h1>${esc(data.title || '原声音乐蓝图')}</h1>`;
   html += `<div class="subtitle">审阅所有计划曲目的音乐方向，确认后进入生成阶段</div>`;
 
   if (data.character_themes && data.character_themes.length) {

@@ -280,6 +280,18 @@ function setLang(l) {
 <script>
 const data = JSON.parse(PREVIEW_DATA);
 
+// Fix #3 — XSS-Schutz: PREVIEW_DATA-Felder (bookName, name, description, voiceId, sampleText,
+// sampleUrl ...) sind untrusted. esc() für HTML-Kontext, safeMediaUrl für src-Attribute.
+// Hinweis: t()-Ausgaben bleiben bewusst unescapt (statische i18n-Tabelle mit gewolltem Markup).
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function safeMediaUrl(u) {
+  // Media-src nur zulassen, wenn http(s) oder data: — blockt javascript: & Co.
+  if (!u) return '';
+  return /^(https?:|data:)/i.test(String(u)) ? String(u) : '';
+}
+
 // Set language from data (agent sets this based on user's conversation language)
 lang = data.lang || localStorage.getItem('audiobook_lang') || 'en';
 document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
@@ -354,20 +366,20 @@ function renderVoiceCard(item, type, index) {
   const volState = state.volume[cardId] || 'ok';
 
   const options = candidates.map(c =>
-    `<option value="${c.voiceId}" ${c.voiceId === selectedVoiceId ? 'selected' : ''}>${c.voiceName || c.voiceId}</option>`
+    `<option value="${esc(c.voiceId)}" ${c.voiceId === selectedVoiceId ? 'selected' : ''}>${esc(c.voiceName || c.voiceId)}</option>`
   ).join('');
 
   return `
     <div class="voice-card" id="card-${cardId}">
       <div class="card-header">
         <div class="card-title">
-          <span class="card-name">${roleName}</span>
+          <span class="card-name">${esc(roleName)}</span>
           <span class="card-badge ${badgeClass}">${typeLabel}</span>
           <span class="dirty-dot" id="dirty-${cardId}"></span>
         </div>
       </div>
 
-      ${item.description ? `<div style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;">${item.description}</div>` : ''}
+      ${item.description ? `<div style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;">${esc(item.description)}</div>` : ''}
 
       <div class="voice-selector">
         <label>${t('voice')}</label>
@@ -375,12 +387,12 @@ function renderVoiceCard(item, type, index) {
           ${options}
         </select>
       </div>
-      <div class="voice-desc" id="desc-${cardId}">${selected.description || ''}</div>
+      <div class="voice-desc" id="desc-${cardId}">${esc(selected.description || '')}</div>
 
-      <div class="sample-text">${item.sampleText || ''}</div>
+      <div class="sample-text">${esc(item.sampleText || '')}</div>
 
       <div class="audio-row">
-        <audio controls preload="metadata" id="audio-${cardId}" src="${selected.sampleUrl || ''}"></audio>
+        <audio controls preload="metadata" id="audio-${cardId}" src="${esc(safeMediaUrl(selected.sampleUrl))}"></audio>
       </div>
 
       <!-- Speed & volume feedback (single-click radio toggles) -->
@@ -415,7 +427,7 @@ function renderVoiceCard(item, type, index) {
 const densityKeys = ['sparse', 'medium', 'dense'];
 
 function render() {
-  let html = `<h1>${data.bookName || t('audiobook')} — ${t('pageTitle')}</h1>`;
+  let html = `<h1>${esc(data.bookName || t('audiobook'))} — ${t('pageTitle')}</h1>`;
   html += `<div class="subtitle">${t('subtitle')}</div>`;
   html += `<div style="background:rgba(240,136,62,0.1);border:1px solid rgba(240,136,62,0.3);border-radius:8px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#f0883e;line-height:1.6;">
     ${t('voiceTip')}

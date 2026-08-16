@@ -215,22 +215,39 @@
         const negPrompt = params.get('neg') || '';
         const images = params.get('images') ? params.get('images').split(',') : [];
         
+        // Fix #1 — XSS-Schutz: URL-Params style/images sind untrusted. esc() für Badge-Text,
+        // Galerie wird via DOM gebaut, damit src kein javascript:-URL werden kann.
+        const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+
         if (mode) document.getElementById('mode').textContent = decodeURIComponent(mode);
-        if (style) document.getElementById('style').innerHTML = decodeURIComponent(style).split(',').map(s => `<span class="style-badge">${s.trim()}</span>`).join(' ');
+        if (style) document.getElementById('style').innerHTML = decodeURIComponent(style).split(',').map(s => `<span class="style-badge">${esc(s.trim())}</span>`).join(' ');
         if (prompt) document.getElementById('prompt').textContent = decodeURIComponent(prompt);
         if (negPrompt) document.getElementById('neg-prompt').textContent = decodeURIComponent(negPrompt);
-        
+
         const gallery = document.getElementById('gallery');
         if (images.length > 0 && images[0]) {
-            gallery.innerHTML = images.map((img, i) => `
-                <div class="card">
-                    <img src="${decodeURIComponent(img)}" alt="Result ${i+1}" onclick="openLightbox(this.src)" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23222%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23555%22 font-size=%2210%22>加载失败</text></svg>'">
-                    <div class="meta">
-                        <h3>生成 #${i+1}</h3>
-                        <p>${new Date().toLocaleDateString()}</p>
-                    </div>
-                </div>
-            `).join('');
+            // Galerie-Einträge als DOM (nicht innerHTML), damit src/alt gegen XSS sicher sind.
+            gallery.textContent = '';
+            images.forEach((img, i) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const image = document.createElement('img');
+                image.alt = 'Result ' + (i + 1);
+                image.onclick = () => openLightbox(image.src);
+                image.onerror = () => { image.src = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23222' width='100' height='100'/><text x='50' y='55' text-anchor='middle' fill='%23555' font-size='10'>加载失败</text></svg>"; };
+                const decoded = decodeURIComponent(img);
+                // Nur http(s)- und data-URLs als Bildquelle zulassen — blockt javascript:/vbscript:/etc.
+                if (/^(https?:|data:image\/)/i.test(decoded)) image.src = decoded;
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                const h3 = document.createElement('h3');
+                h3.textContent = '生成 #' + (i + 1);
+                const p = document.createElement('p');
+                p.textContent = new Date().toLocaleDateString();
+                meta.appendChild(h3); meta.appendChild(p);
+                card.appendChild(image); card.appendChild(meta);
+                gallery.appendChild(card);
+            });
         }
         
         function openLightbox(src) {

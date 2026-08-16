@@ -33,9 +33,11 @@
   </div>
 
   <script>
+    // Fix #6 — XSS-Schutz: msg enthält untrusted Server-Antworten (HTTP-Bodies, SSE-Daten, Error-Messages).
+    // Wir nutzen textContent statt innerHTML, damit nichts als HTML interpretiert wird.
     const log = (id, msg, cls='') => {
       const el = document.getElementById(id);
-      el.innerHTML += '\n' + msg;
+      el.appendChild(document.createTextNode('\n' + msg));
       el.className = cls;
     };
 

@@ -74,11 +74,13 @@ function renderAuditList() {
       + '</div>';
     return;
   }
+  // XSS-Schutz: r.level ist untrusted (kommt aus SSE-Event). Auch in data-Attribut escapen.
   list.innerHTML = filtered.slice(0, 100).map(r => {
     const t = r.time.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    return '<div class="audit-row" data-level="' + r.level + '">'
+    const lvl = escapeHtml(r.level);
+    return '<div class="audit-row" data-level="' + lvl + '">'
       + '<span class="audit-time">' + t + '</span>'
-      + '<span class="audit-level" data-level="' + r.level + '">' + r.level + '</span>'
+      + '<span class="audit-level" data-level="' + lvl + '">' + lvl + '</span>'
       + '<span><span class="audit-type">' + escapeHtml(r.type) + '</span> '
       + '<span class="audit-msg">' + escapeHtml(r.message) + '</span></span>'
       + '<span class="audit-scope">' + escapeHtml(r.scope) + '</span></div>';

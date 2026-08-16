@@ -92,22 +92,36 @@ const PREVIEW_DATA = null;  /* __PREVIEW_DATA__ */
 <script>
 const data = JSON.parse(PREVIEW_DATA);
 
+// Fix #2 — XSS-Schutz: PREVIEW_DATA-Felder sind untrusted. esc() maskiert HTML, escJsAttr sichert onclick-Strings.
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function escJsAttr(s) {
+  return String(s == null ? '' : s).replace(/['"\\<>&\n\r]/g, c => ({ "'": "\\'", '"': '\\"', '\\': '\\\\', '<': '\\x3c', '>': '\\x3e', '&': '\\x26', '\n': '\\n', '\r': '\\r' }[c]));
+}
+function safeAudioUrl(u) {
+  // Audio-URL nur zulassen, wenn http(s) oder data: — blockt javascript:/vbscript:/etc.
+  if (!u) return '';
+  return /^(https?:|data:audio\/)/i.test(String(u)) ? String(u) : '';
+}
+
 function renderAudioCard(item, type, typeLabel) {
-  const citeRef = `@${typeLabel}/${item.name}`;
+  const citeRef = escJsAttr(`@${typeLabel}/${item.name}`);
+  const audioUrl = safeAudioUrl(item.audio_url);
   return `
     <div class="audio-card">
       <button class="cite-btn" title="引用" onclick="cite('${citeRef}')">@</button>
-      <div class="audio-name">${item.name}</div>
-      <span class="audio-type ${type}">${typeLabel}</span>
+      <div class="audio-name">${esc(item.name)}</div>
+      <span class="audio-type ${esc(type)}">${esc(typeLabel)}</span>
       <div class="audio-player">
-        <audio controls preload="metadata" src="${item.audio_url}"></audio>
+        <audio controls preload="metadata" src="${esc(audioUrl)}"></audio>
       </div>
     </div>
   `;
 }
 
 function render() {
-  let html = `<h1>${data.title || '原声音乐'} — 音频画廊</h1>`;
+  let html = `<h1>${esc(data.title || '原声音乐')} — 音频画廊</h1>`;
   html += `<div class="subtitle">试听所有生成的音乐，确认满意后提交</div>`;
 
   let hasContent = false;

@@ -57,14 +57,22 @@ const list = document.getElementById('mod-list');
 // Load saved state
 const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{{}}');
 
+// Fix #4 — XSS-Schutz: mod name/cat aus untrusted JSON. esc() maskiert HTML-Sonderzeichen,
+// bevor die Werte via innerHTML gesetzt werden.
+function esc(s) {{
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+}}
+
 mods.forEach((m, i) => {{
     const div = document.createElement('div');
     div.className = 'mod' + (saved[m.id] ? ' done' : '');
     div.id = 'mod-' + m.id;
     div.innerHTML = `
         <span class="id" style="width:50px;">${{i+1}}.</span>
-        <span class="cat">${{m.cat}}</span>
-        <a href="https://www.nexusmods.com/cyberpunk2077/mods/${{m.id}}?tab=files" target="_blank">${{m.name}}</a>
+        <span class="cat">${{esc(m.cat)}}</span>
+        <a href="https://www.nexusmods.com/cyberpunk2077/mods/${{encodeURIComponent(String(m.id))}}?tab=files" target="_blank" rel="noopener">${{esc(m.name)}}</a>
         <button onclick="markDone(${{m.id}})">✓ done</button>
     `;
     list.appendChild(div);
@@ -115,14 +123,23 @@ def main():
     with open(mods_file) as f:
         mods = json.load(f)
 
-    # Kompakte Liste
-    simple = [{"id": m["id"], "cat": m.get("category", "Unknown"), "name": m["name"]} for m in mods]
+    # Fix #4c — id als int erzwingen, damit markDone(${m.id}) im onclick-Handler
+    # keine String-Injektion erlaubt (String-IDs könnten den Handler sprengen).
+    try:
+        simple = [{"id": int(m["id"]), "cat": m.get("category", "Unknown"), "name": m["name"]} for m in mods]
+    except (ValueError, TypeError) as e:
+        print(f"❌ Ungültige Mod-ID im Input-JSON (muss numerisch sein): {e}")
+        sys.exit(1)
 
     title = mods_file.stem.replace("-", " ").replace("_", " ").title()
+    # Fix #4b — Script-Tag-Breakout verhindern: json.dumps kodiert </script> nicht,
+    # daher <, > und & als Unicode-Escapes einbetten, damit die JSON-Einbettung
+    # den <script>-Block nicht vorzeitig schließen kann.
+    mods_json = json.dumps(simple).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
     html = HTML_TEMPLATE.format(
         title=title,
         count=len(simple),
-        mods_json=json.dumps(simple),
+        mods_json=mods_json,
     )
 
     output_file.write_text(html)
