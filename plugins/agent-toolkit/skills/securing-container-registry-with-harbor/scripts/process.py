@@ -7,6 +7,7 @@ including scanning policies, content trust, RBAC, and TLS.
 """
 
 import json
+import os
 import sys
 import urllib.request
 import urllib.error
@@ -40,9 +41,14 @@ def harbor_api_call(base_url: str, endpoint: str, username: str, password: str) 
     req.add_header("Authorization", f"Basic {credentials}")
     req.add_header("Content-Type", "application/json")
 
+    # Sicherheit: TLS-Zertifikatsprüfung ist standardmäßig AKTIV.
+    # Abschalten (z. B. für Harbor mit Self-Signed-Zertifikat im Labor) nur
+    # per explizitem Opt-in: HARBOR_TLS_INSECURE=1. Das ist MITM-anfällig.
     ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    if os.environ.get("HARBOR_TLS_INSECURE") == "1":
+        print("[!] WARNUNG: HARBOR_TLS_INSECURE=1 - TLS-Verifikation deaktiviert (MITM moeglich)")
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
 
     try:
         with urllib.request.urlopen(req, context=ctx, timeout=10) as response:

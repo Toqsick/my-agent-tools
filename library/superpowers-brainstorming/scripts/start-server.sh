@@ -131,12 +131,17 @@ SERVER_ID_FILE="${STATE_DIR}/server-instance-id"
 # Create fresh session directory with content and state peers
 mkdir -p "${SESSION_DIR}/content" "$STATE_DIR"
 
-SERVER_ID=""
-if [[ -r /dev/urandom ]]; then
-  SERVER_ID="$(od -An -N24 -tx1 /dev/urandom 2>/dev/null | tr -d ' \n' || true)"
+# Sicherheit: Server-ID MUSS aus kryptografisch sicherer Quelle stammen.
+# Kein Fallback auf $$/$RANDOM/date - diese sind vorhersagbar und wuerden
+# das Server-Token erratbar machen. Ohne /dev/urandom wird hart abgebrochen.
+if [[ ! -r /dev/urandom ]]; then
+  echo "FEHLER: /dev/urandom nicht lesbar - keine sichere Server-ID moeglich. Abbruch." >&2
+  exit 1
 fi
+SERVER_ID="$(od -An -N24 -tx1 /dev/urandom | tr -d ' \n')"
 if ! [[ "$SERVER_ID" =~ ^[A-Za-z0-9_-]{32,64}$ ]]; then
-  SERVER_ID="$(printf '%08x%08x%08x%08x' "$$" "$(date +%s)" "${RANDOM:-0}" "${RANDOM:-0}")"
+  echo "FEHLER: Erzeugte Server-ID ist ungueltig - Abbruch." >&2
+  exit 1
 fi
 printf '%s\n' "$SERVER_ID" > "$SERVER_ID_FILE"
 chmod 600 "$SERVER_ID_FILE" 2>/dev/null || true
