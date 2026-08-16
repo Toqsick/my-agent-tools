@@ -283,7 +283,15 @@ function urlHostForHttp(host) {
   return h.includes(':') ? '[' + h + ']' : h;
 }
 
+// Rückgabe: URL OHNE Token — sicher für Logging/stdout. Den getrennten
+// Token liefert keyedCompanionUrl(), den ?key=-Bootstrap-Pfad akzeptiert
+// isAuthorized() weiterhin (Deprecated, mit Warn-Log).
 function companionUrl() {
+  return 'http://' + urlHostForHttp(URL_HOST) + ':' + PORT + '/';
+}
+
+// Nur für den Erstkontakt (Browser-Launch, Bootstrap). Nicht loggen.
+function keyedCompanionUrl() {
   return 'http://' + urlHostForHttp(URL_HOST) + ':' + PORT + '/?key=' + TOKEN;
 }
 
@@ -336,19 +344,28 @@ function parseCookies(header) {
   return out;
 }
 
-// A request is authorized if it carries the session key as ?key= or as the
-// session cookie. Both are compared in constant time.
+// Eine Anfrage ist autorisiert, wenn der Session-Key als Session-Cookie
+// mitkommt (primärer Pfad) ODER als ?key= (Legacy-Fallback mit
+// Deprecation-Warn-Log). Beide werden in Constant-Time verglichen.
 function isAuthorized(req) {
+  // Cookie zuerst prüfen — das ist der sichere Standard.
+  const cookie = parseCookies(req.headers['cookie'])[COOKIE_NAME];
+  if (cookie && timingSafeEqualStr(cookie, TOKEN)) return true;
+
+  // Legacy-Fallback: ?key= in der URL. Funktioniert weiterhin für alte
+  // Bookmarks/Links, wird aber mit einer Warnung geloggt, damit Operatoren
+  // auf den Cookie-Pfad umstellen können.
   const q = req.url.indexOf('?');
   if (q >= 0) {
     const params = new URLSearchParams(req.url.slice(q + 1));
     if (params.has('key')) {
       const key = params.get('key');
-      return Boolean(key && timingSafeEqualStr(key, TOKEN));
+      if (key && timingSafeEqualStr(key, TOKEN)) {
+        console.warn('[security] ?key=-Auth ist deprecated — bitte auf Cookie-Pfad umstellen (HttpOnly+Secure+SameSite=Strict).');
+        return true;
+      }
     }
   }
-  const cookie = parseCookies(req.headers['cookie'])[COOKIE_NAME];
-  if (cookie && timingSafeEqualStr(cookie, TOKEN)) return true;
   return false;
 }
 
@@ -392,11 +409,21 @@ function handleRequest(req, res) {
   }
   touchActivity(); // only authorized requests count as activity
 
-  // Mirror the key into a cookie so same-origin subresources (/files/*) can
-  // authenticate after bootstrap. HttpOnly keeps it away from page scripts; the
-  // WebSocket Origin check below is what blocks cross-origin localhost injection.
+  // Mirror the key into a cookie so same-origin subresources (/files/*) and
+  // der WebSocket die Auth tragen. HttpOnly hält ihn von Page-Scripts fern;
+  // SameSite=Strict blockt Cross-Site-CSRF; Secure nur, wenn die Verbindung
+  // auch wirklich TLS ist — sonst akzeptiert der Browser das Cookie nicht und
+  // wir loggen eine Warnung, damit Operatoren das sehen.
+  const isHttps = (req.headers['x-forwarded-proto'] || '').toLowerCase().includes('https')
+    || (req.socket && req.socket.encrypted);
+  const cookieFlags = ['HttpOnly', 'SameSite=Strict', 'Path=/'];
+  if (isHttps) {
+    cookieFlags.push('Secure');
+  } else {
+    console.warn('[security] Set-Cookie ohne Secure-Flag ausgeliefert — bitte hinter TLS-Terminator betreiben (Reverse-Proxy mit X-Forwarded-Proto: https).');
+  }
   res.setHeader('Set-Cookie',
-    COOKIE_NAME + '=' + TOKEN + '; HttpOnly; SameSite=Strict; Path=/');
+    COOKIE_NAME + '=' + TOKEN + '; ' + cookieFlags.join('; '));
 
   const pathname = pathnameOf(req.url);
   const keyFromQuery = queryKey(req.url);
@@ -533,7 +560,7 @@ function maybeOpenBrowser() {
   if (!process.env.BRAINSTORM_OPEN) return; // opt-in: only after the user approves the companion
   if (HOST !== '127.0.0.1' && HOST !== 'localhost') return;
   if (clients.size > 0) return; // the user already opened it
-  const url = companionUrl(); // must carry the key or the gate 403s it
+  const url = keyedCompanionUrl(); // muss den Key tragen, sonst 403-Tor
   const cp = require('child_process');
   // Operator-provided launcher: run as given (this env var is trusted operator input).
   if (process.env.BRAINSTORM_OPEN_CMD) {
@@ -575,7 +602,7 @@ const debounceTimers = new Map();
 
 function startServer() {
   if (!fs.existsSync(CONTENT_DIR)) fs.mkdirSync(CONTENT_DIR, { recursive: true });
-  if (!fs.existsSync(STATE_DIR)) fs.mkdirSync(STATE_DIR, { recursive: true });
+  if (!fs.existsSync(STATE_DIR)) fs.mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 });
 
   // Track known files to distinguish new screens from updates.
   // macOS fs.watch reports 'rename' for both new files and overwrites,
@@ -680,12 +707,20 @@ function startServer() {
     }
     const info = JSON.stringify({
       type: 'server-started', port: Number(PORT), host: HOST,
-      url_host: URL_HOST, url: companionUrl(),
+      url_host: URL_HOST, url: companionUrl(), // keylos — sicher für stdout
       screen_dir: CONTENT_DIR, state_dir: STATE_DIR, idle_timeout_ms: IDLE_TIMEOUT_MS
     });
     console.log(info);
-    // server-info embeds the key — keep it owner-only.
-    fs.writeFileSync(path.join(STATE_DIR, 'server-info'), info + '\n', { mode: 0o600 });
+    // server-info enthält zusätzlich den Key (für Tooling das den Keyless-URL
+    // um ?key= ergänzt) — daher strikt owner-only und Key im Log maskiert.
+    const infoWithKey = JSON.stringify({
+      type: 'server-started', port: Number(PORT), host: HOST,
+      url_host: URL_HOST, url: keyedCompanionUrl(),
+      screen_dir: CONTENT_DIR, state_dir: STATE_DIR, idle_timeout_ms: IDLE_TIMEOUT_MS
+    });
+    fs.writeFileSync(path.join(STATE_DIR, 'server-info'), infoWithKey + '\n', { mode: 0o600 });
+    // Zusätzlich eine "sichere" Variante ohne Key für Logs/Auditing.
+    fs.writeFileSync(path.join(STATE_DIR, 'server-info-public'), info + '\n', { mode: 0o600 });
   }
 
   server.on('error', (err) => {

@@ -30,8 +30,11 @@
   }
 
   function websocketUrl() {
+    // wss:// bei https-Seite, sonst ws:// — sonst lehnt der Browser die
+    // "mixed-content"-Verbindung ab.
+    const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const key = sessionKey();
-    return 'ws://' + window.location.host + (key ? '/?key=' + encodeURIComponent(key) : '');
+    return proto + '://' + window.location.host + (key ? '/?key=' + encodeURIComponent(key) : '');
   }
 
   function reloadAfterRecovery() {
