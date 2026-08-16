@@ -5,7 +5,7 @@
 - `gh` CLI funktionierte einwandfrei (gültiger Token im System-Keyring).
 
 ## Ursache
-In `~/.hermes/config.yaml` stand an der Token-Stelle des GitHub MCP-Server-Eintrags der **Platzhalter** `DEIN_NEUER_TOKEN` statt eines echten PAT. Der Docker-Container `toqsick/github-mcp-server:develop` bekam dadurch einen ungültigen Token über `GITHUB_PERSONAL_ACCESS_TOKEN` injiziert.
+In `~/.hermes/config.yaml` stand an der Token-Stelle des GitHub MCP-Server-Eintrags der **Platzhalter** `DEIN_NEUER_TOKEN` statt eines echten PAT. Der Docker-Container `toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c` bekam dadurch einen ungültigen Token über `GITHUB_PERSONAL_ACCESS_TOKEN` injiziert.
 
 ## Fundstelle
 `~/.hermes/config.yaml` Zeilen 719–731 (`mcp_servers.github`):
@@ -18,7 +18,7 @@ In `~/.hermes/config.yaml` stand an der Token-Stelle des GitHub MCP-Server-Eintr
       - --rm
       - -e
       - GITHUB_PERSONAL_ACCESS_TOKEN
-      - toqsick/github-mcp-server:develop
+      - toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c
     command: docker
     connect_timeout: 60
     env:

@@ -177,14 +177,14 @@ class MCPAdapter {
 module.exports = { MCPAdapter, PROTOCOL_VERSION };
 
 /*
- * USAGE (live-tested 2026-06-29 with toqsick/github-mcp-server:develop):
+ * USAGE (live-tested 2026-06-29 with toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c):
  *
  *   const token = execSync('gh auth token', { encoding: 'utf-8' }).trim();
  *   const a = new MCPAdapter({
  *     name: 'github',
  *     command: 'docker',
  *     args: ['run', '-i', '--rm', '-e', 'GITHUB_PERSONAL_ACCESS_TOKEN',
- *            'toqsick/github-mcp-server:develop'],
+ *            'toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c'],
  *     env: { GITHUB_PERSONAL_ACCESS_TOKEN: token },
  *   });
  *   await a.connect();

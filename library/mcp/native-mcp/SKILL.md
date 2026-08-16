@@ -413,7 +413,7 @@ Oder in Hermes via Bash:
 ```bash
 # Stdio-Server interaktiv testen:
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | \
-  docker run -i --rm toqsick/github-mcp-server:develop
+  docker run -i --rm toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c
 ```
 
 ## Mode-Validation vor Auth-Check (Plugin-Pattern)

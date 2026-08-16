@@ -39,7 +39,7 @@ const { MCPAdapter } = require('./src/plugins/adapters/mcp-transport');
 const adapter = new MCPAdapter({
   name: 'github',
   command: 'docker',
-  args: ['run', '-i', '--rm', '-e', 'GITHUB_PERSONAL_ACCESS_TOKEN', 'toqsick/github-mcp-server:develop'],
+  args: ['run', '-i', '--rm', '-e', 'GITHUB_PERSONAL_ACCESS_TOKEN', 'toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c'],
   env: { GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_TOKEN },
 });
 

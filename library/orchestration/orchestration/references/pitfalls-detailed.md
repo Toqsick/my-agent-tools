@@ -105,7 +105,7 @@ Dokumentiert in Session 2026-06-29 (siehe `~/docs/system/2026-06-29-session-tele
 
 ## Pitfall 15: GitHub MCP Docker-Wrapper Token-Sync
 
-Wenn der konfigurierte GitHub-MCP-Server (z.B. via `docker run toqsick/github-mcp-server:develop`) mit Token=`DEIN_NEUER_TOKEN` (Platzhalter) oder einem abgelaufenen Token läuft, liefert jeder MCP-Aufruf `401 Bad credentials`.
+Wenn der konfigurierte GitHub-MCP-Server (z.B. via `docker run toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c`) mit Token=`DEIN_NEUER_TOKEN` (Platzhalter) oder einem abgelaufenen Token läuft, liefert jeder MCP-Aufruf `401 Bad credentials`.
 
 **Symptom:** `GET https://api.github.com/user → 401` trotz vermeintlich korrekter Auth in `config.yaml`.
 

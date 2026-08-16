@@ -264,7 +264,7 @@ Credentials are **always** referenced as `${ENV_VAR}` — never stored here. Cop
 
 | Server | Transport | Purpose | Required env vars |
 |---|---|---|---|
-| `github` | Docker (`toqsick/github-mcp-server:develop`) | Issues, PRs, commits, file ops, code search | `GITHUB_PERSONAL_ACCESS_TOKEN` |
+| `github` | Docker (`toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c`) | Issues, PRs, commits, file ops, code search | `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `gmail` | npx (`@gongrzhe/server-gmail-autoauth-mcp`) | Read, send, search e-mail | `GMAIL_OAUTH_CLIENT_ID` · `GMAIL_OAUTH_CLIENT_SECRET` · `GMAIL_OAUTH_REFRESH_TOKEN` |
 | `google-calendar` | npx (`@cocal/google-calendar-mcp`) | Read & create calendar events | `GOOGLE_CLIENT_ID` · `GOOGLE_CLIENT_SECRET` · `GOOGLE_REFRESH_TOKEN` |
 | `filesystem` | npx (`@modelcontextprotocol/server-filesystem`) | Read/write local workspace files | `WORKSPACE_PATH` (default `/workspace`) |
@@ -317,6 +317,7 @@ BRAVE_API_KEY=BSA_...
 | `yuno-team-orchestrator` | `github` + `gmail` + `google-calendar` |
 | `web-scraper` / `stealth-web-scraping` | `puppeteer` + `brave-search` |
 | `queen-bee-schwarm-dispatch` | `github` + `filesystem` + `sequential-thinking` |
+| `github` | `toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c` via Docker. Requires the `GITHUB_PERSONAL_ACCESS_TOKEN` environment variable — the token is **never** stored in this repo, only referenced as `${GITHUB_PERSONAL_ACCESS_TOKEN}`. |
 
 ## Install (on any machine)
 
