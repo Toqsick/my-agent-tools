@@ -11,6 +11,7 @@ Features:
 """
 
 import re
+import shlex
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -144,7 +145,6 @@ class DebugEngine:
                      "is not defined", "undefined property"],
             patterns=["undefined", "null", "optional chaining missing",
                       "destructuring", "async await"],
-            fix_strategy="Add null checks, use optional chaining (?.)",
             fix_strategy="Add null checks, use optional chaining (?.)",
             examples=["object.property", "array[0]", "function()"]
         ),
@@ -297,9 +297,11 @@ class DebugEngine:
     def run_command(self, command: str, timeout: int = 60) -> Tuple[int, str, str]:
         """Run a shell command and return exit code, stdout, stderr."""
         try:
+            # Sicherheitsfix: Shell-Injection vermeiden - Befehl tokenisieren und ohne Shell ausführen
+            cmd_list = shlex.split(command)
             result = subprocess.run(
-                command,
-                shell=True,
+                cmd_list,
+                shell=False,
                 capture_output=True,
                 text=True,
                 timeout=timeout,
@@ -366,7 +368,8 @@ class DebugEngine:
         """Create a failing test case for the bug."""
         # Ensure test directory exists
         test_dir = "tests/debug"
-        subprocess.run(f"mkdir -p {test_dir}", shell=True)
+        # Sicherheitsfix: Shell-Injection vermeiden - Liste statt Shell-String
+        subprocess.run(["mkdir", "-p", test_dir], shell=False)
 
         test_file = f"{test_dir}/bug_{test_name.replace(' ', '_').replace('/', '_')}.test.py"
 

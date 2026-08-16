@@ -12,6 +12,7 @@ Features:
 """
 
 import argparse
+import shlex
 import subprocess
 import json
 from dataclasses import dataclass, field
@@ -102,9 +103,11 @@ class FinishPipeline:
         print(f"Running: {test_command}\n")
 
         try:
+            # Sicherheitsfix: Shell-Injection vermeiden - Befehl tokenisieren und ohne Shell ausführen
+            cmd_list = shlex.split(test_command)
             result = subprocess.run(
-                test_command,
-                shell=True,
+                cmd_list,
+                shell=False,
                 capture_output=True,
                 text=True,
                 timeout=300  # 5 minute timeout
