@@ -148,12 +148,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check toqsick/github-mcp-server:develop on Docker Hub
+      - name: Check toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c on Docker Hub
         run: |
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             "https://hub.docker.com/v2/repositories/toqsick/github-mcp-server/tags/develop")
           if [ "$HTTP_STATUS" = "200" ]; then
-            echo "  ✅ toqsick/github-mcp-server:develop exists on Docker Hub"
+            echo "  ✅ toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c exists on Docker Hub"
           else
             echo "  ⚠️  Docker Hub returned HTTP $HTTP_STATUS (may be private)"
           fi

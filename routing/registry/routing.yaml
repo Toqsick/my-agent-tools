@@ -42,7 +42,7 @@ intent_buckets:
     sample_candidates: ["arxiv", "cyber-analyzing-threat-actor-ttps-with-mitre-attack", "cyber-building-ioc-enrichment-pipeline-with-opencti", "cyber-implementing-zero-knowledge-proof-for-authentication", "hermes-maintenance-core", "perplexity-followup-plan", "research-paper-generator", "url-source-triage", "1password", "3-statement-model", "config-propagation-bugs", "cyber-analyzing-cloud-storage-access-patterns", "cyber-analyzing-security-logs-with-splunk", "cyber-assessing-vector-and-embedding-weaknesses", "cyber-configuring-active-directory-tiered-model", "cyber-configuring-hsm-for-key-storage"]
 
 mcp_servers_configured:
-  - github  # Dockerized toqsick/github-mcp-server:develop; PAT passed by host env
+  - github  # Dockerized toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c; PAT passed by host env
 mcp_servers_unconfigured_overrides:
   - web-search-prime
   - firecrawl

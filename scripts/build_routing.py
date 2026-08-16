@@ -202,7 +202,7 @@ def write_yaml(skills: list[dict]) -> None:
     lines.extend([
         "",
         "mcp_servers_configured:",
-        "  - github  # Dockerized toqsick/github-mcp-server:develop; PAT passed by host env",
+        "  - github  # Dockerized toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c; PAT passed by host env",
         "mcp_servers_unconfigured_overrides:",
         "  - web-search-prime",
         "  - firecrawl",

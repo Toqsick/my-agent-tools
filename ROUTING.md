@@ -86,7 +86,7 @@ implicitly import it. For ZCode, add the equivalent canonical `stdio` server to
 [`routing/config/mcp-template.json`](routing/config/mcp-template.json), export
 `GITHUB_PERSONAL_ACCESS_TOKEN` in the ZCode process environment, and restart ZCode.
 The repository itself is not an MCP implementation: the `github` server is the
-external Docker image `toqsick/github-mcp-server:develop`.
+external Docker image `toqsick/github-mcp-server@sha256:2d6c011ed0ec2ef77f9c57651441aa6f37a6d23d2e2826ee5f45da2d7cf3ee0c`.
 
 ## Keeping the routing artifacts correct
 
