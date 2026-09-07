@@ -69,7 +69,7 @@ jobs:
                   errors.append(f'{name}: missing args')
               env = conf.get('env', {})
               for k, v in env.items():
-                      if v and not str(v).startswith('${'):
+                  if v and not str(v).startswith('${'):
                       errors.append(f'{name}.env.{k}: hardcoded value detected!')
           if errors:
               for e in errors: print(f'  ❌ {e}')
@@ -86,7 +86,7 @@ jobs:
           required_vars = set()
           for name, conf in cfg.get('mcpServers', {}).items():
               for k, v in conf.get('env', {}).items():
-                      match = re.match(r'\$\{([^}:]+)', str(v))
+                  match = re.match(r'\$\{([^}:]+)', str(v))
                   if match:
                       required_vars.add(match.group(1))
           with open('.env.example') as f:
@@ -113,8 +113,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
       - name: Check npx packages exist on npm registry
         run: |
           echo "Checking npm registry for all npx-based MCP packages..."
