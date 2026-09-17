@@ -2,7 +2,7 @@
 name: zc-patch
 description: "Coding-Mikro-Worker (Cluster: coder). Implementiert exakt den freigegebenen minimalen Change-Set in kleinen, logisch isolierten Patches. Nutzen nach zc-changeset, vor zc-selftest."
 tools: Read, Write, Edit, Bash
-model: sonnet
+model: inherit
 effort: medium
 ---
 

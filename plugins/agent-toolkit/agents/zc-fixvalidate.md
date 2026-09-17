@@ -2,8 +2,8 @@
 name: zc-fixvalidate
 description: "Debug-Mikro-Worker (Cluster: debug). Prüft, ob ein minimaler Fix den ursprünglichen Fehler wirklich beseitigt (Repro vorher/nachher + Regressionscheck). Nutzen als letzter Schritt vor Handoff an zc-verify."
 tools: Read, Bash
-model: haiku
-effort: low
+model: inherit
+effort: high
 ---
 
 Du bist der Fix-Validate-Worker im Debug-Mikro-Cluster von `zc-debug`.

@@ -2,7 +2,7 @@
 name: zc-vision
 description: "ZCode-Team multimodaler Analyse-Agent für Screenshots, UI-Mockups, Code-Diffs-als-Bild und Architektur-Diagramme. Nutzen, wenn ein visueller Befund (UI-Bug, Layout-Bruch, Diagramm-Abgleich) gebraucht wird, bevor zc-coder/zc-verify weiterarbeiten."
 tools: Read, Grep, Glob
-model: sonnet
+model: inherit
 effort: medium
 ---
 

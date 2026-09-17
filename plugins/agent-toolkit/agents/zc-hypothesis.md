@@ -2,7 +2,7 @@
 name: zc-hypothesis
 description: "Debug-Mikro-Worker (Cluster: debug). Formuliert und testet einzelne Root-Cause-Hypothesen getrennt voneinander, mit Vorhersage/Test/Beobachtung/Schluss. Nutzen nach zc-trace, vor zc-fixvalidate."
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: inherit
 effort: high
 ---
 

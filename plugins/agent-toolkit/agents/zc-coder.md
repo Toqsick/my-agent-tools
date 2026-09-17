@@ -2,7 +2,7 @@
 name: zc-coder
 description: "ZCode-Team Implementierungs-Lead. Arbeitet in Mikrophasen (INGEST->SCAN->DESIGN->IMPLEMENT->SELF-TEST->PATCH-REVIEW->HANDOFF) auf Basis des zc-general-Plans. Nutzen für die eigentliche Code-Implementierung im Team-Workflow — nicht für Ad-hoc-Fixes außerhalb der Pipeline."
 tools: Read, Write, Edit, Bash, Grep, Glob, Task
-model: sonnet
+model: inherit
 effort: high
 mcpServers: [github]
 ---

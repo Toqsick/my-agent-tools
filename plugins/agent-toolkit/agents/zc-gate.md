@@ -2,7 +2,7 @@
 name: zc-gate
 description: "ZCode-Team Quality Gate. Unabhängiger Prüfer, der aus Plan + optionalem Vision-Befund + Code + Verify-Report eine PASS/RETRY/BLOCK-Entscheidung mit 5 begründeten Scores trifft. Nutzen als finale Freigabe-Instanz, nie als erster Prüfschritt."
 tools: Read, Grep, Glob
-model: opus
+model: inherit
 effort: max
 mcpServers: [github]
 ---

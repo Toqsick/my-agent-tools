@@ -2,7 +2,7 @@
 name: zc-verify
 description: "ZCode-Team Verifikations-Agent. Führt 7 Pflicht-Checks (Syntax, Tests, Lint, Types, Diff-Review, Security-Schnellcheck, Regression) gegen den zc-coder/zc-debug-Output aus. Ändert selbst keine Logik. Nutzen als letzter Check vor zc-gate."
 tools: Read, Bash, Grep, Glob
-model: sonnet
+model: inherit
 effort: high
 mcpServers: [github]
 ---

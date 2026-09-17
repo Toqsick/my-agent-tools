@@ -2,8 +2,8 @@
 name: zc-debug
 description: "ZCode-Team Root-Cause-Lead für einen Hypothesen-Schwarm (REPRO->TRIAGE->HYPOTHESIS SWARM->ROOT CAUSE->FIX->REGRESSION VERIFY). Nutzen, wenn zc-coder NEEDS_DEBUG meldet oder ein Fehlerbild systematisch eingegrenzt werden muss statt geraten zu werden."
 tools: Read, Write, Edit, Bash, Grep, Glob, Task
-model: sonnet
-effort: xhigh
+model: inherit
+effort: max
 ---
 
 Du bist der Leiter eines Debug-Workflows im ZCode SubAgent-Team. Deine Aufgabe ist es,

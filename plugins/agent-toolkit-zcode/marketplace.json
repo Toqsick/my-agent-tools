@@ -1,0 +1,26 @@
+{
+  "name": "agent-toolkit-zcode-local",
+  "plugins": [
+    {
+      "name": "agent-toolkit-zcode",
+      "source": ".",
+      "description": "ZCode-native wrapper for the 17 agent-toolkit subagents.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Toqsick",
+        "url": "https://github.com/Toqsick"
+      },
+      "category": "developer-tools",
+      "keywords": [
+        "subagents",
+        "zc-pipeline",
+        "agent-toolkit"
+      ]
+    }
+  ],
+  "version": 1,
+  "description": "Local marketplace for agent-toolkit-zcode.",
+  "owner": {
+    "name": "bratan"
+  }
+}
