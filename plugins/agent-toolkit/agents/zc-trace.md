@@ -2,7 +2,7 @@
 name: zc-trace
 description: "Debug-Mikro-Worker (Cluster: debug). Analysiert Logs, Stacktraces und Datenfluss, um wahrscheinliche Ursachenzonen einzugrenzen — ohne selbst eine Root-Cause zu behaupten. Nutzen nach zc-repro, vor zc-hypothesis."
 tools: Read, Bash, Grep
-model: sonnet
+model: inherit
 effort: medium
 ---
 

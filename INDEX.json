@@ -8,7 +8,7 @@
     "library": 1279,
     "skills_total": 1357,
     "agents": 17,
-    "workflows": 6,
+    "workflows": 7,
     "categories": 43
   },
   "tag_vocabulary": [
@@ -59415,6 +59415,91 @@
         }
       ],
       "path": "workflows/zcode-6lane-pipeline.md"
+    },
+    {
+      "id": "dev-lens-swarm",
+      "name": "dev-lens-swarm — RepoLens-inspirierte Multi-Agent-Development-Pipeline",
+      "when": "Feature/Refactor/Review/Bugfix-Arbeit mittlerer bis großer Tragweite, bei der parallele Lens-Analyse + Verifikation Mehrwert bringen; NOT für triviale Einzel-Edits.",
+      "skills": [
+        "dev-lens-swarm",
+        "grill-4x4",
+        "schwarm-ohne-barriere"
+      ],
+      "agents": [
+        "zc-general",
+        "zc-coder",
+        "zc-verify",
+        "zc-gate",
+        "zc-impact",
+        "zc-selftest",
+        "general-purpose"
+      ],
+      "phases": [
+        {
+          "phase": "Grill",
+          "owner_agent": "Haupt-Agent (Session)",
+          "skills": [
+            "grill-4x4"
+          ],
+          "exit_criteria": "Frontier leer + shared understanding bestätigt.",
+          "failure_modes": "Nutzerrunde erwidert nichts Neues → Task-Definition einfrieren und weiter."
+        },
+        {
+          "phase": "Triage",
+          "owner_agent": "zc-general",
+          "skills": [
+            "dev-lens-swarm"
+          ],
+          "exit_criteria": "Codemap + Lens-Auswahl + swarm.py-Plan initiiert (Run-Dir + Ledger).",
+          "failure_modes": "Scope nicht partitionierbar → zurück zur Grill-Phase."
+        },
+        {
+          "phase": "Lens-Rounds",
+          "owner_agent": "zc-coder (Worker-Schwarm)",
+          "skills": [
+            "schwarm-ohne-barriere"
+          ],
+          "exit_criteria": "NO_FRESH_ANGLES oder rounds_max erreicht.",
+          "failure_modes": "Requeue-Budget erschöpft → Task eskaliert (escalated im Ledger)."
+        },
+        {
+          "phase": "Meta-Orchestrator",
+          "owner_agent": "zc-general",
+          "skills": [
+            "dev-lens-swarm"
+          ],
+          "exit_criteria": "Decision je offener Round-Hypothese (re-dispatch|saturiert|escalate).",
+          "failure_modes": "Zykklus-Verdacht (State-Hash) → escalate."
+        },
+        {
+          "phase": "Verify",
+          "owner_agent": "zc-verify (konkurrierende Spur)",
+          "skills": [
+            "schwarm-ohne-barriere"
+          ],
+          "exit_criteria": "Alle verify-briefs mit verdict PASS/RETRY → bei RETRY: Requeue mit finding.",
+          "failure_modes": "Verify-Rückstau (2 Slots) → Worker-Dispatch drosseln."
+        },
+        {
+          "phase": "Synthesize",
+          "owner_agent": "general-purpose",
+          "skills": [
+            "dev-lens-swarm"
+          ],
+          "exit_criteria": "final/manifest.json + Report dedupliziert.",
+          "failure_modes": "Cluster zu grob → zweite Synthese-Iteration."
+        },
+        {
+          "phase": "Report",
+          "owner_agent": "Haupt-Agent",
+          "skills": [
+            "dev-lens-swarm"
+          ],
+          "exit_criteria": "Metriken (swarm.py metrics) + Flowdiagramm + offene-Posten-Liste.",
+          "failure_modes": "Metriken inkonsistent (Makespan < kritischer Pfad) → Warnung ausgeben (bekanntes Edge)."
+        }
+      ],
+      "path": "workflows/dev-lens-swarm.md"
     }
   ]
 }

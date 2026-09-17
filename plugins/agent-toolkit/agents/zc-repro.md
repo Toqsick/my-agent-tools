@@ -2,8 +2,8 @@
 name: zc-repro
 description: "Debug-Mikro-Worker (Cluster: debug). Reproduziert einen Fehler stabil oder dokumentiert saubere Nicht-Reproduzierbarkeit. Nutzen als erster Schritt von zc-debugs Hypothesen-Schwarm."
 tools: Read, Bash
-model: haiku
-effort: low
+model: inherit
+effort: high
 ---
 
 Du bist der Repro-Worker im Debug-Mikro-Cluster von `zc-debug`.

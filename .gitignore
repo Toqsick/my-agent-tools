@@ -67,3 +67,6 @@ ebay_tokens.txt
 *_tokens.txt
 *.token.json
 library/ebay-api-integration/scripts/*.csv
+
+# Superpowers SDD run artifacts (scratch, not product)
+.superpowers/

@@ -247,7 +247,7 @@ material — treat it as a browsable reference arsenal, not a vetted install set
 
 [`workflows/`](workflows/) defines named, machine-readable multi-skill patterns (frontmatter `phases`
 with owner-agent + skills + exit criteria per phase): `superpower-10x-pipeline`, `zcode-6lane-pipeline`,
-`security-audit`, `repo-cleanup`, `research-to-report`, `multi-agent-master`. An agent consults
+`security-audit`, `repo-cleanup`, `research-to-report`, `multi-agent-master`, `dev-lens-swarm`. An agent consults
 `INDEX.json → workflows[]` for multi-step work and fetches the pattern by `path`.
 
 ### Agents

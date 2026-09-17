@@ -2,7 +2,7 @@
 name: zc-changeset
 description: "Coding-Mikro-Worker (Cluster: coder). Leitet aus Impact-Map und Plan einen minimalen, konkreten Change-Set ab, bevor geschrieben wird. Nutzen nach zc-impact, vor zc-patch."
 tools: Read, Grep, Glob
-model: sonnet
+model: inherit
 effort: medium
 ---
 
