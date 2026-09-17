@@ -30,10 +30,13 @@ jobs:
           python3 - <<'EOF'
           import pathlib, re, sys
           root = pathlib.Path('.')
-          REQUIRED_FIELDS = ['name', 'description', 'triggers']
+          PLUGIN_DIR = 'plugins/agent-toolkit/skills/'
           errors = []
+          warnings = []
           checked = 0
           for skill_file in sorted(root.rglob('SKILL.md')):
+              if '.superpowers' in str(skill_file):
+                  continue
               checked += 1
               content = skill_file.read_text(errors='replace')
               fm_match = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
@@ -41,15 +44,49 @@ jobs:
                   errors.append(f'  ❌ {skill_file}: missing frontmatter')
                   continue
               fm = fm_match.group(1)
-              missing = [f for f in REQUIRED_FIELDS if not re.search(rf'^{f}\s*:', fm, re.MULTILINE)]
-              if missing:
-                  errors.append(f'  ❌ {skill_file}: missing fields: {missing}')
-              desc_match = re.search(r'^description\s*:\s*(.+)', fm, re.MULTILINE)
-              if desc_match and len(desc_match.group(1).strip()) < 10:
-                  errors.append(f'  ⚠️  {skill_file}: description too short')
+              in_plugin = PLUGIN_DIR in str(skill_file)
+              # Required: name — present, kebab-case; must equal the directory
+              # name for installed plugin skills (library tier: warn only, the
+              # browsable third-party imports predate that convention).
+              name_match = re.search(r'^name\s*:\s*(.+)', fm, re.MULTILINE)
+              if not name_match:
+                  errors.append(f'  ❌ {skill_file}: missing field: name')
+              else:
+                  name = name_match.group(1).strip().strip('\'"')
+                  if not re.fullmatch(r'[a-z0-9]+(-[a-z0-9]+)*', name):
+                      errors.append(f'  ❌ {skill_file}: name "{name}" is not kebab-case')
+                  elif name != skill_file.parent.name:
+                      msg = f'  {skill_file}: name "{name}" != directory "{skill_file.parent.name}"'
+                      (errors if in_plugin else warnings).append(
+                          ('  ❌ ' if in_plugin else '  ⚠️  ') + msg)
+              # Required: description — present, non-empty (folded/block scalars
+              # joined), <= 1024 chars (library tier: warn on length only).
+              desc_match = re.search(
+                  r'^description\s*:\s*(.+)\n?((?:[ \t]+[^\n]*\n?)*)', fm, re.MULTILINE)
+              if not desc_match:
+                  errors.append(f'  ❌ {skill_file}: missing field: description')
+              else:
+                  first = desc_match.group(1).strip()
+                  rest = ' '.join(l.strip() for l in desc_match.group(2).splitlines())
+                  desc = (first if first not in ('>', '|', '>-', '|-', '+') else '')
+                  if rest:
+                      desc = (desc + ' ' + rest).strip()
+                  if not desc:
+                      errors.append(f'  ❌ {skill_file}: description is empty')
+                  elif len(desc) > 1024:
+                      msg = f'  {skill_file}: description too long ({len(desc)} > 1024 chars)'
+                      (errors if in_plugin else warnings).append(
+                          ('  ❌ ' if in_plugin else '  ⚠️  ') + msg)
+              # Optional: triggers — tolerated, warn only.
+              if not re.search(r'^triggers\s*:', fm, re.MULTILINE):
+                  warnings.append(f'  ⚠️  {skill_file}: no triggers field (optional)')
           print(f'Checked {checked} SKILL.md files')
+          for w in warnings:
+              print(w)
+          print(f'  {len(warnings)} warning(s), {len(errors)} error(s)')
           if errors:
-              for e in errors: print(e)
+              for e in errors:
+                  print(e)
               sys.exit(1)
           print(f'  ✅ All {checked} skills pass validation')
           EOF
