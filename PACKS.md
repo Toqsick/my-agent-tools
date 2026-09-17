@@ -1,9 +1,9 @@
 # Skill Packs
 
-The `agent-toolkit` plugin ships **129 installed skills** grouped into **8 themed packs**. The
+The `agent-toolkit` plugin ships **78 installed skills** grouped into **8 themed packs**. The
 packs are a navigation/grouping layer over the installed skills — every skill still loads in
 every session (it's one plugin), and is still invokable as `agent-toolkit:<name>`. Packs just
-make the wall of 129 skills scannable: by domain, by count, by "when to use this pack".
+make the wall of 78 skills scannable: by domain, by count, by "when to use this pack".
 
 - **Canonical manifest:** [`plugins/agent-toolkit/packs/manifest.json`](plugins/agent-toolkit/packs/manifest.json)
   (generated-validated by `scripts/build_packs.py`; never hand-edit the bundles).
@@ -18,20 +18,20 @@ make the wall of 129 skills scannable: by domain, by count, by "when to use this
 |---|---|---|---:|---|
 | `core` | Core & Personal | productivity | 10 | Daily-driver layer: Obsidian second-brain, system cleanup, 3D printing, Yuno team orchestration/routing/preferences, model selection, folder tidy, daily briefing, skill↔MCP router. |
 | `hermes-dev` | Hermes / Yuno Platform | development | 18 | Building on the Hermes/Yuno platform: CLI internals, gateway protocol/clients, mobile clients, Ariadne memory, gateway adapters, desktop plugins, messaging gateways, themes, ModelHub. |
-| `cybersecurity` | Cybersecurity | security | 50 | Defensive security & DFIR: CIS hardening, Docker/K8s, network hunting (Zeek/Suricata/Wireshark), forensics (Volatility/IR), compliance & supply-chain (SBOM/SLSA/gitleaks). |
-| `methodology` | Engineering Methodology | development | 18 | The Superpowers workflow set (brainstorm→plan→TDD→debug→verify→finish), subagent-driven development, ZCode SubAgent Team, Queen-Bee swarm dispatch, multi-agent master workflow. |
+| `cybersecurity` | Cybersecurity | security | 15 | Defensive security & DFIR on stock Docker/auditd: Docker hardening/bench/forensics, auditd intrusion analysis, Suricata/Sigma detection, IR playbooks, cloud CIS audits, supply-chain (SBOM/SLSA). |
+| `methodology` | Engineering Methodology | development | 2 | Multi-agent orchestration: ZCode SubAgent Team, Queen-Bee swarm dispatch. |
 | `media` | Media & Generation | creative | 6 | MiniMax `mmx` CLI, MiniMax agent builder, crypto trading, DOCX/PDF, Nano Banana Pro image gen. |
 | `docs-web-research` | Docs, Web & Research | productivity | 15 | Document gen (PPT/McKinsey/research papers), frontend design, web scraping, Excel, n8n, SEO/GEO, business research (job hunter, sales Power Maps, SaaS niches), NotebookLM, knowledge digest, prompt engineering. |
 | `computer-use` | Computer-Use & GreyHack | automation | 3 | Desktop/game GUI automation: GreyHack Computer-Use suite + game and desktop-window reconnaissance. |
 | `dev-essentials` | Dev Essentials | development | 9 | Engineering originals: debugging patterns, defensive programming, config-propagation bugs, reference-architecture research, open-source extraction, stealth web scraping, web-content recon, competitive-landscape research, ClickHouse best practices. |
 
-**Total: 129 skills across 8 packs** — a clean partition (every installed skill in exactly one
+**Total: 78 skills across 8 packs** — a clean partition (every installed skill in exactly one
 pack, validated by `scripts/build_packs.py`, which exits non-zero on a partition error).
 
 ## How packs relate to the plugin today
 
 Right now there is **one plugin** (`agent-toolkit`) and **one marketplace entry** that installs
-all 129 skills. The packs are metadata — `manifest.json` + per-pack READMEs + routing bundles —
+all 78 skills. The packs are metadata — `manifest.json` + per-pack READMEs + routing bundles —
 not separate install targets. The 8 themed marketplace entries in
 `.claude-plugin/marketplace.json` (`agent-toolkit-core`, `-hermes-dev`, …) are **stubs**: each
 points at the same `./plugins/agent-toolkit` source, so installing any themed handle today
@@ -58,7 +58,7 @@ directory and repoint its marketplace entry. The mechanical steps:
    {
      "name": "agent-toolkit-cybersecurity",          // already a stub entry
      "source": "./plugins/agent-toolkit-cybersecurity", // was: "./plugins/agent-toolkit"
-     "description": "Cybersecurity pack: 50 DFIR/defensive skills …",
+     "description": "Cybersecurity pack: 15 DFIR/defensive skills …",
      "category": "security",
      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit-cybersecurity"
    }
@@ -68,10 +68,11 @@ directory and repoint its marketplace entry. The mechanical steps:
 4. Re-run `python3 scripts/build_index.py` (the manifest is the source of truth for pack
    membership; `build_packs.py` will re-emit bundles and validate the partition).
 
-**Migration order (recommended):** split the largest/most-self-contained pack first
-(`cybersecurity`, 50 skills — least overlap with daily-driver work), then `hermes-dev` (18) and
-`methodology` (18). The small packs (`media`, `computer-use`, `dev-essentials`) can stay bundled
-until there's a reason to split them.
+**Migration order (recommended):** split the largest pack first (`hermes-dev`, 18 skills), then
+`cybersecurity` (15 — least overlap with daily-driver work). `methodology` is down to 2 skills
+after the 2026-09-17 consolidation (Superpowers forks removed, cyber third-party imports moved
+to `library/`), so it can fold into `core` at split time. The small packs (`media`,
+`computer-use`, `dev-essentials`) can stay bundled until there's a reason to split them.
 
 ## Maintenance
 
