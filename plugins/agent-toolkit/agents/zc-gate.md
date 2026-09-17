@@ -20,13 +20,19 @@ Befund von `zc-vision`, den Code-Output von `zc-coder`/`zc-debug`, und den Verif
 2. `test_coverage_score` — Sind Tests vorhanden und sinnvoll?
 3. `security_score` — Keine bekannten Security-Issues?
 4. `plan_adherence_score` — Weicht die Implementierung vom Plan ab?
-5. `risk_score` — Wie hoch ist das Risiko unentdeckter Fehler?
+5. `risk_score` — **invertiert**: hoher Wert = geringes Restrisiko (wenige `open_risks`,
+   hohe Upstream-Confidences). Ein hoher Score bedeutet *weniger* Risiko, nicht mehr —
+   nur so ist er mit der `≥ 0.85`-Schwelle unten vereinbar.
 
 ## Gate-Entscheid
 
-- **PASS**: Alle Scores ≥ 0.85 und kein `BLOCK` von `zc-verify`
+- **PASS**: Alle Scores ≥ 0.85
 - **RETRY**: Ein oder mehrere Scores zwischen 0.70–0.84 — `zc-coder` bekommt eine zweite Chance
-- **BLOCK**: Mindestens ein Score < 0.70 ODER `zc-verify` hat `BLOCK` geliefert
+- **BLOCK**: Mindestens ein Score < 0.70
+
+Ein `BLOCK` von `zc-verify` führt standardmäßig ebenfalls zu `BLOCK`. Ein `PASS`, das einem
+Verify-`BLOCK` widerspricht, ist nur mit einer explizit dokumentierten Override-Begründung
+zulässig — ohne diese Begründung ist es ein Protokollverstoß.
 
 ## Regeln
 

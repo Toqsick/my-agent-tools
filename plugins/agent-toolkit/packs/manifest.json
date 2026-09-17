@@ -136,44 +136,12 @@
       "name": "cybersecurity",
       "title": "Cybersecurity",
       "category": "security",
-      "description": "50 defensive-security and DFIR skills — CIS hardening, Docker/K8s and container security, network detection & hunting (Zeek/Suricata/Wireshark), forensics (Volatility/disk/IR), and compliance/supply-chain (SBOM/SLSA/gitleaks).",
-      "skill_count": 50,
+      "description": "Docker- and auditd-native defensive-security and DFIR skills — Docker hardening/bench assessment and container forensics, auditd intrusion analysis, Suricata/Sigma detection engineering, IR playbooks, cloud CIS audits, and supply-chain (SBOM/SLSA).",
+      "skill_count": 15,
       "skills": [
-        {
-          "name": "hardening-linux-endpoint-with-cis-benchmark",
-          "description": "Hardens Linux endpoints using CIS Benchmark recommendations for Ubuntu, RHEL, and CentOS to reduce attack surface, enforce security baselines, and meet compliance requirements. Use when deploying new Linux servers, remediating audit findings, or establishing security baselines for Linux infrastructure. Activates for requests involving Linux hardening, CIS benchmarks for Linux, server security baselines, or Linux configuration compliance."
-        },
         {
           "name": "analyzing-linux-audit-logs-for-intrusion",
           "description": "Uses the Linux Audit framework (auditd) with ausearch and aureport utilities to detect intrusion attempts, unauthorized access, privilege escalation, and suspicious system activity. Covers audit rule configuration, log querying, timeline reconstruction, and integration with SIEM platforms. Activates for requests involving auditd analysis, Linux audit log investigation, ausearch queries, aureport summaries, or host-based intrusion detection on Linux. '"
-        },
-        {
-          "name": "analyzing-linux-system-artifacts",
-          "description": "Examine Linux system artifacts including auth logs, cron jobs, shell history, and system configuration to uncover evidence of compromise or unauthorized activity."
-        },
-        {
-          "name": "analyzing-persistence-mechanisms-in-linux",
-          "description": "Detect and analyze Linux persistence mechanisms including crontab entries, systemd service units, LD_PRELOAD hijacking, bashrc modifications, and authorized_keys backdoors using auditd and file integrity monitoring"
-        },
-        {
-          "name": "detecting-rootkit-activity",
-          "description": "Detects rootkit presence on compromised systems by identifying hidden processes, hooked system calls, modified kernel structures, hidden files, and covert network connections using memory forensics, cross-view detection, and integrity checking techniques. Activates for requests involving rootkit detection, hidden process discovery, kernel integrity checking, or system call hook analysis. '"
-        },
-        {
-          "name": "analyzing-linux-kernel-rootkits",
-          "description": "Detect kernel-level rootkits in Linux memory dumps using Volatility3 linux plugins (check_syscall, lsmod, hidden_modules), rkhunter system scanning, and /proc vs /sys discrepancy analysis to identify hooked syscalls, hidden kernel modules, and tampered system structures."
-        },
-        {
-          "name": "performing-linux-log-forensics-investigation",
-          "description": "Perform forensic investigation of Linux system logs including syslog, auth.log, systemd journal, kern.log, and application logs to reconstruct user activity, detect unauthorized access, and establish event timelines on compromised Linux systems."
-        },
-        {
-          "name": "detecting-port-scanning-with-fail2ban",
-          "description": "Configures Fail2ban with custom filters and actions to detect port scanning activity, SSH brute force attempts, and network reconnaissance, automatically banning offending IP addresses and alerting security teams to suspicious network probing. '"
-        },
-        {
-          "name": "implementing-network-segmentation-with-firewall-zones",
-          "description": "Design and implement network segmentation using firewall security zones, VLANs, ACLs, and microsegmentation policies to restrict lateral movement and enforce least-privilege network access."
         },
         {
           "name": "hardening-docker-containers-for-production",
@@ -196,72 +164,12 @@
           "description": "Container escape is a critical attack technique where an adversary breaks out of container isolation to access the host system or other containers. Detection involves monitoring for escape indicators"
         },
         {
-          "name": "detecting-container-runtime-threats-with-falco",
-          "description": "Write and deploy Falco rules with the modern eBPF driver to detect container escape, namespace abuse, privileged mounts, and anomalous syscalls at runtime in Kubernetes and Docker."
-        },
-        {
-          "name": "scanning-docker-images-with-trivy",
-          "description": "Trivy is a comprehensive open-source vulnerability scanner by Aqua Security that detects vulnerabilities in OS packages, language-specific dependencies, misconfigurations, secrets, and license violati"
-        },
-        {
-          "name": "performing-container-security-scanning-with-trivy",
-          "description": "Scan container images, filesystems, and Kubernetes manifests for vulnerabilities, misconfigurations, exposed secrets, and license compliance issues using Aqua Security Trivy with SBOM generation and CI/CD integration."
-        },
-        {
-          "name": "implementing-container-image-minimal-base-with-distroless",
-          "description": "Reduce container attack surface by building application images on Google distroless base images that contain only the application runtime with no shell, package manager, or unnecessary OS utilities."
-        },
-        {
-          "name": "securing-container-registry-with-harbor",
-          "description": "Harbor is an open-source container registry that provides security features including vulnerability scanning (integrated Trivy), image signing (Notary/Cosign), RBAC, content trust policies, replicatio"
-        },
-        {
-          "name": "implementing-kubernetes-pod-security-standards",
-          "description": "Pod Security Standards (PSS) define three levels of security policies -- Privileged, Baseline, and Restricted -- enforced by the Pod Security Admission (PSA) controller built into Kubernetes 1.25+. PS"
-        },
-        {
-          "name": "analyzing-network-packets-with-scapy",
-          "description": "Craft, send, sniff, and dissect network packets using Scapy for protocol analysis, network reconnaissance, and traffic anomaly detection in authorized security testing"
-        },
-        {
-          "name": "analyzing-network-traffic-with-wireshark",
-          "description": "Captures and analyzes network packet data using Wireshark and tshark to identify malicious traffic patterns, diagnose protocol issues, extract artifacts, and support incident response investigations on authorized network segments. '"
-        },
-        {
-          "name": "performing-network-forensics-with-wireshark",
-          "description": "Capture and analyze network traffic using Wireshark and tshark to reconstruct network events, extract artifacts, and identify malicious communications."
-        },
-        {
           "name": "configuring-suricata-for-network-monitoring",
           "description": "Deploys and configures Suricata IDS/IPS with Emerging Threats rulesets, EVE JSON logging, and custom rules for real-time network traffic inspection, threat detection, and integration with SIEM platforms for centralized security monitoring. '"
         },
         {
-          "name": "detecting-network-anomalies-with-zeek",
-          "description": "Deploys and configures Zeek (formerly Bro) network security monitor to passively analyze network traffic, generate structured logs, detect anomalous behavior, and create custom detection scripts for threat hunting and incident response. '"
-        },
-        {
-          "name": "detecting-beaconing-patterns-with-zeek",
-          "description": "Performs statistical analysis of Zeek conn.log connection intervals to detect C2 beaconing patterns. Uses the ZAT library to load Zeek logs into Pandas DataFrames, calculates inter-arrival time standard deviation, and flags periodic connections with low jitter. Use when hunting for command-and-control callbacks in network data. '"
-        },
-        {
-          "name": "detecting-dns-exfiltration-with-dns-query-analysis",
-          "description": "Detect data exfiltration through DNS tunneling by analyzing query entropy, subdomain length, query volume, TXT record abuse, and response payload sizes using passive DNS monitoring."
-        },
-        {
-          "name": "deploying-osquery-for-endpoint-monitoring",
-          "description": "Deploys and configures osquery for real-time endpoint monitoring using SQL-based queries to inspect running processes, open ports, installed software, and system configuration. Use when building visibility into endpoint state, threat hunting across fleet, or implementing compliance monitoring. Activates for requests involving osquery deployment, endpoint visibility, fleet management, or SQL-based endpoint querying. '"
-        },
-        {
           "name": "building-detection-rules-with-sigma",
           "description": "Builds vendor-agnostic detection rules using the Sigma rule format for threat detection across SIEM platforms including Splunk, Elastic, and Microsoft Sentinel. Use when creating portable detection logic from threat intelligence, mapping rules to MITRE ATT&CK techniques, or converting community Sigma rules into platform-specific queries using sigmac or pySigma backends. '"
-        },
-        {
-          "name": "performing-malware-triage-with-yara",
-          "description": "Performs rapid malware triage and classification using YARA rules to match file patterns, strings, byte sequences, and structural characteristics against known malware families and suspicious indicators. Covers rule writing, scanning, and integration with analysis pipelines. Activates for requests involving YARA rule creation, malware classification, pattern matching, sample triage, or signature-based detection. '"
-        },
-        {
-          "name": "hunting-advanced-persistent-threats",
-          "description": "Proactively hunts for Advanced Persistent Threat (APT) activity within enterprise environments using hypothesis-driven searches across endpoint telemetry, network logs, and memory artifacts. Use when conducting scheduled threat hunting cycles, investigating anomalous behavior flagged by UEBA, or validating that known APT TTPs are not present in the environment. Activates for requests involving MITRE ATT&CK, Velociraptor, osquery, Zeek, or threat hunting playbooks. '"
         },
         {
           "name": "building-threat-hunt-hypothesis-framework",
@@ -272,22 +180,6 @@
           "description": "Performs memory forensics analysis using Volatility 3 to extract evidence of malware execution, process injection, network connections, and credential theft from RAM dumps captured during incident response. Covers memory acquisition, process analysis, DLL inspection, and malware detection. Activates for requests involving memory forensics, RAM analysis, Volatility framework, memory dump investigation, volatile evidence analysis, or live memory acquisition. '"
         },
         {
-          "name": "performing-memory-forensics-with-volatility3",
-          "description": "Analyze volatile memory dumps using Volatility 3 to extract running processes, network connections, loaded modules, and evidence of malicious activity."
-        },
-        {
-          "name": "performing-disk-forensics-investigation",
-          "description": "Conducts disk forensics investigations using forensic imaging, file system analysis, artifact recovery, and timeline reconstruction to support incident response cases. Utilizes tools such as FTK Imager, Autopsy, and The Sleuth Kit for evidence acquisition, deleted file recovery, and artifact examination. Activates for requests involving disk forensics, hard drive analysis, forensic imaging, file recovery, evidence acquisition, or digital forensic investigation. '"
-        },
-        {
-          "name": "performing-endpoint-forensics-investigation",
-          "description": "Performs digital forensics investigation on compromised endpoints including memory acquisition, disk imaging, artifact analysis, and timeline reconstruction. Use when investigating security incidents, collecting evidence for legal proceedings, or analyzing endpoint compromise scope. Activates for requests involving endpoint forensics, memory analysis, disk forensics, or incident investigation. '"
-        },
-        {
-          "name": "performing-log-analysis-for-forensic-investigation",
-          "description": "Collect, parse, and correlate system, application, and security logs to reconstruct events and establish timelines during forensic investigations."
-        },
-        {
           "name": "building-incident-response-playbook",
           "description": "Designs and documents structured incident response playbooks that define step-by-step procedures for specific incident types aligned with NIST SP 800-61r3 and SANS PICERL frameworks. Covers playbook structure, decision trees, escalation criteria, RACI matrices, and integration with SOAR platforms. Activates for requests involving IR playbook creation, incident response procedure documentation, response runbook development, or SOAR playbook design. '"
         },
@@ -296,48 +188,16 @@
           "description": "Classify and prioritize security incidents using structured IR playbooks to determine severity, assign response teams, and initiate appropriate response procedures."
         },
         {
-          "name": "recovering-deleted-files-with-photorec",
-          "description": "Recover deleted files from disk images and storage media using PhotoRec's file signature-based carving engine regardless of file system damage."
-        },
-        {
-          "name": "performing-file-carving-with-foremost",
-          "description": "Recover files from disk images and unallocated space using Foremost's header-footer signature carving to extract evidence regardless of file system state."
-        },
-        {
-          "name": "performing-nist-csf-maturity-assessment",
-          "description": "The NIST Cybersecurity Framework (CSF) 2.0, released in February 2024, provides a comprehensive taxonomy for managing cybersecurity risk through six core Functions - Govern, Identify, Protect, Detect, Respond, and Recover. This skill covers conducting a maturity assessment against the CSF using Implementation Tiers to measure organizational cybersecurity posture and create improvement roadmaps."
-        },
-        {
-          "name": "implementing-attack-surface-management",
-          "description": "Implements external attack surface management (EASM) using Shodan, Censys, and ProjectDiscovery tools (subfinder, httpx, nuclei) for asset discovery, subdomain enumeration, service fingerprinting, and exposure scoring. Includes a weighted risk scoring algorithm based on OWASP attack surface analysis methodology and the Relative Attack Surface Quotient (RSQ). Use when building continuous ASM programs or performing external reconnaissance for security assessments. '"
-        },
-        {
           "name": "auditing-cloud-with-cis-benchmarks",
           "description": "This skill details how to conduct cloud security audits using Center for Internet Security benchmarks for AWS, Azure, and GCP. It covers interpreting CIS Foundations Benchmark controls, running automated assessments with tools like Prowler and ScoutSuite, remediating failed controls, and maintaining continuous compliance monitoring against CIS v5 for AWS, v4 for Azure, and v4 for GCP. '"
-        },
-        {
-          "name": "implementing-secret-scanning-with-gitleaks",
-          "description": "This skill covers implementing Gitleaks for detecting and preventing hardcoded secrets in git repositories. It addresses configuring pre-commit hooks, CI/CD pipeline integration, custom rule authoring for organization-specific secrets, baseline management for existing repositories, and remediation workflows for exposed credentials. '"
-        },
-        {
-          "name": "detecting-aws-credential-exposure-with-trufflehog",
-          "description": "Detecting exposed AWS credentials in source code repositories, CI/CD pipelines, and configuration files using TruffleHog, git-secrets, and AWS-native detection mechanisms to prevent credential theft and unauthorized account access. '"
         },
         {
           "name": "generating-and-analyzing-sboms",
           "description": "Produce and ingest CycloneDX and SPDX SBOMs and correlate them to vulnerability intelligence."
         },
         {
-          "name": "analyzing-sbom-for-supply-chain-vulnerabilities",
-          "description": "Parses Software Bill of Materials (SBOM) in CycloneDX and SPDX JSON formats to identify supply chain vulnerabilities by correlating components against the NVD CVE database via the NVD 2.0 API. Builds dependency graphs, calculates risk scores, identifies transitive vulnerability paths, and generates compliance reports. Activates for requests involving SBOM analysis, software composition analysis, supply chain security assessment, dependency vulnerability scanning, CycloneDX/SPDX parsing, or CVE correlation. '"
-        },
-        {
           "name": "verifying-build-provenance-with-slsa-sigstore",
           "description": "Verify signed artifacts and SLSA build provenance with Sigstore cosign and slsa-verifier, enforce keyless OIDC identity, and apply SLSA Build levels to harden the software supply chain."
-        },
-        {
-          "name": "performing-authenticated-vulnerability-scan",
-          "description": "Authenticated (credentialed) vulnerability scanning uses valid system credentials to log into target hosts and perform deep inspection of installed software, patches, configurations, and security sett"
         }
       ]
     },
@@ -345,76 +205,12 @@
       "name": "methodology",
       "title": "Engineering Methodology",
       "category": "development",
-      "description": "Engineering methodology and multi-agent orchestration — the Superpowers workflow set (brainstorm→plan→TDD→debug→verify→finish), subagent-driven development, the ZCode SubAgent Team, Queen-Bee swarm dispatch, and the multi-agent master workflow.",
-      "skill_count": 18,
+      "description": "Multi-agent orchestration — the ZCode SubAgent Team (GLM Queen + MiniMax-M3 workers across General/Vision/Coder/Debug/Verify lanes) and Queen-Bee swarm dispatch for parallel subagents.",
+      "skill_count": 2,
       "skills": [
-        {
-          "name": "superpower-10x",
-          "description": "Use when building software, planning features, debugging issues, or executing development workflows - enhances agent productivity 10x through systematic processes, automated workflows, and intelligent task orchestration"
-        },
-        {
-          "name": "superpowers-brainstorming",
-          "description": "Use when you have a vague problem statement or open-ended request, before writing any spec — tease out goals, constraints, and scope through structured questioning"
-        },
-        {
-          "name": "superpowers-dispatching-parallel-agents",
-          "description": "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies — spawn parallel subagents with isolated context"
-        },
-        {
-          "name": "superpowers-executing-plans",
-          "description": "Use when you have a written implementation plan to execute — load plan, review critically, execute tasks with review checkpoints"
-        },
-        {
-          "name": "superpowers-finishing-a-development-branch",
-          "description": "Use when wrapping up a development branch before PR — run tests, lint, verify, clean up, and squash"
-        },
-        {
-          "name": "superpowers-receiving-code-review",
-          "description": "Use when receiving code review feedback — evaluate suggestions with technical rigor, don't blindly implement"
-        },
-        {
-          "name": "superpowers-requesting-code-review",
-          "description": "Use before submitting any PR or merge request — do a final pass for security, quality, and consistency"
-        },
-        {
-          "name": "superpowers-subagent-driven-development",
-          "description": "Execute implementation plans by dispatching subagents per task with review checkpoints — the core autonomous development workflow"
-        },
-        {
-          "name": "superpowers-systematic-debugging",
-          "description": "Use when encountering any bug, test failure, or unexpected behavior — find root cause before proposing fixes"
-        },
-        {
-          "name": "superpowers-test-driven-development",
-          "description": "Use when implementing any feature or bugfix — write the test first, watch it fail, write minimal code to pass"
-        },
-        {
-          "name": "superpowers-using-git-worktrees",
-          "description": "Use when starting feature work that needs isolation from current workspace — creates isolated worktrees so multiple branches can be worked on without interference"
-        },
-        {
-          "name": "superpowers-using-superpowers",
-          "description": "Use when starting a new session or task — loads the Superpowers methodology and reminds the agent to follow the process"
-        },
-        {
-          "name": "superpowers-verification-before-completion",
-          "description": "Use before declaring any task done — verify against spec, check edge cases, confirm tests pass, ensure no regressions"
-        },
-        {
-          "name": "superpowers-writing-plans",
-          "description": "Use when you have a spec or requirements for a multi-step task, before touching code — write comprehensive bite-sized implementation plans"
-        },
-        {
-          "name": "superpowers-writing-skills",
-          "description": "Use when creating or significantly updating a skill — write structured, reusable workflows with clear triggers and tested procedures"
-        },
         {
           "name": "zcode-subagent-team",
           "description": "ZCode SubAgent Team — a Hermes-Kanban multi-lane agent swarm where a Queen (GLM ZCode orchestrator/verifier) delegates bulk work to MiniMax-M3 workers across General / Vision / Coder / Debug / Verify / Quality-Gate lanes, all routed through Hermes. Use when orchestrating a staged, multi-lane coding or debugging pipeline; pairs with the zc-* subagents shipped in this toolkit."
-        },
-        {
-          "name": "multi-agent-master-workflow",
-          "description": "Use when user asks for designing a master-controller and subagent workflow, parallelizing independent workstreams, coordinating cross-repository cleanup, or auditing a cron fleet with workers. NOT for a deterministic single-worker task or a request that only needs a written plan. Provides reusable phases, scope verification, briefing templates, ReAct reflection, conflict controls, and queen-side synthesis."
         },
         {
           "name": "queen-bee-schwarm-dispatch",

@@ -3,7 +3,7 @@
 
 meta_penalty:
   buckets: ['agents/orchestration', 'zcode/tooling-meta']
-  count: 234
+  count: 229
   rule: De-prioritize these buckets unless the request is explicitly about the agent system.
 
 name_dir_mismatches:

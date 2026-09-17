@@ -1,12 +1,12 @@
 {
   "schemaVersion": "2.0",
-  "generated_at": "2026-08-05T03:41:38+00:00",
+  "generated_at": "2026-09-17T19:41:40+02:00",
   "repo": "Toqsick/my-agent-tools",
   "how_to_use": "See ROUTING.md. Fetch this file, match a task against each skill's triggers/tags/category, rank, then fetch the chosen skill's `path`. Installed skills also load in-session as their `namespace`. Multi-step work: see `workflows`.",
   "counts": {
-    "installed": 129,
-    "library": 1244,
-    "skills_total": 1373,
+    "installed": 78,
+    "library": 1279,
+    "skills_total": 1357,
     "agents": 17,
     "workflows": 6,
     "categories": 43
@@ -2541,20 +2541,20 @@
     {
       "id": "cybersecurity",
       "count": 865,
-      "installed": 50,
-      "library": 815
-    },
-    {
-      "id": "software-development",
-      "count": 96,
       "installed": 15,
-      "library": 81
+      "library": 850
     },
     {
       "id": "standalone",
-      "count": 93,
-      "installed": 60,
+      "count": 91,
+      "installed": 58,
       "library": 33
+    },
+    {
+      "id": "software-development",
+      "count": 82,
+      "installed": 1,
+      "library": 81
     },
     {
       "id": "devops",
@@ -2920,274 +2920,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "analyzing-linux-kernel-rootkits",
-      "name": "analyzing-linux-kernel-rootkits",
-      "description": "Detect kernel-level rootkits in Linux memory dumps using Volatility3 linux plugins (check_syscall, lsmod, hidden_modules), rkhunter system scanning, and /proc vs /sys discrepancy analysis to identify hooked syscalls, hidden kernel modules, and tampered system structures.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:analyzing-linux-kernel-rootkits",
-      "path": "plugins/agent-toolkit/skills/analyzing-linux-kernel-rootkits/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "rootkit",
-        "linux",
-        "kernel",
-        "volatility3",
-        "memory-forensics",
-        "malware-analysis",
-        "rkhunter",
-        "forensics"
-      ],
-      "triggers": [
-        "rootkit",
-        "linux",
-        "kernel",
-        "volatility3",
-        "memory-forensics",
-        "malware-analysis",
-        "rkhunter",
-        "forensics"
-      ],
-      "routing_hint": "Detect kernel-level rootkits in Linux memory dumps using Volatility3 linux plugins (check_syscall, lsmod, hidden_modules), rkhunter system scanning, and /proc vs /sys discrepancy a",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1014",
-        "T1547.006",
-        "T1564.001"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "analyzing-linux-system-artifacts",
-      "name": "analyzing-linux-system-artifacts",
-      "description": "Examine Linux system artifacts including auth logs, cron jobs, shell history, and system configuration to uncover evidence of compromise or unauthorized activity.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:analyzing-linux-system-artifacts",
-      "path": "plugins/agent-toolkit/skills/analyzing-linux-system-artifacts/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "forensics",
-        "linux-forensics",
-        "system-artifacts",
-        "log-analysis",
-        "persistence-detection",
-        "incident-investigation"
-      ],
-      "triggers": [
-        "forensics",
-        "linux-forensics",
-        "system-artifacts",
-        "log-analysis",
-        "persistence-detection",
-        "incident-investigation"
-      ],
-      "routing_hint": "Examine Linux system artifacts including auth logs, cron jobs, shell history, and system configuration to uncover evidence of compromise or unauthorized activity.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1070",
-        "T1059.004",
-        "T1543.002",
-        "T1053.003"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "analyzing-network-packets-with-scapy",
-      "name": "analyzing-network-packets-with-scapy",
-      "description": "Craft, send, sniff, and dissect network packets using Scapy for protocol analysis, network reconnaissance, and traffic anomaly detection in authorized security testing",
-      "tier": "installed",
-      "namespace": "agent-toolkit:analyzing-network-packets-with-scapy",
-      "path": "plugins/agent-toolkit/skills/analyzing-network-packets-with-scapy/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "scapy",
-        "packet-analysis",
-        "network-forensics",
-        "protocol-dissection",
-        "pcap",
-        "traffic-analysis"
-      ],
-      "triggers": [
-        "scapy",
-        "packet-analysis",
-        "network-forensics",
-        "protocol-dissection",
-        "pcap",
-        "traffic-analysis"
-      ],
-      "routing_hint": "Craft, send, sniff, and dissect network packets using Scapy for protocol analysis, network reconnaissance, and traffic anomaly detection in authorized security testing",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "network-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1040",
-        "T1071",
-        "T1046",
-        "T1557"
-      ],
-      "nist_csf": [
-        "PR.IR-01",
-        "DE.CM-01",
-        "ID.AM-03",
-        "PR.DS-02"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "analyzing-network-traffic-with-wireshark",
-      "name": "analyzing-network-traffic-with-wireshark",
-      "description": "Captures and analyzes network packet data using Wireshark and tshark to identify malicious traffic patterns, diagnose protocol issues, extract artifacts, and support incident response investigations on authorized network segments.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:analyzing-network-traffic-with-wireshark",
-      "path": "plugins/agent-toolkit/skills/analyzing-network-traffic-with-wireshark/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "network-security",
-        "wireshark",
-        "packet-analysis",
-        "traffic-analysis",
-        "pcap"
-      ],
-      "triggers": [
-        "network-security",
-        "wireshark",
-        "packet-analysis",
-        "traffic-analysis",
-        "pcap"
-      ],
-      "routing_hint": "Captures and analyzes network packet data using Wireshark and tshark to identify malicious traffic patterns, diagnose protocol issues, extract artifacts, and support incident respo",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "network-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1040",
-        "T1071",
-        "T1557",
-        "T1046"
-      ],
-      "nist_csf": [
-        "PR.IR-01",
-        "DE.CM-01",
-        "ID.AM-03",
-        "PR.DS-02"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "analyzing-persistence-mechanisms-in-linux",
-      "name": "analyzing-persistence-mechanisms-in-linux",
-      "description": "Detect and analyze Linux persistence mechanisms including crontab entries, systemd service units, LD_PRELOAD hijacking, bashrc modifications, and authorized_keys backdoors using auditd and file integrity monitoring",
-      "tier": "installed",
-      "namespace": "agent-toolkit:analyzing-persistence-mechanisms-in-linux",
-      "path": "plugins/agent-toolkit/skills/analyzing-persistence-mechanisms-in-linux/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "linux-persistence",
-        "crontab",
-        "systemd",
-        "ld-preload",
-        "auditd",
-        "threat-hunting",
-        "incident-response"
-      ],
-      "triggers": [
-        "linux-persistence",
-        "crontab",
-        "systemd",
-        "ld-preload",
-        "auditd",
-        "threat-hunting",
-        "incident-response"
-      ],
-      "routing_hint": "Detect and analyze Linux persistence mechanisms including crontab entries, systemd service units, LD_PRELOAD hijacking, bashrc modifications, and authorized_keys backdoors using au",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "threat-hunting",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1053.003",
-        "T1543.002",
-        "T1574.006",
-        "T1546.004",
-        "T1098.004"
-      ],
-      "nist_csf": [
-        "DE.CM-01",
-        "DE.AE-02",
-        "DE.AE-07",
-        "ID.RA-05"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "analyzing-sbom-for-supply-chain-vulnerabilities",
-      "name": "analyzing-sbom-for-supply-chain-vulnerabilities",
-      "description": "Parses Software Bill of Materials (SBOM) in CycloneDX and SPDX JSON formats to identify supply chain vulnerabilities by correlating components against the NVD CVE database via the NVD 2.0 API. Builds dependency graphs, calculates risk scores, identifies transitive vulnerability paths, and generates compliance reports. Activates for requests involving SBOM analysis, software composition analysis, supply chain security assessment, dependency vulnerability scanning, CycloneDX/SPDX parsing, or CVE correlation.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:analyzing-sbom-for-supply-chain-vulnerabilities",
-      "path": "plugins/agent-toolkit/skills/analyzing-sbom-for-supply-chain-vulnerabilities/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "sbom",
-        "cyclonedx",
-        "spdx",
-        "nvd",
-        "cve",
-        "supply-chain",
-        "dependency-analysis",
-        "syft",
-        "grype"
-      ],
-      "triggers": [
-        "sbom",
-        "cyclonedx",
-        "spdx",
-        "nvd",
-        "cve",
-        "supply-chain",
-        "dependency-analysis",
-        "syft",
-        "grype"
-      ],
-      "routing_hint": "Parses Software Bill of Materials (SBOM) in CycloneDX and SPDX JSON formats to identify supply chain vulnerabilities by correlating components against the NVD CVE database via the",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "supply-chain-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1195.001",
-        "T1195.002",
-        "T1554",
-        "T1190"
-      ],
-      "nist_csf": [
-        "GV.SC-01",
-        "GV.SC-03",
-        "GV.SC-06",
-        "GV.SC-07"
-      ],
-      "version": "1.0.0"
-    },
-    {
       "id": "auditing-cloud-with-cis-benchmarks",
       "name": "auditing-cloud-with-cis-benchmarks",
       "description": "This skill details how to conduct cloud security audits using Center for Internet Security benchmarks for AWS, Azure, and GCP. It covers interpreting CIS Foundations Benchmark controls, running automated assessments with tools like Prowler and ScoutSuite, remediating failed controls, and maintaining continuous compliance monitoring against CIS v5 for AWS, v4 for Azure, and v4 for GCP.",
@@ -3447,137 +3179,6 @@
       "version": "1.0"
     },
     {
-      "id": "deploying-osquery-for-endpoint-monitoring",
-      "name": "deploying-osquery-for-endpoint-monitoring",
-      "description": "Deploys and configures osquery for real-time endpoint monitoring using SQL-based queries to inspect running processes, open ports, installed software, and system configuration. Use when building visibility into endpoint state, threat hunting across fleet, or implementing compliance monitoring. Activates for requests involving osquery deployment, endpoint visibility, fleet management, or SQL-based endpoint querying.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:deploying-osquery-for-endpoint-monitoring",
-      "path": "plugins/agent-toolkit/skills/deploying-osquery-for-endpoint-monitoring/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "endpoint",
-        "osquery",
-        "endpoint-monitoring",
-        "threat-hunting",
-        "fleet-management"
-      ],
-      "triggers": [
-        "endpoint",
-        "osquery",
-        "endpoint-monitoring",
-        "threat-hunting",
-        "fleet-management"
-      ],
-      "routing_hint": "Deploys and configures osquery for real-time endpoint monitoring using SQL-based queries to inspect running processes, open ports, installed software, and system configuration.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "endpoint-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1547.001",
-        "T1053.005",
-        "T1543.003",
-        "T1057",
-        "T1071.001"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.PS-02",
-        "DE.CM-01",
-        "PR.IR-01"
-      ],
-      "version": "1.0.0"
-    },
-    {
-      "id": "detecting-aws-credential-exposure-with-trufflehog",
-      "name": "detecting-aws-credential-exposure-with-trufflehog",
-      "description": "Detecting exposed AWS credentials in source code repositories, CI/CD pipelines, and configuration files using TruffleHog, git-secrets, and AWS-native detection mechanisms to prevent credential theft and unauthorized account access.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:detecting-aws-credential-exposure-with-trufflehog",
-      "path": "plugins/agent-toolkit/skills/detecting-aws-credential-exposure-with-trufflehog/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "cloud-security",
-        "aws",
-        "credential-exposure",
-        "trufflehog",
-        "secrets-detection",
-        "devsecops"
-      ],
-      "triggers": [
-        "cloud-security",
-        "aws",
-        "credential-exposure",
-        "trufflehog",
-        "secrets-detection",
-        "devsecops"
-      ],
-      "routing_hint": "Detecting exposed AWS credentials in source code repositories, CI/CD pipelines, and configuration files using TruffleHog, git-secrets, and AWS-native detection mechanisms to preven",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "cloud-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1552.001",
-        "T1552",
-        "T1078.004",
-        "T1589.001"
-      ],
-      "nist_csf": [
-        "PR.IR-01",
-        "ID.AM-08",
-        "GV.SC-06",
-        "DE.CM-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "detecting-beaconing-patterns-with-zeek",
-      "name": "detecting-beaconing-patterns-with-zeek",
-      "description": "Performs statistical analysis of Zeek conn.log connection intervals to detect C2 beaconing patterns. Uses the ZAT library to load Zeek logs into Pandas DataFrames, calculates inter-arrival time standard deviation, and flags periodic connections with low jitter. Use when hunting for command-and-control callbacks in network data.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:detecting-beaconing-patterns-with-zeek",
-      "path": "plugins/agent-toolkit/skills/detecting-beaconing-patterns-with-zeek/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "network-security",
-        "zeek",
-        "c2-beaconing",
-        "conn-log-analysis",
-        "zat",
-        "threat-hunting",
-        "statistical-analysis"
-      ],
-      "triggers": [
-        "network-security",
-        "zeek",
-        "c2-beaconing",
-        "conn-log-analysis",
-        "zat",
-        "threat-hunting",
-        "statistical-analysis"
-      ],
-      "routing_hint": "Performs statistical analysis of Zeek conn.log connection intervals to detect C2 beaconing patterns.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "security-operations",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1071.001",
-        "T1071.004",
-        "T1573",
-        "T1008",
-        "T1095"
-      ],
-      "nist_csf": [
-        "DE.CM-01",
-        "RS.MA-01",
-        "GV.OV-01",
-        "DE.AE-02"
-      ],
-      "version": "1.0"
-    },
-    {
       "id": "detecting-container-escape-attempts",
       "name": "detecting-container-escape-attempts",
       "description": "Container escape is a critical attack technique where an adversary breaks out of container isolation to access the host system or other containers. Detection involves monitoring for escape indicators",
@@ -3619,221 +3220,6 @@
         "DE.CM-01"
       ],
       "version": "1.0"
-    },
-    {
-      "id": "detecting-container-runtime-threats-with-falco",
-      "name": "detecting-container-runtime-threats-with-falco",
-      "description": "Write and deploy Falco rules with the modern eBPF driver to detect container escape, namespace abuse, privileged mounts, and anomalous syscalls at runtime in Kubernetes and Docker.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:detecting-container-runtime-threats-with-falco",
-      "path": "plugins/agent-toolkit/skills/detecting-container-runtime-threats-with-falco/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "falco",
-        "runtime-security",
-        "ebpf",
-        "container-escape",
-        "syscall-monitoring",
-        "detection-engineering",
-        "kubernetes",
-        "threat-detection"
-      ],
-      "triggers": [
-        "falco",
-        "runtime-security",
-        "ebpf",
-        "container-escape",
-        "syscall-monitoring",
-        "detection-engineering",
-        "kubernetes",
-        "threat-detection"
-      ],
-      "routing_hint": "Write and deploy Falco rules with the modern eBPF driver to detect container escape, namespace abuse, privileged mounts, and anomalous syscalls at runtime in Kubernetes and Docker.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "container-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1611"
-      ],
-      "nist_csf": [
-        "DE.CM-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "detecting-dns-exfiltration-with-dns-query-analysis",
-      "name": "detecting-dns-exfiltration-with-dns-query-analysis",
-      "description": "Detect data exfiltration through DNS tunneling by analyzing query entropy, subdomain length, query volume, TXT record abuse, and response payload sizes using passive DNS monitoring.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:detecting-dns-exfiltration-with-dns-query-analysis",
-      "path": "plugins/agent-toolkit/skills/detecting-dns-exfiltration-with-dns-query-analysis/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "dns-exfiltration",
-        "dns-tunneling",
-        "data-exfiltration",
-        "threat-detection",
-        "entropy-analysis",
-        "passive-dns",
-        "network-monitoring",
-        "iodine",
-        "dnscat2"
-      ],
-      "triggers": [
-        "dns-exfiltration",
-        "dns-tunneling",
-        "data-exfiltration",
-        "threat-detection",
-        "entropy-analysis",
-        "passive-dns",
-        "network-monitoring",
-        "iodine",
-        "dnscat2"
-      ],
-      "routing_hint": "Detect data exfiltration through DNS tunneling by analyzing query entropy, subdomain length, query volume, TXT record abuse, and response payload sizes using passive DNS monitoring",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "network-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1046",
-        "T1040",
-        "T1557",
-        "T1071",
-        "T1048"
-      ],
-      "nist_csf": [
-        "PR.IR-01",
-        "DE.CM-01",
-        "ID.AM-03",
-        "PR.DS-02"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "detecting-network-anomalies-with-zeek",
-      "name": "detecting-network-anomalies-with-zeek",
-      "description": "Deploys and configures Zeek (formerly Bro) network security monitor to passively analyze network traffic, generate structured logs, detect anomalous behavior, and create custom detection scripts for threat hunting and incident response.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:detecting-network-anomalies-with-zeek",
-      "path": "plugins/agent-toolkit/skills/detecting-network-anomalies-with-zeek/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "network-security",
-        "zeek",
-        "network-monitoring",
-        "anomaly-detection",
-        "threat-hunting"
-      ],
-      "triggers": [
-        "network-security",
-        "zeek",
-        "network-monitoring",
-        "anomaly-detection",
-        "threat-hunting"
-      ],
-      "routing_hint": "Deploys and configures Zeek (formerly Bro) network security monitor to passively analyze network traffic, generate structured logs, detect anomalous behavior, and create custom det",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "network-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1046",
-        "T1040",
-        "T1557",
-        "T1071"
-      ],
-      "nist_csf": [
-        "PR.IR-01",
-        "DE.CM-01",
-        "ID.AM-03",
-        "PR.DS-02"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "detecting-port-scanning-with-fail2ban",
-      "name": "detecting-port-scanning-with-fail2ban",
-      "description": "Configures Fail2ban with custom filters and actions to detect port scanning activity, SSH brute force attempts, and network reconnaissance, automatically banning offending IP addresses and alerting security teams to suspicious network probing.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:detecting-port-scanning-with-fail2ban",
-      "path": "plugins/agent-toolkit/skills/detecting-port-scanning-with-fail2ban/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "network-security",
-        "fail2ban",
-        "port-scanning",
-        "intrusion-prevention",
-        "automated-defense"
-      ],
-      "triggers": [
-        "network-security",
-        "fail2ban",
-        "port-scanning",
-        "intrusion-prevention",
-        "automated-defense"
-      ],
-      "routing_hint": "Configures Fail2ban with custom filters and actions to detect port scanning activity, SSH brute force attempts, and network reconnaissance, automatically banning offending IP addre",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "network-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1046",
-        "T1040",
-        "T1557",
-        "T1071",
-        "T1595"
-      ],
-      "nist_csf": [
-        "PR.IR-01",
-        "DE.CM-01",
-        "ID.AM-03",
-        "PR.DS-02"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "detecting-rootkit-activity",
-      "name": "detecting-rootkit-activity",
-      "description": "Detects rootkit presence on compromised systems by identifying hidden processes, hooked system calls, modified kernel structures, hidden files, and covert network connections using memory forensics, cross-view detection, and integrity checking techniques. Activates for requests involving rootkit detection, hidden process discovery, kernel integrity checking, or system call hook analysis.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:detecting-rootkit-activity",
-      "path": "plugins/agent-toolkit/skills/detecting-rootkit-activity/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "malware",
-        "rootkit",
-        "detection",
-        "kernel-analysis",
-        "memory-forensics"
-      ],
-      "triggers": [
-        "malware",
-        "rootkit",
-        "detection",
-        "kernel-analysis",
-        "memory-forensics"
-      ],
-      "routing_hint": "Detects rootkit presence on compromised systems by identifying hidden processes, hooked system calls, modified kernel structures, hidden files, and covert network connections using",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "malware-analysis",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1014",
-        "T1547.006",
-        "T1564.001",
-        "T1574.006"
-      ],
-      "nist_csf": [
-        "DE.AE-02",
-        "RS.AN-03",
-        "ID.RA-01",
-        "DE.CM-01"
-      ],
-      "version": "1.0.0"
     },
     {
       "id": "generating-and-analyzing-sboms",
@@ -3963,463 +3349,6 @@
       "version": "1.0"
     },
     {
-      "id": "hardening-linux-endpoint-with-cis-benchmark",
-      "name": "hardening-linux-endpoint-with-cis-benchmark",
-      "description": "Hardens Linux endpoints using CIS Benchmark recommendations for Ubuntu, RHEL, and CentOS to reduce attack surface, enforce security baselines, and meet compliance requirements. Use when deploying new Linux servers, remediating audit findings, or establishing security baselines for Linux infrastructure. Activates for requests involving Linux hardening, CIS benchmarks for Linux, server security baselines, or Linux configuration compliance.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:hardening-linux-endpoint-with-cis-benchmark",
-      "path": "plugins/agent-toolkit/skills/hardening-linux-endpoint-with-cis-benchmark/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "endpoint",
-        "hardening",
-        "linux-security",
-        "cis-benchmark",
-        "ubuntu",
-        "rhel"
-      ],
-      "triggers": [
-        "endpoint",
-        "hardening",
-        "linux-security",
-        "cis-benchmark",
-        "ubuntu",
-        "rhel"
-      ],
-      "routing_hint": "Hardens Linux endpoints using CIS Benchmark recommendations for Ubuntu, RHEL, and CentOS to reduce attack surface, enforce security baselines, and meet compliance requirements.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "endpoint-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1055",
-        "T1547",
-        "T1059",
-        "T1036"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.PS-02",
-        "DE.CM-01",
-        "PR.IR-01"
-      ],
-      "version": "1.0.0"
-    },
-    {
-      "id": "hunting-advanced-persistent-threats",
-      "name": "hunting-advanced-persistent-threats",
-      "description": "Proactively hunts for Advanced Persistent Threat (APT) activity within enterprise environments using hypothesis-driven searches across endpoint telemetry, network logs, and memory artifacts. Use when conducting scheduled threat hunting cycles, investigating anomalous behavior flagged by UEBA, or validating that known APT TTPs are not present in the environment. Activates for requests involving MITRE ATT&CK, Velociraptor, osquery, Zeek, or threat hunting playbooks.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:hunting-advanced-persistent-threats",
-      "path": "plugins/agent-toolkit/skills/hunting-advanced-persistent-threats/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "mitre-att&ck",
-        "threat-hunting",
-        "apt",
-        "velociraptor",
-        "osquery",
-        "zeek",
-        "ttp",
-        "nist-csf",
-        "edr"
-      ],
-      "triggers": [
-        "mitre-att&ck",
-        "threat-hunting",
-        "apt",
-        "velociraptor",
-        "osquery",
-        "zeek",
-        "ttp",
-        "nist-csf",
-        "edr"
-      ],
-      "routing_hint": "Proactively hunts for Advanced Persistent Threat (APT) activity within enterprise environments using hypothesis-driven searches across endpoint telemetry, network logs, and memory",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "threat-intelligence",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1591",
-        "T1592",
-        "T1593",
-        "T1589",
-        "T1005"
-      ],
-      "nist_csf": [
-        "ID.RA-01",
-        "ID.RA-05",
-        "DE.CM-01",
-        "DE.AE-02"
-      ],
-      "version": "1.0.0"
-    },
-    {
-      "id": "implementing-attack-surface-management",
-      "name": "implementing-attack-surface-management",
-      "description": "Implements external attack surface management (EASM) using Shodan, Censys, and ProjectDiscovery tools (subfinder, httpx, nuclei) for asset discovery, subdomain enumeration, service fingerprinting, and exposure scoring. Includes a weighted risk scoring algorithm based on OWASP attack surface analysis methodology and the Relative Attack Surface Quotient (RSQ). Use when building continuous ASM programs or performing external reconnaissance for security assessments.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:implementing-attack-surface-management",
-      "path": "plugins/agent-toolkit/skills/implementing-attack-surface-management/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "attack-surface",
-        "reconnaissance",
-        "shodan",
-        "censys",
-        "subfinder",
-        "nuclei",
-        "asset-discovery"
-      ],
-      "triggers": [
-        "attack-surface",
-        "reconnaissance",
-        "shodan",
-        "censys",
-        "subfinder",
-        "nuclei",
-        "asset-discovery"
-      ],
-      "routing_hint": "Implements external attack surface management (EASM) using Shodan, Censys, and ProjectDiscovery tools (subfinder, httpx, nuclei) for asset discovery, subdomain enumeration, service",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "offensive-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1078",
-        "T1190",
-        "T1059",
-        "T1595",
-        "T1592"
-      ],
-      "nist_csf": [
-        "ID.RA-01",
-        "GV.OV-02",
-        "DE.AE-07"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "implementing-container-image-minimal-base-with-distroless",
-      "name": "implementing-container-image-minimal-base-with-distroless",
-      "description": "Reduce container attack surface by building application images on Google distroless base images that contain only the application runtime with no shell, package manager, or unnecessary OS utilities.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:implementing-container-image-minimal-base-with-distroless",
-      "path": "plugins/agent-toolkit/skills/implementing-container-image-minimal-base-with-distroless/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "distroless",
-        "container-images",
-        "minimal-base",
-        "attack-surface",
-        "docker",
-        "security-hardening",
-        "supply-chain",
-        "kubernetes"
-      ],
-      "triggers": [
-        "distroless",
-        "container-images",
-        "minimal-base",
-        "attack-surface",
-        "docker",
-        "security-hardening",
-        "supply-chain",
-        "kubernetes"
-      ],
-      "routing_hint": "Reduce container attack surface by building application images on Google distroless base images that contain only the application runtime with no shell, package manager, or unneces",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "container-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1610",
-        "T1611",
-        "T1609",
-        "T1525",
-        "T1195"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.IR-01",
-        "ID.AM-08",
-        "DE.CM-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "implementing-kubernetes-pod-security-standards",
-      "name": "implementing-kubernetes-pod-security-standards",
-      "description": "Pod Security Standards (PSS) define three levels of security policies -- Privileged, Baseline, and Restricted -- enforced by the Pod Security Admission (PSA) controller built into Kubernetes 1.25+. PS",
-      "tier": "installed",
-      "namespace": "agent-toolkit:implementing-kubernetes-pod-security-standards",
-      "path": "plugins/agent-toolkit/skills/implementing-kubernetes-pod-security-standards/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "containers",
-        "kubernetes",
-        "security",
-        "pod-security",
-        "psa"
-      ],
-      "triggers": [
-        "containers",
-        "kubernetes",
-        "security",
-        "pod-security",
-        "psa"
-      ],
-      "routing_hint": "Pod Security Standards (PSS) define three levels of security policies -- Privileged, Baseline, and Restricted -- enforced by the Pod Security Admission (PSA) controller built into",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "container-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1610",
-        "T1611",
-        "T1609",
-        "T1525"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.IR-01",
-        "ID.AM-08",
-        "DE.CM-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "implementing-network-segmentation-with-firewall-zones",
-      "name": "implementing-network-segmentation-with-firewall-zones",
-      "description": "Design and implement network segmentation using firewall security zones, VLANs, ACLs, and microsegmentation policies to restrict lateral movement and enforce least-privilege network access.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:implementing-network-segmentation-with-firewall-zones",
-      "path": "plugins/agent-toolkit/skills/implementing-network-segmentation-with-firewall-zones/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "network-segmentation",
-        "firewall-zones",
-        "vlan",
-        "microsegmentation",
-        "lateral-movement",
-        "zero-trust",
-        "acl",
-        "east-west-traffic",
-        "pci-dss"
-      ],
-      "triggers": [
-        "network-segmentation",
-        "firewall-zones",
-        "vlan",
-        "microsegmentation",
-        "lateral-movement",
-        "zero-trust",
-        "acl",
-        "east-west-traffic",
-        "pci-dss"
-      ],
-      "routing_hint": "Design and implement network segmentation using firewall security zones, VLANs, ACLs, and microsegmentation policies to restrict lateral movement and enforce least-privilege networ",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "network-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1046",
-        "T1040",
-        "T1557",
-        "T1071",
-        "T1021"
-      ],
-      "nist_csf": [
-        "PR.IR-01",
-        "DE.CM-01",
-        "ID.AM-03",
-        "PR.DS-02"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "implementing-secret-scanning-with-gitleaks",
-      "name": "implementing-secret-scanning-with-gitleaks",
-      "description": "This skill covers implementing Gitleaks for detecting and preventing hardcoded secrets in git repositories. It addresses configuring pre-commit hooks, CI/CD pipeline integration, custom rule authoring for organization-specific secrets, baseline management for existing repositories, and remediation workflows for exposed credentials.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:implementing-secret-scanning-with-gitleaks",
-      "path": "plugins/agent-toolkit/skills/implementing-secret-scanning-with-gitleaks/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "devsecops",
-        "cicd",
-        "secret-scanning",
-        "gitleaks",
-        "pre-commit",
-        "secure-sdlc"
-      ],
-      "triggers": [
-        "devsecops",
-        "cicd",
-        "secret-scanning",
-        "gitleaks",
-        "pre-commit",
-        "secure-sdlc"
-      ],
-      "routing_hint": "This skill covers implementing Gitleaks for detecting and preventing hardcoded secrets in git repositories.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "devsecops",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1195",
-        "T1554",
-        "T1059.004",
-        "T1003",
-        "T1110"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "GV.SC-07",
-        "ID.IM-04",
-        "PR.PS-04"
-      ],
-      "version": "1.0.0"
-    },
-    {
-      "id": "performing-authenticated-vulnerability-scan",
-      "name": "performing-authenticated-vulnerability-scan",
-      "description": "Authenticated (credentialed) vulnerability scanning uses valid system credentials to log into target hosts and perform deep inspection of installed software, patches, configurations, and security sett",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-authenticated-vulnerability-scan",
-      "path": "plugins/agent-toolkit/skills/performing-authenticated-vulnerability-scan/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "vulnerability-management",
-        "cve",
-        "authenticated-scanning",
-        "credentials",
-        "nessus",
-        "qualys",
-        "risk"
-      ],
-      "triggers": [
-        "vulnerability-management",
-        "cve",
-        "authenticated-scanning",
-        "credentials",
-        "nessus",
-        "qualys",
-        "risk"
-      ],
-      "routing_hint": "Authenticated (credentialed) vulnerability scanning uses valid system credentials to log into target hosts and perform deep inspection of installed software, patches, configuration",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "vulnerability-management",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1190",
-        "T1203",
-        "T1068",
-        "T1003",
-        "T1110"
-      ],
-      "nist_csf": [
-        "ID.RA-01",
-        "ID.RA-02",
-        "ID.IM-02",
-        "ID.RA-06"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-container-security-scanning-with-trivy",
-      "name": "performing-container-security-scanning-with-trivy",
-      "description": "Scan container images, filesystems, and Kubernetes manifests for vulnerabilities, misconfigurations, exposed secrets, and license compliance issues using Aqua Security Trivy with SBOM generation and CI/CD integration.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-container-security-scanning-with-trivy",
-      "path": "plugins/agent-toolkit/skills/performing-container-security-scanning-with-trivy/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "trivy",
-        "container-security",
-        "vulnerability-scanning",
-        "sbom",
-        "docker",
-        "kubernetes",
-        "devsecops",
-        "supply-chain"
-      ],
-      "triggers": [
-        "trivy",
-        "container-security",
-        "vulnerability-scanning",
-        "sbom",
-        "docker",
-        "kubernetes",
-        "devsecops",
-        "supply-chain"
-      ],
-      "routing_hint": "Scan container images, filesystems, and Kubernetes manifests for vulnerabilities, misconfigurations, exposed secrets, and license compliance issues using Aqua Security Trivy with S",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "container-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1610",
-        "T1611",
-        "T1609",
-        "T1525",
-        "T1195"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.IR-01",
-        "ID.AM-08",
-        "DE.CM-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-disk-forensics-investigation",
-      "name": "performing-disk-forensics-investigation",
-      "description": "Conducts disk forensics investigations using forensic imaging, file system analysis, artifact recovery, and timeline reconstruction to support incident response cases. Utilizes tools such as FTK Imager, Autopsy, and The Sleuth Kit for evidence acquisition, deleted file recovery, and artifact examination. Activates for requests involving disk forensics, hard drive analysis, forensic imaging, file recovery, evidence acquisition, or digital forensic investigation.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-disk-forensics-investigation",
-      "path": "plugins/agent-toolkit/skills/performing-disk-forensics-investigation/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "disk-forensics",
-        "forensic-imaging",
-        "evidence-acquisition",
-        "file-recovery",
-        "chain-of-custody"
-      ],
-      "triggers": [
-        "disk-forensics",
-        "forensic-imaging",
-        "evidence-acquisition",
-        "file-recovery",
-        "chain-of-custody"
-      ],
-      "routing_hint": "Conducts disk forensics investigations using forensic imaging, file system analysis, artifact recovery, and timeline reconstruction to support incident response cases.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "incident-response",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1486",
-        "T1490",
-        "T1070",
-        "T1078",
-        "T1005"
-      ],
-      "nist_csf": [
-        "RS.MA-01",
-        "RS.MA-02",
-        "RS.AN-03",
-        "RC.RP-01"
-      ],
-      "version": "1.0.0"
-    },
-    {
       "id": "performing-docker-bench-security-assessment",
       "name": "performing-docker-bench-security-assessment",
       "description": "Docker Bench for Security is an open-source script that checks dozens of common best practices around deploying Docker containers in production. Based on the CIS Docker Benchmark, it audits host confi",
@@ -4451,493 +3380,6 @@
         "T1611",
         "T1609",
         "T1525"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.IR-01",
-        "ID.AM-08",
-        "DE.CM-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-endpoint-forensics-investigation",
-      "name": "performing-endpoint-forensics-investigation",
-      "description": "Performs digital forensics investigation on compromised endpoints including memory acquisition, disk imaging, artifact analysis, and timeline reconstruction. Use when investigating security incidents, collecting evidence for legal proceedings, or analyzing endpoint compromise scope. Activates for requests involving endpoint forensics, memory analysis, disk forensics, or incident investigation.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-endpoint-forensics-investigation",
-      "path": "plugins/agent-toolkit/skills/performing-endpoint-forensics-investigation/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "endpoint",
-        "forensics",
-        "memory-analysis",
-        "disk-imaging",
-        "incident-investigation",
-        "volatility"
-      ],
-      "triggers": [
-        "endpoint",
-        "forensics",
-        "memory-analysis",
-        "disk-imaging",
-        "incident-investigation",
-        "volatility"
-      ],
-      "routing_hint": "Performs digital forensics investigation on compromised endpoints including memory acquisition, disk imaging, artifact analysis, and timeline reconstruction.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "endpoint-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1055",
-        "T1547",
-        "T1059",
-        "T1036",
-        "T1005"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.PS-02",
-        "DE.CM-01",
-        "PR.IR-01"
-      ],
-      "version": "1.0.0"
-    },
-    {
-      "id": "performing-file-carving-with-foremost",
-      "name": "performing-file-carving-with-foremost",
-      "description": "Recover files from disk images and unallocated space using Foremost's header-footer signature carving to extract evidence regardless of file system state.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-file-carving-with-foremost",
-      "path": "plugins/agent-toolkit/skills/performing-file-carving-with-foremost/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "forensics",
-        "file-carving",
-        "foremost",
-        "data-recovery",
-        "evidence-recovery",
-        "unallocated-space"
-      ],
-      "triggers": [
-        "forensics",
-        "file-carving",
-        "foremost",
-        "data-recovery",
-        "evidence-recovery",
-        "unallocated-space"
-      ],
-      "routing_hint": "Recover files from disk images and unallocated space using Foremost's header-footer signature carving to extract evidence regardless of file system state.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1005",
-        "T1074",
-        "T1119",
-        "T1070",
-        "T1059"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-linux-log-forensics-investigation",
-      "name": "performing-linux-log-forensics-investigation",
-      "description": "Perform forensic investigation of Linux system logs including syslog, auth.log, systemd journal, kern.log, and application logs to reconstruct user activity, detect unauthorized access, and establish event timelines on compromised Linux systems.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-linux-log-forensics-investigation",
-      "path": "plugins/agent-toolkit/skills/performing-linux-log-forensics-investigation/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "linux-forensics",
-        "syslog",
-        "auth-log",
-        "systemd-journal",
-        "journalctl",
-        "linux-logs",
-        "ssh-forensics",
-        "cron",
-        "audit-log",
-        "log-analysis"
-      ],
-      "triggers": [
-        "linux-forensics",
-        "syslog",
-        "auth-log",
-        "systemd-journal",
-        "journalctl",
-        "linux-logs",
-        "ssh-forensics",
-        "cron",
-        "audit-log",
-        "log-analysis"
-      ],
-      "routing_hint": "Perform forensic investigation of Linux system logs including syslog, auth.log, systemd journal, kern.log, and application logs to reconstruct user activity, detect unauthorized ac",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1005",
-        "T1074",
-        "T1119",
-        "T1070",
-        "T1059"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-log-analysis-for-forensic-investigation",
-      "name": "performing-log-analysis-for-forensic-investigation",
-      "description": "Collect, parse, and correlate system, application, and security logs to reconstruct events and establish timelines during forensic investigations.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-log-analysis-for-forensic-investigation",
-      "path": "plugins/agent-toolkit/skills/performing-log-analysis-for-forensic-investigation/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "forensics",
-        "log-analysis",
-        "siem",
-        "event-correlation",
-        "timeline-analysis",
-        "evidence-collection"
-      ],
-      "triggers": [
-        "forensics",
-        "log-analysis",
-        "siem",
-        "event-correlation",
-        "timeline-analysis",
-        "evidence-collection"
-      ],
-      "routing_hint": "Collect, parse, and correlate system, application, and security logs to reconstruct events and establish timelines during forensic investigations.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1005",
-        "T1074",
-        "T1119",
-        "T1070",
-        "T1685.002"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-malware-triage-with-yara",
-      "name": "performing-malware-triage-with-yara",
-      "description": "Performs rapid malware triage and classification using YARA rules to match file patterns, strings, byte sequences, and structural characteristics against known malware families and suspicious indicators. Covers rule writing, scanning, and integration with analysis pipelines. Activates for requests involving YARA rule creation, malware classification, pattern matching, sample triage, or signature-based detection.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-malware-triage-with-yara",
-      "path": "plugins/agent-toolkit/skills/performing-malware-triage-with-yara/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "malware",
-        "yara",
-        "triage",
-        "classification",
-        "pattern-matching"
-      ],
-      "triggers": [
-        "malware",
-        "yara",
-        "triage",
-        "classification",
-        "pattern-matching"
-      ],
-      "routing_hint": "Performs rapid malware triage and classification using YARA rules to match file patterns, strings, byte sequences, and structural characteristics against known malware families and",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "malware-analysis",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1027",
-        "T1055",
-        "T1140",
-        "T1497",
-        "T0816"
-      ],
-      "nist_csf": [
-        "DE.AE-02",
-        "RS.AN-03",
-        "ID.RA-01",
-        "DE.CM-01"
-      ],
-      "version": "1.0.0"
-    },
-    {
-      "id": "performing-memory-forensics-with-volatility3",
-      "name": "performing-memory-forensics-with-volatility3",
-      "description": "Analyze volatile memory dumps using Volatility 3 to extract running processes, network connections, loaded modules, and evidence of malicious activity.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-memory-forensics-with-volatility3",
-      "path": "plugins/agent-toolkit/skills/performing-memory-forensics-with-volatility3/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "forensics",
-        "memory-forensics",
-        "volatility",
-        "ram-analysis",
-        "malware-detection",
-        "incident-response"
-      ],
-      "triggers": [
-        "forensics",
-        "memory-forensics",
-        "volatility",
-        "ram-analysis",
-        "malware-detection",
-        "incident-response"
-      ],
-      "routing_hint": "Analyze volatile memory dumps using Volatility 3 to extract running processes, network connections, loaded modules, and evidence of malicious activity.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1005",
-        "T1074",
-        "T1119",
-        "T1070",
-        "T1059"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-network-forensics-with-wireshark",
-      "name": "performing-network-forensics-with-wireshark",
-      "description": "Capture and analyze network traffic using Wireshark and tshark to reconstruct network events, extract artifacts, and identify malicious communications.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-network-forensics-with-wireshark",
-      "path": "plugins/agent-toolkit/skills/performing-network-forensics-with-wireshark/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "forensics",
-        "network-forensics",
-        "wireshark",
-        "pcap",
-        "packet-analysis",
-        "traffic-analysis"
-      ],
-      "triggers": [
-        "forensics",
-        "network-forensics",
-        "wireshark",
-        "pcap",
-        "packet-analysis",
-        "traffic-analysis"
-      ],
-      "routing_hint": "Capture and analyze network traffic using Wireshark and tshark to reconstruct network events, extract artifacts, and identify malicious communications.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1005",
-        "T1074",
-        "T1119",
-        "T1070",
-        "T1059"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "performing-nist-csf-maturity-assessment",
-      "name": "performing-nist-csf-maturity-assessment",
-      "description": "The NIST Cybersecurity Framework (CSF) 2.0, released in February 2024, provides a comprehensive taxonomy for managing cybersecurity risk through six core Functions - Govern, Identify, Protect, Detect, Respond, and Recover. This skill covers conducting a maturity assessment against the CSF using Implementation Tiers to measure organizational cybersecurity posture and create improvement roadmaps.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:performing-nist-csf-maturity-assessment",
-      "path": "plugins/agent-toolkit/skills/performing-nist-csf-maturity-assessment/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "compliance",
-        "governance",
-        "nist",
-        "csf",
-        "maturity-assessment",
-        "risk-management"
-      ],
-      "triggers": [
-        "compliance",
-        "governance",
-        "nist",
-        "csf",
-        "maturity-assessment",
-        "risk-management"
-      ],
-      "routing_hint": "The NIST Cybersecurity Framework (CSF) 2.0, released in February 2024, provides a comprehensive taxonomy for managing cybersecurity risk through six core Functions - Govern, Identi",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "compliance-governance",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1078",
-        "T1530",
-        "T1685.002"
-      ],
-      "nist_csf": [
-        "GV.OC-01",
-        "GV.RM-01",
-        "GV.PO-01",
-        "ID.RA-01",
-        "GV.OV-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "recovering-deleted-files-with-photorec",
-      "name": "recovering-deleted-files-with-photorec",
-      "description": "Recover deleted files from disk images and storage media using PhotoRec's file signature-based carving engine regardless of file system damage.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:recovering-deleted-files-with-photorec",
-      "path": "plugins/agent-toolkit/skills/recovering-deleted-files-with-photorec/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "forensics",
-        "file-recovery",
-        "photorec",
-        "file-carving",
-        "data-recovery",
-        "evidence-recovery"
-      ],
-      "triggers": [
-        "forensics",
-        "file-recovery",
-        "photorec",
-        "file-carving",
-        "data-recovery",
-        "evidence-recovery"
-      ],
-      "routing_hint": "Recover deleted files from disk images and storage media using PhotoRec's file signature-based carving engine regardless of file system damage.",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "digital-forensics",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1005",
-        "T1074",
-        "T1119",
-        "T1070",
-        "T1059"
-      ],
-      "nist_csf": [
-        "RS.AN-01",
-        "RS.AN-03",
-        "DE.AE-02",
-        "RS.MA-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "scanning-docker-images-with-trivy",
-      "name": "scanning-docker-images-with-trivy",
-      "description": "Trivy is a comprehensive open-source vulnerability scanner by Aqua Security that detects vulnerabilities in OS packages, language-specific dependencies, misconfigurations, secrets, and license violati",
-      "tier": "installed",
-      "namespace": "agent-toolkit:scanning-docker-images-with-trivy",
-      "path": "plugins/agent-toolkit/skills/scanning-docker-images-with-trivy/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "containers",
-        "docker",
-        "security",
-        "trivy",
-        "vulnerability-scanning"
-      ],
-      "triggers": [
-        "containers",
-        "docker",
-        "security",
-        "trivy",
-        "vulnerability-scanning"
-      ],
-      "routing_hint": "Trivy is a comprehensive open-source vulnerability scanner by Aqua Security that detects vulnerabilities in OS packages, language-specific dependencies, misconfigurations, secrets,",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "container-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1610",
-        "T1611",
-        "T1609",
-        "T1525",
-        "T1190"
-      ],
-      "nist_csf": [
-        "PR.PS-01",
-        "PR.IR-01",
-        "ID.AM-08",
-        "DE.CM-01"
-      ],
-      "version": "1.0"
-    },
-    {
-      "id": "securing-container-registry-with-harbor",
-      "name": "securing-container-registry-with-harbor",
-      "description": "Harbor is an open-source container registry that provides security features including vulnerability scanning (integrated Trivy), image signing (Notary/Cosign), RBAC, content trust policies, replicatio",
-      "tier": "installed",
-      "namespace": "agent-toolkit:securing-container-registry-with-harbor",
-      "path": "plugins/agent-toolkit/skills/securing-container-registry-with-harbor/SKILL.md",
-      "category": "cybersecurity",
-      "tags": [
-        "containers",
-        "kubernetes",
-        "docker",
-        "security",
-        "registry",
-        "harbor"
-      ],
-      "triggers": [
-        "containers",
-        "kubernetes",
-        "docker",
-        "security",
-        "registry",
-        "harbor"
-      ],
-      "routing_hint": "Harbor is an open-source container registry that provides security features including vulnerability scanning (integrated Trivy), image signing (Notary/Cosign), RBAC, content trust",
-      "source": "kyssta-cyber",
-      "domain": "cybersecurity",
-      "subdomain": "container-security",
-      "license": "Apache-2.0",
-      "mitre_attack": [
-        "T1610",
-        "T1611",
-        "T1609",
-        "T1525",
-        "T1190"
       ],
       "nist_csf": [
         "PR.PS-01",
@@ -5085,322 +3527,6 @@
       "triggers": [],
       "routing_hint": "Systematic deep-architecture research of reference repositories before greenfield implementation — clone, audit, feature parity, ADRs, provenance, skeleton.",
       "source": "original"
-    },
-    {
-      "id": "superpowers-brainstorming",
-      "name": "superpowers-brainstorming",
-      "description": "Use when you have a vague problem statement or open-ended request, before writing any spec — tease out goals, constraints, and scope through structured questioning",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-brainstorming",
-      "path": "plugins/agent-toolkit/skills/superpowers-brainstorming/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "planning",
-        "requirements"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "planning",
-        "requirements"
-      ],
-      "routing_hint": "Use when you have a vague problem statement or open-ended request, before writing any spec — tease out goals, constraints, and scope through structured questioning",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-dispatching-parallel-agents",
-      "name": "superpowers-dispatching-parallel-agents",
-      "description": "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies — spawn parallel subagents with isolated context",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-dispatching-parallel-agents",
-      "path": "plugins/agent-toolkit/skills/superpowers-dispatching-parallel-agents/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "parallel",
-        "delegation"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "parallel",
-        "delegation"
-      ],
-      "routing_hint": "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies — spawn parallel subagents with isolated context",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-executing-plans",
-      "name": "superpowers-executing-plans",
-      "description": "Use when you have a written implementation plan to execute — load plan, review critically, execute tasks with review checkpoints",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-executing-plans",
-      "path": "plugins/agent-toolkit/skills/superpowers-executing-plans/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "execution",
-        "plans"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "execution",
-        "plans"
-      ],
-      "routing_hint": "Use when you have a written implementation plan to execute — load plan, review critically, execute tasks with review checkpoints",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-finishing-a-development-branch",
-      "name": "superpowers-finishing-a-development-branch",
-      "description": "Use when wrapping up a development branch before PR — run tests, lint, verify, clean up, and squash",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-finishing-a-development-branch",
-      "path": "plugins/agent-toolkit/skills/superpowers-finishing-a-development-branch/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "git",
-        "branching"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "git",
-        "branching"
-      ],
-      "routing_hint": "Use when wrapping up a development branch before PR — run tests, lint, verify, clean up, and squash",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-receiving-code-review",
-      "name": "superpowers-receiving-code-review",
-      "description": "Use when receiving code review feedback — evaluate suggestions with technical rigor, don't blindly implement",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-receiving-code-review",
-      "path": "plugins/agent-toolkit/skills/superpowers-receiving-code-review/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "code-review"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "code-review"
-      ],
-      "routing_hint": "Use when receiving code review feedback — evaluate suggestions with technical rigor, don't blindly implement",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-requesting-code-review",
-      "name": "superpowers-requesting-code-review",
-      "description": "Use before submitting any PR or merge request — do a final pass for security, quality, and consistency",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-requesting-code-review",
-      "path": "plugins/agent-toolkit/skills/superpowers-requesting-code-review/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "code-review",
-        "pr"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "code-review",
-        "pr"
-      ],
-      "routing_hint": "Use before submitting any PR or merge request — do a final pass for security, quality, and consistency",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-subagent-driven-development",
-      "name": "superpowers-subagent-driven-development",
-      "description": "Execute implementation plans by dispatching subagents per task with review checkpoints — the core autonomous development workflow",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-subagent-driven-development",
-      "path": "plugins/agent-toolkit/skills/superpowers-subagent-driven-development/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "delegation",
-        "subagents"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "delegation",
-        "subagents"
-      ],
-      "routing_hint": "Execute implementation plans by dispatching subagents per task with review checkpoints — the core autonomous development workflow",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-systematic-debugging",
-      "name": "superpowers-systematic-debugging",
-      "description": "Use when encountering any bug, test failure, or unexpected behavior — find root cause before proposing fixes",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-systematic-debugging",
-      "path": "plugins/agent-toolkit/skills/superpowers-systematic-debugging/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "debugging"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "debugging"
-      ],
-      "routing_hint": "Use when encountering any bug, test failure, or unexpected behavior — find root cause before proposing fixes",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-test-driven-development",
-      "name": "superpowers-test-driven-development",
-      "description": "Use when implementing any feature or bugfix — write the test first, watch it fail, write minimal code to pass",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-test-driven-development",
-      "path": "plugins/agent-toolkit/skills/superpowers-test-driven-development/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "tdd",
-        "testing"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "tdd",
-        "testing"
-      ],
-      "routing_hint": "Use when implementing any feature or bugfix — write the test first, watch it fail, write minimal code to pass",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-using-git-worktrees",
-      "name": "superpowers-using-git-worktrees",
-      "description": "Use when starting feature work that needs isolation from current workspace — creates isolated worktrees so multiple branches can be worked on without interference",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-using-git-worktrees",
-      "path": "plugins/agent-toolkit/skills/superpowers-using-git-worktrees/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "git",
-        "worktrees"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "git",
-        "worktrees"
-      ],
-      "routing_hint": "Use when starting feature work that needs isolation from current workspace — creates isolated worktrees so multiple branches can be worked on without interference",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-using-superpowers",
-      "name": "superpowers-using-superpowers",
-      "description": "Use when starting a new session or task — loads the Superpowers methodology and reminds the agent to follow the process",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-using-superpowers",
-      "path": "plugins/agent-toolkit/skills/superpowers-using-superpowers/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "onboarding"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "onboarding"
-      ],
-      "routing_hint": "Use when starting a new session or task — loads the Superpowers methodology and reminds the agent to follow the process",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-verification-before-completion",
-      "name": "superpowers-verification-before-completion",
-      "description": "Use before declaring any task done — verify against spec, check edge cases, confirm tests pass, ensure no regressions",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-verification-before-completion",
-      "path": "plugins/agent-toolkit/skills/superpowers-verification-before-completion/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "verification",
-        "quality"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "verification",
-        "quality"
-      ],
-      "routing_hint": "Use before declaring any task done — verify against spec, check edge cases, confirm tests pass, ensure no regressions",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-writing-plans",
-      "name": "superpowers-writing-plans",
-      "description": "Use when you have a spec or requirements for a multi-step task, before touching code — write comprehensive bite-sized implementation plans",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-writing-plans",
-      "path": "plugins/agent-toolkit/skills/superpowers-writing-plans/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "planning",
-        "documentation"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "planning",
-        "documentation"
-      ],
-      "routing_hint": "Use when you have a spec or requirements for a multi-step task, before touching code — write comprehensive bite-sized implementation plans",
-      "source": "superpowers"
-    },
-    {
-      "id": "superpowers-writing-skills",
-      "name": "superpowers-writing-skills",
-      "description": "Use when creating or significantly updating a skill — write structured, reusable workflows with clear triggers and tested procedures",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpowers-writing-skills",
-      "path": "plugins/agent-toolkit/skills/superpowers-writing-skills/SKILL.md",
-      "category": "software-development",
-      "tags": [
-        "superpowers",
-        "methodology",
-        "skills",
-        "documentation"
-      ],
-      "triggers": [
-        "superpowers",
-        "methodology",
-        "skills",
-        "documentation"
-      ],
-      "routing_hint": "Use when creating or significantly updating a skill — write structured, reusable workflows with clear triggers and tested procedures",
-      "source": "superpowers"
     },
     {
       "id": "ariadne-memory",
@@ -5996,21 +4122,6 @@
       "version": "1.2.0"
     },
     {
-      "id": "multi-agent-master-workflow",
-      "name": "multi-agent-master-workflow",
-      "description": "Use when user asks for designing a master-controller and subagent workflow, parallelizing independent workstreams, coordinating cross-repository cleanup, or auditing a cron fleet with workers. NOT for a deterministic single-worker task or a request that only needs a written plan. Provides reusable phases, scope verification, briefing templates, ReAct reflection, conflict controls, and queen-side synthesis.",
-      "tier": "installed",
-      "namespace": "agent-toolkit:multi-agent-master-workflow",
-      "path": "plugins/agent-toolkit/skills/multi-agent-master-workflow/SKILL.md",
-      "category": "standalone",
-      "tags": [],
-      "triggers": [],
-      "routing_hint": "Use when user asks for designing a master-controller and subagent workflow, parallelizing independent workstreams, coordinating cross-repository cleanup, or auditing a cron fleet w",
-      "source": "original",
-      "license": "MIT",
-      "version": "1.7.0"
-    },
-    {
       "id": "n8n",
       "name": "n8n",
       "description": "Manage n8n workflows and automations via API. Use when working with n8n workflows, executions, or automation tasks - listing workflows, activating/deactivating, checking execution status, manually triggering workflows, or debugging automation issues.",
@@ -6199,19 +4310,6 @@
       "routing_hint": "Bypass bot detection and anti-scraping measures when browser automation is blocked.",
       "source": "original",
       "version": "1.1.0"
-    },
-    {
-      "id": "superpower-10x",
-      "name": "superpower-10x",
-      "description": "Use when building software, planning features, debugging issues, or executing development workflows - enhances agent productivity 10x through systematic processes, automated workflows, and intelligent task orchestration",
-      "tier": "installed",
-      "namespace": "agent-toolkit:superpower-10x",
-      "path": "plugins/agent-toolkit/skills/superpower-10x/SKILL.md",
-      "category": "standalone",
-      "tags": [],
-      "triggers": [],
-      "routing_hint": "Use when building software, planning features, debugging issues, or executing development workflows - enhances agent productivity 10x through systematic processes, automated workfl",
-      "source": "minimax"
     },
     {
       "id": "tidy-folder",
@@ -7904,6 +6002,274 @@
       "source": "hermes-arsenal",
       "license": "MIT",
       "version": "0.3.7"
+    },
+    {
+      "id": "analyzing-linux-kernel-rootkits",
+      "name": "analyzing-linux-kernel-rootkits",
+      "description": "Detect kernel-level rootkits in Linux memory dumps using Volatility3 linux plugins (check_syscall, lsmod, hidden_modules), rkhunter system scanning, and /proc vs /sys discrepancy analysis to identify hooked syscalls, hidden kernel modules, and tampered system structures.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/analyzing-linux-kernel-rootkits/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "rootkit",
+        "linux",
+        "kernel",
+        "volatility3",
+        "memory-forensics",
+        "malware-analysis",
+        "rkhunter",
+        "forensics"
+      ],
+      "triggers": [
+        "rootkit",
+        "linux",
+        "kernel",
+        "volatility3",
+        "memory-forensics",
+        "malware-analysis",
+        "rkhunter",
+        "forensics"
+      ],
+      "routing_hint": "Detect kernel-level rootkits in Linux memory dumps using Volatility3 linux plugins (check_syscall, lsmod, hidden_modules), rkhunter system scanning, and /proc vs /sys discrepancy a",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1014",
+        "T1547.006",
+        "T1564.001"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "analyzing-linux-system-artifacts",
+      "name": "analyzing-linux-system-artifacts",
+      "description": "Examine Linux system artifacts including auth logs, cron jobs, shell history, and system configuration to uncover evidence of compromise or unauthorized activity.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/analyzing-linux-system-artifacts/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "forensics",
+        "linux-forensics",
+        "system-artifacts",
+        "log-analysis",
+        "persistence-detection",
+        "incident-investigation"
+      ],
+      "triggers": [
+        "forensics",
+        "linux-forensics",
+        "system-artifacts",
+        "log-analysis",
+        "persistence-detection",
+        "incident-investigation"
+      ],
+      "routing_hint": "Examine Linux system artifacts including auth logs, cron jobs, shell history, and system configuration to uncover evidence of compromise or unauthorized activity.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1070",
+        "T1059.004",
+        "T1543.002",
+        "T1053.003"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "analyzing-network-packets-with-scapy",
+      "name": "analyzing-network-packets-with-scapy",
+      "description": "Craft, send, sniff, and dissect network packets using Scapy for protocol analysis, network reconnaissance, and traffic anomaly detection in authorized security testing",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/analyzing-network-packets-with-scapy/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "scapy",
+        "packet-analysis",
+        "network-forensics",
+        "protocol-dissection",
+        "pcap",
+        "traffic-analysis"
+      ],
+      "triggers": [
+        "scapy",
+        "packet-analysis",
+        "network-forensics",
+        "protocol-dissection",
+        "pcap",
+        "traffic-analysis"
+      ],
+      "routing_hint": "Craft, send, sniff, and dissect network packets using Scapy for protocol analysis, network reconnaissance, and traffic anomaly detection in authorized security testing",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "network-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1040",
+        "T1071",
+        "T1046",
+        "T1557"
+      ],
+      "nist_csf": [
+        "PR.IR-01",
+        "DE.CM-01",
+        "ID.AM-03",
+        "PR.DS-02"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "analyzing-network-traffic-with-wireshark",
+      "name": "analyzing-network-traffic-with-wireshark",
+      "description": "Captures and analyzes network packet data using Wireshark and tshark to identify malicious traffic patterns, diagnose protocol issues, extract artifacts, and support incident response investigations on authorized network segments.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/analyzing-network-traffic-with-wireshark/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "network-security",
+        "wireshark",
+        "packet-analysis",
+        "traffic-analysis",
+        "pcap"
+      ],
+      "triggers": [
+        "network-security",
+        "wireshark",
+        "packet-analysis",
+        "traffic-analysis",
+        "pcap"
+      ],
+      "routing_hint": "Captures and analyzes network packet data using Wireshark and tshark to identify malicious traffic patterns, diagnose protocol issues, extract artifacts, and support incident respo",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "network-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1040",
+        "T1071",
+        "T1557",
+        "T1046"
+      ],
+      "nist_csf": [
+        "PR.IR-01",
+        "DE.CM-01",
+        "ID.AM-03",
+        "PR.DS-02"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "analyzing-persistence-mechanisms-in-linux",
+      "name": "analyzing-persistence-mechanisms-in-linux",
+      "description": "Detect and analyze Linux persistence mechanisms including crontab entries, systemd service units, LD_PRELOAD hijacking, bashrc modifications, and authorized_keys backdoors using auditd and file integrity monitoring",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/analyzing-persistence-mechanisms-in-linux/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "linux-persistence",
+        "crontab",
+        "systemd",
+        "ld-preload",
+        "auditd",
+        "threat-hunting",
+        "incident-response"
+      ],
+      "triggers": [
+        "linux-persistence",
+        "crontab",
+        "systemd",
+        "ld-preload",
+        "auditd",
+        "threat-hunting",
+        "incident-response"
+      ],
+      "routing_hint": "Detect and analyze Linux persistence mechanisms including crontab entries, systemd service units, LD_PRELOAD hijacking, bashrc modifications, and authorized_keys backdoors using au",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "threat-hunting",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1053.003",
+        "T1543.002",
+        "T1574.006",
+        "T1546.004",
+        "T1098.004"
+      ],
+      "nist_csf": [
+        "DE.CM-01",
+        "DE.AE-02",
+        "DE.AE-07",
+        "ID.RA-05"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "analyzing-sbom-for-supply-chain-vulnerabilities",
+      "name": "analyzing-sbom-for-supply-chain-vulnerabilities",
+      "description": "Parses Software Bill of Materials (SBOM) in CycloneDX and SPDX JSON formats to identify supply chain vulnerabilities by correlating components against the NVD CVE database via the NVD 2.0 API. Builds dependency graphs, calculates risk scores, identifies transitive vulnerability paths, and generates compliance reports. Activates for requests involving SBOM analysis, software composition analysis, supply chain security assessment, dependency vulnerability scanning, CycloneDX/SPDX parsing, or CVE correlation.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/analyzing-sbom-for-supply-chain-vulnerabilities/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "sbom",
+        "cyclonedx",
+        "spdx",
+        "nvd",
+        "cve",
+        "supply-chain",
+        "dependency-analysis",
+        "syft",
+        "grype"
+      ],
+      "triggers": [
+        "sbom",
+        "cyclonedx",
+        "spdx",
+        "nvd",
+        "cve",
+        "supply-chain",
+        "dependency-analysis",
+        "syft",
+        "grype"
+      ],
+      "routing_hint": "Parses Software Bill of Materials (SBOM) in CycloneDX and SPDX JSON formats to identify supply chain vulnerabilities by correlating components against the NVD CVE database via the",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "supply-chain-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1195.001",
+        "T1195.002",
+        "T1554",
+        "T1190"
+      ],
+      "nist_csf": [
+        "GV.SC-01",
+        "GV.SC-03",
+        "GV.SC-06",
+        "GV.SC-07"
+      ],
+      "version": "1.0.0"
     },
     {
       "id": "cyber-abusing-dpapi-for-credential-access",
@@ -50168,6 +48534,1296 @@
       ],
       "nist_csf": [
         "PR.DS-06"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "deploying-osquery-for-endpoint-monitoring",
+      "name": "deploying-osquery-for-endpoint-monitoring",
+      "description": "Deploys and configures osquery for real-time endpoint monitoring using SQL-based queries to inspect running processes, open ports, installed software, and system configuration. Use when building visibility into endpoint state, threat hunting across fleet, or implementing compliance monitoring. Activates for requests involving osquery deployment, endpoint visibility, fleet management, or SQL-based endpoint querying.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/deploying-osquery-for-endpoint-monitoring/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "endpoint",
+        "osquery",
+        "endpoint-monitoring",
+        "threat-hunting",
+        "fleet-management"
+      ],
+      "triggers": [
+        "endpoint",
+        "osquery",
+        "endpoint-monitoring",
+        "threat-hunting",
+        "fleet-management"
+      ],
+      "routing_hint": "Deploys and configures osquery for real-time endpoint monitoring using SQL-based queries to inspect running processes, open ports, installed software, and system configuration.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "endpoint-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1547.001",
+        "T1053.005",
+        "T1543.003",
+        "T1057",
+        "T1071.001"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.PS-02",
+        "DE.CM-01",
+        "PR.IR-01"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "detecting-aws-credential-exposure-with-trufflehog",
+      "name": "detecting-aws-credential-exposure-with-trufflehog",
+      "description": "Detecting exposed AWS credentials in source code repositories, CI/CD pipelines, and configuration files using TruffleHog, git-secrets, and AWS-native detection mechanisms to prevent credential theft and unauthorized account access.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/detecting-aws-credential-exposure-with-trufflehog/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "cloud-security",
+        "aws",
+        "credential-exposure",
+        "trufflehog",
+        "secrets-detection",
+        "devsecops"
+      ],
+      "triggers": [
+        "cloud-security",
+        "aws",
+        "credential-exposure",
+        "trufflehog",
+        "secrets-detection",
+        "devsecops"
+      ],
+      "routing_hint": "Detecting exposed AWS credentials in source code repositories, CI/CD pipelines, and configuration files using TruffleHog, git-secrets, and AWS-native detection mechanisms to preven",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "cloud-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1552.001",
+        "T1552",
+        "T1078.004",
+        "T1589.001"
+      ],
+      "nist_csf": [
+        "PR.IR-01",
+        "ID.AM-08",
+        "GV.SC-06",
+        "DE.CM-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "detecting-beaconing-patterns-with-zeek",
+      "name": "detecting-beaconing-patterns-with-zeek",
+      "description": "Performs statistical analysis of Zeek conn.log connection intervals to detect C2 beaconing patterns. Uses the ZAT library to load Zeek logs into Pandas DataFrames, calculates inter-arrival time standard deviation, and flags periodic connections with low jitter. Use when hunting for command-and-control callbacks in network data.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/detecting-beaconing-patterns-with-zeek/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "network-security",
+        "zeek",
+        "c2-beaconing",
+        "conn-log-analysis",
+        "zat",
+        "threat-hunting",
+        "statistical-analysis"
+      ],
+      "triggers": [
+        "network-security",
+        "zeek",
+        "c2-beaconing",
+        "conn-log-analysis",
+        "zat",
+        "threat-hunting",
+        "statistical-analysis"
+      ],
+      "routing_hint": "Performs statistical analysis of Zeek conn.log connection intervals to detect C2 beaconing patterns.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "security-operations",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1071.001",
+        "T1071.004",
+        "T1573",
+        "T1008",
+        "T1095"
+      ],
+      "nist_csf": [
+        "DE.CM-01",
+        "RS.MA-01",
+        "GV.OV-01",
+        "DE.AE-02"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "detecting-container-runtime-threats-with-falco",
+      "name": "detecting-container-runtime-threats-with-falco",
+      "description": "Write and deploy Falco rules with the modern eBPF driver to detect container escape, namespace abuse, privileged mounts, and anomalous syscalls at runtime in Kubernetes and Docker.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/detecting-container-runtime-threats-with-falco/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "falco",
+        "runtime-security",
+        "ebpf",
+        "container-escape",
+        "syscall-monitoring",
+        "detection-engineering",
+        "kubernetes",
+        "threat-detection"
+      ],
+      "triggers": [
+        "falco",
+        "runtime-security",
+        "ebpf",
+        "container-escape",
+        "syscall-monitoring",
+        "detection-engineering",
+        "kubernetes",
+        "threat-detection"
+      ],
+      "routing_hint": "Write and deploy Falco rules with the modern eBPF driver to detect container escape, namespace abuse, privileged mounts, and anomalous syscalls at runtime in Kubernetes and Docker.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "container-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1611"
+      ],
+      "nist_csf": [
+        "DE.CM-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "detecting-dns-exfiltration-with-dns-query-analysis",
+      "name": "detecting-dns-exfiltration-with-dns-query-analysis",
+      "description": "Detect data exfiltration through DNS tunneling by analyzing query entropy, subdomain length, query volume, TXT record abuse, and response payload sizes using passive DNS monitoring.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/detecting-dns-exfiltration-with-dns-query-analysis/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "dns-exfiltration",
+        "dns-tunneling",
+        "data-exfiltration",
+        "threat-detection",
+        "entropy-analysis",
+        "passive-dns",
+        "network-monitoring",
+        "iodine",
+        "dnscat2"
+      ],
+      "triggers": [
+        "dns-exfiltration",
+        "dns-tunneling",
+        "data-exfiltration",
+        "threat-detection",
+        "entropy-analysis",
+        "passive-dns",
+        "network-monitoring",
+        "iodine",
+        "dnscat2"
+      ],
+      "routing_hint": "Detect data exfiltration through DNS tunneling by analyzing query entropy, subdomain length, query volume, TXT record abuse, and response payload sizes using passive DNS monitoring",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "network-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1046",
+        "T1040",
+        "T1557",
+        "T1071",
+        "T1048"
+      ],
+      "nist_csf": [
+        "PR.IR-01",
+        "DE.CM-01",
+        "ID.AM-03",
+        "PR.DS-02"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "detecting-network-anomalies-with-zeek",
+      "name": "detecting-network-anomalies-with-zeek",
+      "description": "Deploys and configures Zeek (formerly Bro) network security monitor to passively analyze network traffic, generate structured logs, detect anomalous behavior, and create custom detection scripts for threat hunting and incident response.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/detecting-network-anomalies-with-zeek/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "network-security",
+        "zeek",
+        "network-monitoring",
+        "anomaly-detection",
+        "threat-hunting"
+      ],
+      "triggers": [
+        "network-security",
+        "zeek",
+        "network-monitoring",
+        "anomaly-detection",
+        "threat-hunting"
+      ],
+      "routing_hint": "Deploys and configures Zeek (formerly Bro) network security monitor to passively analyze network traffic, generate structured logs, detect anomalous behavior, and create custom det",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "network-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1046",
+        "T1040",
+        "T1557",
+        "T1071"
+      ],
+      "nist_csf": [
+        "PR.IR-01",
+        "DE.CM-01",
+        "ID.AM-03",
+        "PR.DS-02"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "detecting-port-scanning-with-fail2ban",
+      "name": "detecting-port-scanning-with-fail2ban",
+      "description": "Configures Fail2ban with custom filters and actions to detect port scanning activity, SSH brute force attempts, and network reconnaissance, automatically banning offending IP addresses and alerting security teams to suspicious network probing.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/detecting-port-scanning-with-fail2ban/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "network-security",
+        "fail2ban",
+        "port-scanning",
+        "intrusion-prevention",
+        "automated-defense"
+      ],
+      "triggers": [
+        "network-security",
+        "fail2ban",
+        "port-scanning",
+        "intrusion-prevention",
+        "automated-defense"
+      ],
+      "routing_hint": "Configures Fail2ban with custom filters and actions to detect port scanning activity, SSH brute force attempts, and network reconnaissance, automatically banning offending IP addre",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "network-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1046",
+        "T1040",
+        "T1557",
+        "T1071",
+        "T1595"
+      ],
+      "nist_csf": [
+        "PR.IR-01",
+        "DE.CM-01",
+        "ID.AM-03",
+        "PR.DS-02"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "detecting-rootkit-activity",
+      "name": "detecting-rootkit-activity",
+      "description": "Detects rootkit presence on compromised systems by identifying hidden processes, hooked system calls, modified kernel structures, hidden files, and covert network connections using memory forensics, cross-view detection, and integrity checking techniques. Activates for requests involving rootkit detection, hidden process discovery, kernel integrity checking, or system call hook analysis.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/detecting-rootkit-activity/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "malware",
+        "rootkit",
+        "detection",
+        "kernel-analysis",
+        "memory-forensics"
+      ],
+      "triggers": [
+        "malware",
+        "rootkit",
+        "detection",
+        "kernel-analysis",
+        "memory-forensics"
+      ],
+      "routing_hint": "Detects rootkit presence on compromised systems by identifying hidden processes, hooked system calls, modified kernel structures, hidden files, and covert network connections using",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "malware-analysis",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1014",
+        "T1547.006",
+        "T1564.001",
+        "T1574.006"
+      ],
+      "nist_csf": [
+        "DE.AE-02",
+        "RS.AN-03",
+        "ID.RA-01",
+        "DE.CM-01"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "hardening-linux-endpoint-with-cis-benchmark",
+      "name": "hardening-linux-endpoint-with-cis-benchmark",
+      "description": "Hardens Linux endpoints using CIS Benchmark recommendations for Ubuntu, RHEL, and CentOS to reduce attack surface, enforce security baselines, and meet compliance requirements. Use when deploying new Linux servers, remediating audit findings, or establishing security baselines for Linux infrastructure. Activates for requests involving Linux hardening, CIS benchmarks for Linux, server security baselines, or Linux configuration compliance.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/hardening-linux-endpoint-with-cis-benchmark/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "endpoint",
+        "hardening",
+        "linux-security",
+        "cis-benchmark",
+        "ubuntu",
+        "rhel"
+      ],
+      "triggers": [
+        "endpoint",
+        "hardening",
+        "linux-security",
+        "cis-benchmark",
+        "ubuntu",
+        "rhel"
+      ],
+      "routing_hint": "Hardens Linux endpoints using CIS Benchmark recommendations for Ubuntu, RHEL, and CentOS to reduce attack surface, enforce security baselines, and meet compliance requirements.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "endpoint-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1055",
+        "T1547",
+        "T1059",
+        "T1036"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.PS-02",
+        "DE.CM-01",
+        "PR.IR-01"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "hunting-advanced-persistent-threats",
+      "name": "hunting-advanced-persistent-threats",
+      "description": "Proactively hunts for Advanced Persistent Threat (APT) activity within enterprise environments using hypothesis-driven searches across endpoint telemetry, network logs, and memory artifacts. Use when conducting scheduled threat hunting cycles, investigating anomalous behavior flagged by UEBA, or validating that known APT TTPs are not present in the environment. Activates for requests involving MITRE ATT&CK, Velociraptor, osquery, Zeek, or threat hunting playbooks.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/hunting-advanced-persistent-threats/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "mitre-att&ck",
+        "threat-hunting",
+        "apt",
+        "velociraptor",
+        "osquery",
+        "zeek",
+        "ttp",
+        "nist-csf",
+        "edr"
+      ],
+      "triggers": [
+        "mitre-att&ck",
+        "threat-hunting",
+        "apt",
+        "velociraptor",
+        "osquery",
+        "zeek",
+        "ttp",
+        "nist-csf",
+        "edr"
+      ],
+      "routing_hint": "Proactively hunts for Advanced Persistent Threat (APT) activity within enterprise environments using hypothesis-driven searches across endpoint telemetry, network logs, and memory",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "threat-intelligence",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1591",
+        "T1592",
+        "T1593",
+        "T1589",
+        "T1005"
+      ],
+      "nist_csf": [
+        "ID.RA-01",
+        "ID.RA-05",
+        "DE.CM-01",
+        "DE.AE-02"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "implementing-attack-surface-management",
+      "name": "implementing-attack-surface-management",
+      "description": "Implements external attack surface management (EASM) using Shodan, Censys, and ProjectDiscovery tools (subfinder, httpx, nuclei) for asset discovery, subdomain enumeration, service fingerprinting, and exposure scoring. Includes a weighted risk scoring algorithm based on OWASP attack surface analysis methodology and the Relative Attack Surface Quotient (RSQ). Use when building continuous ASM programs or performing external reconnaissance for security assessments.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/implementing-attack-surface-management/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "attack-surface",
+        "reconnaissance",
+        "shodan",
+        "censys",
+        "subfinder",
+        "nuclei",
+        "asset-discovery"
+      ],
+      "triggers": [
+        "attack-surface",
+        "reconnaissance",
+        "shodan",
+        "censys",
+        "subfinder",
+        "nuclei",
+        "asset-discovery"
+      ],
+      "routing_hint": "Implements external attack surface management (EASM) using Shodan, Censys, and ProjectDiscovery tools (subfinder, httpx, nuclei) for asset discovery, subdomain enumeration, service",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "offensive-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1078",
+        "T1190",
+        "T1059",
+        "T1595",
+        "T1592"
+      ],
+      "nist_csf": [
+        "ID.RA-01",
+        "GV.OV-02",
+        "DE.AE-07"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "implementing-container-image-minimal-base-with-distroless",
+      "name": "implementing-container-image-minimal-base-with-distroless",
+      "description": "Reduce container attack surface by building application images on Google distroless base images that contain only the application runtime with no shell, package manager, or unnecessary OS utilities.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/implementing-container-image-minimal-base-with-distroless/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "distroless",
+        "container-images",
+        "minimal-base",
+        "attack-surface",
+        "docker",
+        "security-hardening",
+        "supply-chain",
+        "kubernetes"
+      ],
+      "triggers": [
+        "distroless",
+        "container-images",
+        "minimal-base",
+        "attack-surface",
+        "docker",
+        "security-hardening",
+        "supply-chain",
+        "kubernetes"
+      ],
+      "routing_hint": "Reduce container attack surface by building application images on Google distroless base images that contain only the application runtime with no shell, package manager, or unneces",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "container-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1610",
+        "T1611",
+        "T1609",
+        "T1525",
+        "T1195"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.IR-01",
+        "ID.AM-08",
+        "DE.CM-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "implementing-kubernetes-pod-security-standards",
+      "name": "implementing-kubernetes-pod-security-standards",
+      "description": "Pod Security Standards (PSS) define three levels of security policies -- Privileged, Baseline, and Restricted -- enforced by the Pod Security Admission (PSA) controller built into Kubernetes 1.25+. PS",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/implementing-kubernetes-pod-security-standards/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "containers",
+        "kubernetes",
+        "security",
+        "pod-security",
+        "psa"
+      ],
+      "triggers": [
+        "containers",
+        "kubernetes",
+        "security",
+        "pod-security",
+        "psa"
+      ],
+      "routing_hint": "Pod Security Standards (PSS) define three levels of security policies -- Privileged, Baseline, and Restricted -- enforced by the Pod Security Admission (PSA) controller built into",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "container-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1610",
+        "T1611",
+        "T1609",
+        "T1525"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.IR-01",
+        "ID.AM-08",
+        "DE.CM-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "implementing-network-segmentation-with-firewall-zones",
+      "name": "implementing-network-segmentation-with-firewall-zones",
+      "description": "Design and implement network segmentation using firewall security zones, VLANs, ACLs, and microsegmentation policies to restrict lateral movement and enforce least-privilege network access.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/implementing-network-segmentation-with-firewall-zones/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "network-segmentation",
+        "firewall-zones",
+        "vlan",
+        "microsegmentation",
+        "lateral-movement",
+        "zero-trust",
+        "acl",
+        "east-west-traffic",
+        "pci-dss"
+      ],
+      "triggers": [
+        "network-segmentation",
+        "firewall-zones",
+        "vlan",
+        "microsegmentation",
+        "lateral-movement",
+        "zero-trust",
+        "acl",
+        "east-west-traffic",
+        "pci-dss"
+      ],
+      "routing_hint": "Design and implement network segmentation using firewall security zones, VLANs, ACLs, and microsegmentation policies to restrict lateral movement and enforce least-privilege networ",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "network-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1046",
+        "T1040",
+        "T1557",
+        "T1071",
+        "T1021"
+      ],
+      "nist_csf": [
+        "PR.IR-01",
+        "DE.CM-01",
+        "ID.AM-03",
+        "PR.DS-02"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "implementing-secret-scanning-with-gitleaks",
+      "name": "implementing-secret-scanning-with-gitleaks",
+      "description": "This skill covers implementing Gitleaks for detecting and preventing hardcoded secrets in git repositories. It addresses configuring pre-commit hooks, CI/CD pipeline integration, custom rule authoring for organization-specific secrets, baseline management for existing repositories, and remediation workflows for exposed credentials.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/implementing-secret-scanning-with-gitleaks/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "devsecops",
+        "cicd",
+        "secret-scanning",
+        "gitleaks",
+        "pre-commit",
+        "secure-sdlc"
+      ],
+      "triggers": [
+        "devsecops",
+        "cicd",
+        "secret-scanning",
+        "gitleaks",
+        "pre-commit",
+        "secure-sdlc"
+      ],
+      "routing_hint": "This skill covers implementing Gitleaks for detecting and preventing hardcoded secrets in git repositories.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "devsecops",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1195",
+        "T1554",
+        "T1059.004",
+        "T1003",
+        "T1110"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "GV.SC-07",
+        "ID.IM-04",
+        "PR.PS-04"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "performing-authenticated-vulnerability-scan",
+      "name": "performing-authenticated-vulnerability-scan",
+      "description": "Authenticated (credentialed) vulnerability scanning uses valid system credentials to log into target hosts and perform deep inspection of installed software, patches, configurations, and security sett",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-authenticated-vulnerability-scan/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "vulnerability-management",
+        "cve",
+        "authenticated-scanning",
+        "credentials",
+        "nessus",
+        "qualys",
+        "risk"
+      ],
+      "triggers": [
+        "vulnerability-management",
+        "cve",
+        "authenticated-scanning",
+        "credentials",
+        "nessus",
+        "qualys",
+        "risk"
+      ],
+      "routing_hint": "Authenticated (credentialed) vulnerability scanning uses valid system credentials to log into target hosts and perform deep inspection of installed software, patches, configuration",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "vulnerability-management",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1190",
+        "T1203",
+        "T1068",
+        "T1003",
+        "T1110"
+      ],
+      "nist_csf": [
+        "ID.RA-01",
+        "ID.RA-02",
+        "ID.IM-02",
+        "ID.RA-06"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "performing-container-security-scanning-with-trivy",
+      "name": "performing-container-security-scanning-with-trivy",
+      "description": "Scan container images, filesystems, and Kubernetes manifests for vulnerabilities, misconfigurations, exposed secrets, and license compliance issues using Aqua Security Trivy with SBOM generation and CI/CD integration.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-container-security-scanning-with-trivy/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "trivy",
+        "container-security",
+        "vulnerability-scanning",
+        "sbom",
+        "docker",
+        "kubernetes",
+        "devsecops",
+        "supply-chain"
+      ],
+      "triggers": [
+        "trivy",
+        "container-security",
+        "vulnerability-scanning",
+        "sbom",
+        "docker",
+        "kubernetes",
+        "devsecops",
+        "supply-chain"
+      ],
+      "routing_hint": "Scan container images, filesystems, and Kubernetes manifests for vulnerabilities, misconfigurations, exposed secrets, and license compliance issues using Aqua Security Trivy with S",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "container-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1610",
+        "T1611",
+        "T1609",
+        "T1525",
+        "T1195"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.IR-01",
+        "ID.AM-08",
+        "DE.CM-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "performing-disk-forensics-investigation",
+      "name": "performing-disk-forensics-investigation",
+      "description": "Conducts disk forensics investigations using forensic imaging, file system analysis, artifact recovery, and timeline reconstruction to support incident response cases. Utilizes tools such as FTK Imager, Autopsy, and The Sleuth Kit for evidence acquisition, deleted file recovery, and artifact examination. Activates for requests involving disk forensics, hard drive analysis, forensic imaging, file recovery, evidence acquisition, or digital forensic investigation.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-disk-forensics-investigation/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "disk-forensics",
+        "forensic-imaging",
+        "evidence-acquisition",
+        "file-recovery",
+        "chain-of-custody"
+      ],
+      "triggers": [
+        "disk-forensics",
+        "forensic-imaging",
+        "evidence-acquisition",
+        "file-recovery",
+        "chain-of-custody"
+      ],
+      "routing_hint": "Conducts disk forensics investigations using forensic imaging, file system analysis, artifact recovery, and timeline reconstruction to support incident response cases.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "incident-response",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1486",
+        "T1490",
+        "T1070",
+        "T1078",
+        "T1005"
+      ],
+      "nist_csf": [
+        "RS.MA-01",
+        "RS.MA-02",
+        "RS.AN-03",
+        "RC.RP-01"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "performing-endpoint-forensics-investigation",
+      "name": "performing-endpoint-forensics-investigation",
+      "description": "Performs digital forensics investigation on compromised endpoints including memory acquisition, disk imaging, artifact analysis, and timeline reconstruction. Use when investigating security incidents, collecting evidence for legal proceedings, or analyzing endpoint compromise scope. Activates for requests involving endpoint forensics, memory analysis, disk forensics, or incident investigation.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-endpoint-forensics-investigation/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "endpoint",
+        "forensics",
+        "memory-analysis",
+        "disk-imaging",
+        "incident-investigation",
+        "volatility"
+      ],
+      "triggers": [
+        "endpoint",
+        "forensics",
+        "memory-analysis",
+        "disk-imaging",
+        "incident-investigation",
+        "volatility"
+      ],
+      "routing_hint": "Performs digital forensics investigation on compromised endpoints including memory acquisition, disk imaging, artifact analysis, and timeline reconstruction.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "endpoint-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1055",
+        "T1547",
+        "T1059",
+        "T1036",
+        "T1005"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.PS-02",
+        "DE.CM-01",
+        "PR.IR-01"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "performing-file-carving-with-foremost",
+      "name": "performing-file-carving-with-foremost",
+      "description": "Recover files from disk images and unallocated space using Foremost's header-footer signature carving to extract evidence regardless of file system state.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-file-carving-with-foremost/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "forensics",
+        "file-carving",
+        "foremost",
+        "data-recovery",
+        "evidence-recovery",
+        "unallocated-space"
+      ],
+      "triggers": [
+        "forensics",
+        "file-carving",
+        "foremost",
+        "data-recovery",
+        "evidence-recovery",
+        "unallocated-space"
+      ],
+      "routing_hint": "Recover files from disk images and unallocated space using Foremost's header-footer signature carving to extract evidence regardless of file system state.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1005",
+        "T1074",
+        "T1119",
+        "T1070",
+        "T1059"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "performing-linux-log-forensics-investigation",
+      "name": "performing-linux-log-forensics-investigation",
+      "description": "Perform forensic investigation of Linux system logs including syslog, auth.log, systemd journal, kern.log, and application logs to reconstruct user activity, detect unauthorized access, and establish event timelines on compromised Linux systems.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-linux-log-forensics-investigation/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "linux-forensics",
+        "syslog",
+        "auth-log",
+        "systemd-journal",
+        "journalctl",
+        "linux-logs",
+        "ssh-forensics",
+        "cron",
+        "audit-log",
+        "log-analysis"
+      ],
+      "triggers": [
+        "linux-forensics",
+        "syslog",
+        "auth-log",
+        "systemd-journal",
+        "journalctl",
+        "linux-logs",
+        "ssh-forensics",
+        "cron",
+        "audit-log",
+        "log-analysis"
+      ],
+      "routing_hint": "Perform forensic investigation of Linux system logs including syslog, auth.log, systemd journal, kern.log, and application logs to reconstruct user activity, detect unauthorized ac",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1005",
+        "T1074",
+        "T1119",
+        "T1070",
+        "T1059"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "performing-log-analysis-for-forensic-investigation",
+      "name": "performing-log-analysis-for-forensic-investigation",
+      "description": "Collect, parse, and correlate system, application, and security logs to reconstruct events and establish timelines during forensic investigations.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-log-analysis-for-forensic-investigation/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "forensics",
+        "log-analysis",
+        "siem",
+        "event-correlation",
+        "timeline-analysis",
+        "evidence-collection"
+      ],
+      "triggers": [
+        "forensics",
+        "log-analysis",
+        "siem",
+        "event-correlation",
+        "timeline-analysis",
+        "evidence-collection"
+      ],
+      "routing_hint": "Collect, parse, and correlate system, application, and security logs to reconstruct events and establish timelines during forensic investigations.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1005",
+        "T1074",
+        "T1119",
+        "T1070",
+        "T1685.002"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "performing-malware-triage-with-yara",
+      "name": "performing-malware-triage-with-yara",
+      "description": "Performs rapid malware triage and classification using YARA rules to match file patterns, strings, byte sequences, and structural characteristics against known malware families and suspicious indicators. Covers rule writing, scanning, and integration with analysis pipelines. Activates for requests involving YARA rule creation, malware classification, pattern matching, sample triage, or signature-based detection.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-malware-triage-with-yara/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "malware",
+        "yara",
+        "triage",
+        "classification",
+        "pattern-matching"
+      ],
+      "triggers": [
+        "malware",
+        "yara",
+        "triage",
+        "classification",
+        "pattern-matching"
+      ],
+      "routing_hint": "Performs rapid malware triage and classification using YARA rules to match file patterns, strings, byte sequences, and structural characteristics against known malware families and",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "malware-analysis",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1027",
+        "T1055",
+        "T1140",
+        "T1497",
+        "T0816"
+      ],
+      "nist_csf": [
+        "DE.AE-02",
+        "RS.AN-03",
+        "ID.RA-01",
+        "DE.CM-01"
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "id": "performing-memory-forensics-with-volatility3",
+      "name": "performing-memory-forensics-with-volatility3",
+      "description": "Analyze volatile memory dumps using Volatility 3 to extract running processes, network connections, loaded modules, and evidence of malicious activity.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-memory-forensics-with-volatility3/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "forensics",
+        "memory-forensics",
+        "volatility",
+        "ram-analysis",
+        "malware-detection",
+        "incident-response"
+      ],
+      "triggers": [
+        "forensics",
+        "memory-forensics",
+        "volatility",
+        "ram-analysis",
+        "malware-detection",
+        "incident-response"
+      ],
+      "routing_hint": "Analyze volatile memory dumps using Volatility 3 to extract running processes, network connections, loaded modules, and evidence of malicious activity.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1005",
+        "T1074",
+        "T1119",
+        "T1070",
+        "T1059"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "performing-network-forensics-with-wireshark",
+      "name": "performing-network-forensics-with-wireshark",
+      "description": "Capture and analyze network traffic using Wireshark and tshark to reconstruct network events, extract artifacts, and identify malicious communications.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-network-forensics-with-wireshark/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "forensics",
+        "network-forensics",
+        "wireshark",
+        "pcap",
+        "packet-analysis",
+        "traffic-analysis"
+      ],
+      "triggers": [
+        "forensics",
+        "network-forensics",
+        "wireshark",
+        "pcap",
+        "packet-analysis",
+        "traffic-analysis"
+      ],
+      "routing_hint": "Capture and analyze network traffic using Wireshark and tshark to reconstruct network events, extract artifacts, and identify malicious communications.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1005",
+        "T1074",
+        "T1119",
+        "T1070",
+        "T1059"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "performing-nist-csf-maturity-assessment",
+      "name": "performing-nist-csf-maturity-assessment",
+      "description": "The NIST Cybersecurity Framework (CSF) 2.0, released in February 2024, provides a comprehensive taxonomy for managing cybersecurity risk through six core Functions - Govern, Identify, Protect, Detect, Respond, and Recover. This skill covers conducting a maturity assessment against the CSF using Implementation Tiers to measure organizational cybersecurity posture and create improvement roadmaps.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/performing-nist-csf-maturity-assessment/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "compliance",
+        "governance",
+        "nist",
+        "csf",
+        "maturity-assessment",
+        "risk-management"
+      ],
+      "triggers": [
+        "compliance",
+        "governance",
+        "nist",
+        "csf",
+        "maturity-assessment",
+        "risk-management"
+      ],
+      "routing_hint": "The NIST Cybersecurity Framework (CSF) 2.0, released in February 2024, provides a comprehensive taxonomy for managing cybersecurity risk through six core Functions - Govern, Identi",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "compliance-governance",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1078",
+        "T1530",
+        "T1685.002"
+      ],
+      "nist_csf": [
+        "GV.OC-01",
+        "GV.RM-01",
+        "GV.PO-01",
+        "ID.RA-01",
+        "GV.OV-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "recovering-deleted-files-with-photorec",
+      "name": "recovering-deleted-files-with-photorec",
+      "description": "Recover deleted files from disk images and storage media using PhotoRec's file signature-based carving engine regardless of file system damage.",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/recovering-deleted-files-with-photorec/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "forensics",
+        "file-recovery",
+        "photorec",
+        "file-carving",
+        "data-recovery",
+        "evidence-recovery"
+      ],
+      "triggers": [
+        "forensics",
+        "file-recovery",
+        "photorec",
+        "file-carving",
+        "data-recovery",
+        "evidence-recovery"
+      ],
+      "routing_hint": "Recover deleted files from disk images and storage media using PhotoRec's file signature-based carving engine regardless of file system damage.",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "digital-forensics",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1005",
+        "T1074",
+        "T1119",
+        "T1070",
+        "T1059"
+      ],
+      "nist_csf": [
+        "RS.AN-01",
+        "RS.AN-03",
+        "DE.AE-02",
+        "RS.MA-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "scanning-docker-images-with-trivy",
+      "name": "scanning-docker-images-with-trivy",
+      "description": "Trivy is a comprehensive open-source vulnerability scanner by Aqua Security that detects vulnerabilities in OS packages, language-specific dependencies, misconfigurations, secrets, and license violati",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/scanning-docker-images-with-trivy/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "containers",
+        "docker",
+        "security",
+        "trivy",
+        "vulnerability-scanning"
+      ],
+      "triggers": [
+        "containers",
+        "docker",
+        "security",
+        "trivy",
+        "vulnerability-scanning"
+      ],
+      "routing_hint": "Trivy is a comprehensive open-source vulnerability scanner by Aqua Security that detects vulnerabilities in OS packages, language-specific dependencies, misconfigurations, secrets,",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "container-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1610",
+        "T1611",
+        "T1609",
+        "T1525",
+        "T1190"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.IR-01",
+        "ID.AM-08",
+        "DE.CM-01"
+      ],
+      "version": "1.0"
+    },
+    {
+      "id": "securing-container-registry-with-harbor",
+      "name": "securing-container-registry-with-harbor",
+      "description": "Harbor is an open-source container registry that provides security features including vulnerability scanning (integrated Trivy), image signing (Notary/Cosign), RBAC, content trust policies, replicatio",
+      "tier": "library",
+      "namespace": null,
+      "path": "library/securing-container-registry-with-harbor/SKILL.md",
+      "category": "cybersecurity",
+      "tags": [
+        "containers",
+        "kubernetes",
+        "docker",
+        "security",
+        "registry",
+        "harbor"
+      ],
+      "triggers": [
+        "containers",
+        "kubernetes",
+        "docker",
+        "security",
+        "registry",
+        "harbor"
+      ],
+      "routing_hint": "Harbor is an open-source container registry that provides security features including vulnerability scanning (integrated Trivy), image signing (Notary/Cosign), RBAC, content trust",
+      "source": "hermes-arsenal",
+      "domain": "cybersecurity",
+      "subdomain": "container-security",
+      "license": "Apache-2.0",
+      "mitre_attack": [
+        "T1610",
+        "T1611",
+        "T1609",
+        "T1525",
+        "T1190"
+      ],
+      "nist_csf": [
+        "PR.PS-01",
+        "PR.IR-01",
+        "ID.AM-08",
+        "DE.CM-01"
       ],
       "version": "1.0"
     },

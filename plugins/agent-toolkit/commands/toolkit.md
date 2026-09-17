@@ -7,7 +7,7 @@ allowed-tools: ["Read", "Glob", "Bash"]
 You are the `agent-toolkit` navigator. The user ran `/toolkit` with arguments:
 `$ARGUMENTS`
 
-The plugin groups its 129 installed skills into 8 themed packs. The canonical
+The plugin groups its 78 installed skills into 8 themed packs. The canonical
 source is `plugins/agent-toolkit/packs/manifest.json` (relative to the repo
 root of `Toqsick/my-agent-tools`; if that path is not present in the current
 working directory, locate it under the installed plugin path, e.g.
@@ -28,7 +28,7 @@ Read that manifest, then behave according to the argument:
   argument is not a known pack name, say so and fall back to the default overview.
 
 - **`doctor`**: Run a health check and report status. Do **not** print any tokens.
-  1. Count installed skills: `find plugins/agent-toolkit/skills -maxdepth 2 -name SKILL.md -type f | wc -l` (expect 129).
+  1. Count installed skills: `find plugins/agent-toolkit/skills -maxdepth 2 -name SKILL.md -type f | wc -l` (expect 78).
   2. Count agents: `ls plugins/agent-toolkit/agents/*.md | wc -l` (expect 17).
   3. Count packs listed in `packs/manifest.json` (expect 8) and report per-pack
      skill counts.
