@@ -2,7 +2,7 @@
 
 [![MCP Health Check](https://github.com/Toqsick/my-agent-tools/actions/workflows/mcp-health-check.yml/badge.svg)](https://github.com/Toqsick/my-agent-tools/actions/workflows/mcp-health-check.yml)
 [![MCP Servers](https://img.shields.io/badge/MCP%20Servers-9-blue?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMSAxNXYtNEg3bDUtOXY0aDRsLTUgOXoiLz48L3N2Zz4=)](plugins/agent-toolkit/.mcp.json)
-[![Skills](https://img.shields.io/badge/Skills-129%20installed%20%2B1244%20library-green)](INDEX.json)
+[![Skills](https://img.shields.io/badge/Skills-78%20installed%20%2B1279%20library-green)](INDEX.json)
 [![License](https://img.shields.io/badge/License-Private-lightgrey)](#)
 
 **Basti's private, version-controlled Claude Code toolkit.**
