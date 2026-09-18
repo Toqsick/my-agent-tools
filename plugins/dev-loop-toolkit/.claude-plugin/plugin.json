@@ -1,0 +1,23 @@
+{
+  "name": "dev-loop-toolkit",
+  "description": "Autonomer GitHub-Dev-Loop als Skill-Set: Milestone → Issues → PR → Squash-Merge mit Baseline-Gate, adversarialer Verifikation und Evidenz-Pflicht. Dazu ein Plan-Mode-Meilenstein-Planer, das Azahar-Verifikations-Orakel für 3DS-Homebrew und ein Governance-Bootstrap für neue Repos. Generalisiert aus dem pokerogue-3ds-Workflow (19 gemergte PRs in 44 h).",
+  "version": "0.1.0",
+  "author": {
+    "name": "Toqsick",
+    "url": "https://github.com/Toqsick"
+  },
+  "license": "MIT",
+  "category": "developer-tools",
+  "keywords": [
+    "dev-loop",
+    "milestones",
+    "issues",
+    "pull-requests",
+    "automation",
+    "azahar",
+    "3ds",
+    "governance"
+  ],
+  "skills": "skills",
+  "commands": "commands"
+}

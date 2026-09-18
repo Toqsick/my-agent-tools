@@ -6,9 +6,16 @@
   },
   "plugins": [
     {
+      "name": "dev-loop-toolkit",
+      "source": "./plugins/dev-loop-toolkit",
+      "description": "Autonomer GitHub-Dev-Loop als Skill-Set: Milestone → Issues → PR → Squash-Merge mit Baseline-Gate, adversarialer Verifikation (3 Lenses) und Evidenz-Pflicht. Plus Plan-Mode-Meilenstein-Planer (plan-dev-loop), Azahar-Verifikations-Orakel für 3DS-Homebrew und Governance-Bootstrap für neue Repos. Generalisiert aus dem pokerogue-3ds-Workflow.",
+      "category": "developer-tools",
+      "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/dev-loop-toolkit"
+    },
+    {
       "name": "agent-toolkit",
       "source": "./plugins/agent-toolkit",
-      "description": "One bundled plugin shipping Basti's vetted skills (129 skills in 8 themed packs), 17 subagents (coder, perf-tuner, security-auditor, zc-* team), 9 MCP server declarations (github, gmail, calendar, …), a /toolkit browse command, and a session-start status hook. Enable once to sync the whole toolkit.",
+      "description": "One bundled plugin shipping Basti's vetted skills (78 skills in 8 themed packs), 17 subagents (coder, perf-tuner, security-auditor, zc-* team), 9 MCP server declarations (github, gmail, calendar, …), a /toolkit browse command, and a session-start status hook. Enable once to sync the whole toolkit.",
       "category": "productivity",
       "homepage": "https://github.com/Toqsick/my-agent-tools/tree/main/plugins/agent-toolkit"
     },

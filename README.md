@@ -51,13 +51,13 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 │   └── agent-toolkit/
 │       ├── .claude-plugin/
 │       │   └── plugin.json        # plugin manifest (registers the installed skills)
-│       ├── skills/                # 129 installed skills (SKILL.md bundles) — session-loaded
+│       ├── skills/                # 78 installed skills (SKILL.md bundles) — session-loaded
 │       ├── agents/                # 17 subagents (coder, perf-tuner, security-auditor + 14 zc-*)
 │       ├── commands/              # /toolkit — browse packs + health check (auto-discovered)
 │       ├── hooks/                 # SessionStart banner: skills · packs · agents · MCP counts
 │       ├── packs/                 # 8 themed skill packs (manifest.json + per-pack READMEs)
 │       └── .mcp.json              # MCP server declarations (9 servers)
-├── library/                      # 1,244 browsable Hermes-arsenal skills (NOT session-loaded)
+├── library/                      # 1,279 browsable Hermes-arsenal skills (NOT session-loaded)
 │   └── <category>/<skill>/SKILL.md
 ├── routing/                       # zcode-skills MCP-aware routing metadata
 │   ├── registry/                   # generated repository-relative catalogs
@@ -73,7 +73,7 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 
 ## Skill packs (installed-skill grouping)
 
-The 129 installed skills are grouped into **8 themed packs** — a navigation layer over the one
+The 78 installed skills are grouped into **8 themed packs** — a navigation layer over the one
 plugin, so the wall of skills becomes scannable by domain. Every skill still loads in every
 session and is invokable as `agent-toolkit:<name>`; packs just make browsing and routing
 easier. See [`PACKS.md`](PACKS.md) for the full pack index, the per-pack skill rosters, and the
@@ -235,7 +235,7 @@ MITRE ATT&CK / NIST CSF mappings where applicable.
 
 ### Library (browsable, not session-loaded)
 
-`library/` holds the full **Hermes skill arsenal — 1,244 skills** across 40+ categories (top: 815
+`library/` holds the full **Hermes skill arsenal — 1,279 skills** across 40+ categories (top: 815
 cybersecurity, 81 software-development, 44 orchestration, 44 devops, 43 creative, 29 productivity, …),
 a point-in-time snapshot of `~/.hermes/skills/` (`.archive/` excluded). These are **not** registered in
 `plugin.json` and never load into a session — agents discover them via [`INDEX.json`](INDEX.json) and
