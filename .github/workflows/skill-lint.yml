@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'plugins/agent-toolkit/skills/**'
+      - 'plugins/*/skills/**'
       - 'library/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'plugins/agent-toolkit/skills/**'
+      - 'plugins/*/skills/**'
       - 'library/**'
   workflow_dispatch:
 
@@ -30,7 +30,9 @@ jobs:
           python3 - <<'EOF'
           import pathlib, re, sys
           root = pathlib.Path('.')
-          PLUGIN_DIR = 'plugins/agent-toolkit/skills/'
+          # Any plugin's skills are installed tier (strict). Only library/ is
+          # warn-only — those browsable imports predate the naming convention.
+          PLUGIN_RE = re.compile(r'plugins/[^/]+/skills/')
           errors = []
           warnings = []
           checked = 0
@@ -44,7 +46,7 @@ jobs:
                   errors.append(f'  ❌ {skill_file}: missing frontmatter')
                   continue
               fm = fm_match.group(1)
-              in_plugin = PLUGIN_DIR in str(skill_file)
+              in_plugin = bool(PLUGIN_RE.search(str(skill_file)))
               # Required: name — present, kebab-case; must equal the directory
               # name for installed plugin skills (library tier: warn only, the
               # browsable third-party imports predate that convention).
