@@ -1,12 +1,29 @@
 {
   "schemaVersion": "2.0",
-  "generated_at": "2026-09-17T20:26:57+02:00",
+  "generated_at": "2026-09-18T08:33:54+00:00",
   "repo": "Toqsick/my-agent-tools",
   "how_to_use": "See ROUTING.md. Fetch this file, match a task against each skill's triggers/tags/category, rank, then fetch the chosen skill's `path`. Installed skills also load in-session as their `namespace`. Multi-step work: see `workflows`.",
+  "plugins": [
+    {
+      "name": "agent-toolkit",
+      "version": "0.7.0",
+      "path": "plugins/agent-toolkit",
+      "skills": 78,
+      "agents": 17
+    },
+    {
+      "name": "dev-loop-toolkit",
+      "version": "0.1.0",
+      "path": "plugins/dev-loop-toolkit",
+      "skills": 4,
+      "agents": 0
+    }
+  ],
   "counts": {
-    "installed": 78,
+    "plugins": 2,
+    "installed": 82,
     "library": 1279,
-    "skills_total": 1357,
+    "skills_total": 1361,
     "agents": 17,
     "workflows": 7,
     "categories": 43
@@ -2546,8 +2563,8 @@
     },
     {
       "id": "standalone",
-      "count": 91,
-      "installed": 58,
+      "count": 95,
+      "installed": 62,
       "library": 33
     },
     {
@@ -2828,6 +2845,7 @@
       ],
       "routing_hint": "Use when user asks for computer use game reconnaissance, Computer-Use Game Reconnaissance, When to Use This Skill, Why Bother?",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -2857,6 +2875,7 @@
       ],
       "routing_hint": "Investigate compromised Docker containers by analyzing images, layers, volumes, logs, and runtime artifacts to identify malicious activity and evidence.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "digital-forensics",
       "license": "Apache-2.0",
@@ -2902,6 +2921,7 @@
       ],
       "routing_hint": "Uses the Linux Audit framework (auditd) with ausearch and aureport utilities to detect intrusion attempts, unauthorized access, privilege escalation, and suspicious system activity",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "incident-response",
       "license": "Apache-2.0",
@@ -2943,6 +2963,7 @@
       ],
       "routing_hint": "This skill details how to conduct cloud security audits using Center for Internet Security benchmarks for AWS, Azure, and GCP.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "cloud-security",
       "license": "Apache-2.0",
@@ -2991,6 +3012,7 @@
       ],
       "routing_hint": "Builds vendor-agnostic detection rules using the Sigma rule format for threat detection across SIEM platforms including Splunk, Elastic, and Microsoft Sentinel.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "soc-operations",
       "license": "Apache-2.0",
@@ -3033,6 +3055,7 @@
       ],
       "routing_hint": "Designs and documents structured incident response playbooks that define step-by-step procedures for specific incident types aligned with NIST SP 800-61r3 and SANS PICERL framework",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "incident-response",
       "license": "Apache-2.0",
@@ -3077,6 +3100,7 @@
       ],
       "routing_hint": "Build a systematic threat hunt hypothesis framework that transforms threat intelligence, attack patterns, and environmental data into testable hunting hypotheses.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "threat-hunting",
       "license": "Apache-2.0",
@@ -3118,6 +3142,7 @@
       ],
       "routing_hint": "Performs memory forensics analysis using Volatility 3 to extract evidence of malware execution, process injection, network connections, and credential theft from RAM dumps captured",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "incident-response",
       "license": "Apache-2.0",
@@ -3160,6 +3185,7 @@
       ],
       "routing_hint": "Deploys and configures Suricata IDS/IPS with Emerging Threats rulesets, EVE JSON logging, and custom rules for real-time network traffic inspection, threat detection, and integrati",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "network-security",
       "license": "Apache-2.0",
@@ -3204,6 +3230,7 @@
       ],
       "routing_hint": "Container escape is a critical attack technique where an adversary breaks out of container isolation to access the host system or other containers.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "container-security",
       "license": "Apache-2.0",
@@ -3251,6 +3278,7 @@
       ],
       "routing_hint": "Produce and ingest CycloneDX and SPDX SBOMs and correlate them to vulnerability intelligence.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "supply-chain-security",
       "license": "Apache-2.0",
@@ -3286,6 +3314,7 @@
       ],
       "routing_hint": "Hardening Docker containers for production involves applying security best practices aligned with CIS Docker Benchmark v1.8.0 to minimize attack surface, prevent privilege escalati",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "container-security",
       "license": "Apache-2.0",
@@ -3330,6 +3359,7 @@
       ],
       "routing_hint": "Harden the Docker daemon by configuring daemon.json with user namespace remapping, TLS authentication, rootless mode, and CIS benchmark controls.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "container-security",
       "license": "Apache-2.0",
@@ -3372,6 +3402,7 @@
       ],
       "routing_hint": "Docker Bench for Security is an open-source script that checks dozens of common best practices around deploying Docker containers in production.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "container-security",
       "license": "Apache-2.0",
@@ -3413,6 +3444,7 @@
       ],
       "routing_hint": "Classify and prioritize security incidents using structured IR playbooks to determine severity, assign response teams, and initiate appropriate response procedures.",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "incident-response",
       "license": "Apache-2.0",
@@ -3460,6 +3492,7 @@
       ],
       "routing_hint": "Verify signed artifacts and SLSA build provenance with Sigstore cosign and slsa-verifier, enforce keyless OIDC identity, and apply SLSA Build levels to harden the software supply c",
       "source": "kyssta-cyber",
+      "plugin": "agent-toolkit",
       "domain": "cybersecurity",
       "subdomain": "supply-chain-security",
       "license": "Apache-2.0",
@@ -3482,7 +3515,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Class-level skill for configuring Hermes Agent with 100% free LLM providers, intelligent fallback chains, and optimized auxiliary models",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "modelhub-dashboard",
@@ -3495,7 +3529,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "ModelHub AI Model Benchmark Dashboard - operations, data refresh, and management",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "competitive-software-landscape",
@@ -3513,7 +3548,8 @@
         "map"
       ],
       "routing_hint": "Systematic multi-registry research of open-source tools and products across categories — GitHub star queries, npm/PyPI/cargo fallback, and saturation scoring.",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "reference-architecture-research",
@@ -3526,7 +3562,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Systematic deep-architecture research of reference repositories before greenfield implementation — clone, audit, feature parity, ADRs, provenance, skeleton.",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "ariadne-memory",
@@ -3540,8 +3577,25 @@
       "triggers": [],
       "routing_hint": "Set up and use Ariadne as the local-first hybrid search memory provider for Hermes Agent.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
+    },
+    {
+      "id": "azahar-harness",
+      "name": "azahar-harness",
+      "description": "Use when 3DS-Homebrew im Azahar-Emulator (Citra-Fork) verifiziert werden soll („boot-test im Emulator“, „Azahar-Smoke-Test“, „emulator evidence“, „Save-Check“) — headless-Boot, Boot-Klassifikation, Save-CRC-Beweis, RPC-Zustandsleser. NOT for allgemeines GUI-Testing (computer-use), Build-Aufgaben ohne Emulator (linux-system) oder CI-Integration von Emulator-Runs (bewusst lokal, siehe Skill).",
+      "tier": "installed",
+      "namespace": "dev-loop-toolkit:azahar-harness",
+      "path": "plugins/dev-loop-toolkit/skills/azahar-harness/SKILL.md",
+      "category": "standalone",
+      "tags": [],
+      "triggers": [],
+      "routing_hint": "Use when 3DS-Homebrew im Azahar-Emulator (Citra-Fork) verifiziert werden soll („boot-test im Emulator“, „Azahar-Smoke-Test“, „emulator evidence“, „Save-Check“) — headless-Boot, Boo",
+      "source": "original",
+      "plugin": "dev-loop-toolkit",
+      "license": "MIT",
+      "version": "0.1.0"
     },
     {
       "id": "clickhouse-best-practices",
@@ -3554,7 +3608,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "MUST USE when reviewing ClickHouse schemas, queries, or configurations.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "config-propagation-bugs",
@@ -3568,6 +3623,7 @@
       "triggers": [],
       "routing_hint": "Detect and fix silent data loss from incomplete model serialization, wholesale overwrites, and live-probe replacement of configured values.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.1.0"
     },
@@ -3589,6 +3645,7 @@
       ],
       "routing_hint": "Use when user asks for starting a Hermes work session, reviewing the last session and open work, checking cron and system status, validating today daily note, or requesting a morni",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.4.0"
     },
@@ -3604,6 +3661,7 @@
       "triggers": [],
       "routing_hint": "Concrete debugging tactics for error classification, library API verification, and multi-location bug fixes.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.1.0"
     },
@@ -3618,7 +3676,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Comprehensive research agent for in-depth investigation.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "defensive-programming",
@@ -3632,6 +3691,7 @@
       "triggers": [],
       "routing_hint": "Defensive programming practices to prevent bugs and increase code resilience",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3647,8 +3707,25 @@
       "triggers": [],
       "routing_hint": "Use when exploring a desktop application or game window for reconnaissance.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
+    },
+    {
+      "id": "dev-loop",
+      "name": "dev-loop",
+      "description": "Use when ein GitHub-Milestone autonom abgearbeitet werden soll („fahr dev-loop fort“, „arbeite Milestone M9 ab“, „continue the milestone loop“, „nächstes Issue bitte“) — Issues → Branch → PR → CI → Squash-Merge → Evidenz-Close, Issue für Issue. NOT for Einzel-PR-Aufträge mit eigenem Briefing (pr-ship-pattern), Kanban-Dispatch ohne GitHub (kanban-orchestrator), reines Issue-Triage (github-issues) oder Planung neuer Milestones (plan-dev-loop).",
+      "tier": "installed",
+      "namespace": "dev-loop-toolkit:dev-loop",
+      "path": "plugins/dev-loop-toolkit/skills/dev-loop/SKILL.md",
+      "category": "standalone",
+      "tags": [],
+      "triggers": [],
+      "routing_hint": "Use when ein GitHub-Milestone autonom abgearbeitet werden soll („fahr dev-loop fort“, „arbeite Milestone M9 ab“, „continue the milestone loop“, „nächstes Issue bitte“) — Issues → B",
+      "source": "original",
+      "plugin": "dev-loop-toolkit",
+      "license": "MIT",
+      "version": "0.1.0"
     },
     {
       "id": "drucker-experte",
@@ -3661,7 +3738,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "3D-Druck-Experte für Bastis Bambu Lab A1 mini (0.4mm Düse, Bett 180x180x180).",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "excel-xlsx",
@@ -3675,6 +3753,7 @@
       "triggers": [],
       "routing_hint": "Build and manage Microsoft Excel spreadsheets with precision.",
       "source": "downloads",
+      "plugin": "agent-toolkit",
       "version": "1.0.2"
     },
     {
@@ -3689,6 +3768,7 @@
       "triggers": [],
       "routing_hint": "Create distinctive, production-grade frontend interfaces with high design quality.",
       "source": "downloads",
+      "plugin": "agent-toolkit",
       "license": "Complete terms in LICENSE.txt"
     },
     {
@@ -3703,6 +3783,7 @@
       "triggers": [],
       "routing_hint": "Develop, debug, and maintain Hermes gateway platform adapters (Telegram, Discord, Slack, Raft, etc.)",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3718,8 +3799,25 @@
       "triggers": [],
       "routing_hint": "Use when driving GreyHack gameplay via Computer-Use automation suite.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.1.0"
+    },
+    {
+      "id": "harness-bootstrap",
+      "name": "harness-bootstrap",
+      "description": "Use when ein Repo dev-loop-fähig gemacht werden soll („mach das Repo loop-fähig“, „bootstrap governance“, „richte den Dev-Loop ein“) — Governance-Grundausstattung, Labels, agent-log, Verify-Befehl, merge-probe. NOT for Repos, die bereits WORKFLOW.md/AGENTS.md-Canon haben (nur Lücken prüfen), oder für das Abarbeiten von Milestones (dev-loop).",
+      "tier": "installed",
+      "namespace": "dev-loop-toolkit:harness-bootstrap",
+      "path": "plugins/dev-loop-toolkit/skills/harness-bootstrap/SKILL.md",
+      "category": "standalone",
+      "tags": [],
+      "triggers": [],
+      "routing_hint": "Use when ein Repo dev-loop-fähig gemacht werden soll („mach das Repo loop-fähig“, „bootstrap governance“, „richte den Dev-Loop ein“) — Governance-Grundausstattung, Labels, agent-lo",
+      "source": "original",
+      "plugin": "dev-loop-toolkit",
+      "license": "MIT",
+      "version": "0.1.0"
     },
     {
       "id": "hermes-agent-environment-passthrough",
@@ -3747,6 +3845,7 @@
       ],
       "routing_hint": "Ensuring environment variables are correctly passed to Hermes agent terminal backends, especially Daytona.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.2.0"
     },
@@ -3780,6 +3879,7 @@
       ],
       "routing_hint": "Install, configure, and use Ariadne memory provider for Hermes Agent — local-first hybrid search (FAISS + FTS5 + RRF), knowledge graph, cognitive retention, auto-deduplication.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3795,6 +3895,7 @@
       "triggers": [],
       "routing_hint": "Hermes CLI architecture patterns — pre-argparse flag handling, environment propagation, profile overrides, and subprocess inheritance.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "version": "1"
     },
     {
@@ -3831,6 +3932,7 @@
       ],
       "routing_hint": "Build custom clients (mobile, desktop, web, CLI, IDE plugins) that connect to a remote Hermes Agent via its JSON-RPC WebSocket protocol.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "version": "2.0.0"
     },
     {
@@ -3844,7 +3946,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Git/PR/terminal tool patterns for contributing to the Hermes Agent codebase.",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "hermes-desktop-plugins",
@@ -3858,6 +3961,7 @@
       "triggers": [],
       "routing_hint": "Use when user asks for writing Hermes desktop plugins, UI panes, custom commands inside Hermes desktop app.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3873,6 +3977,7 @@
       "triggers": [],
       "routing_hint": "Build mobile, desktop, or CLI clients that connect to a remote Hermes Agent (hermes serve) via WebSocket JSON-RPC.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3888,6 +3993,7 @@
       "triggers": [],
       "routing_hint": "Build clients that connect to Hermes Agent via the tui_gateway JSON-RPC WebSocket protocol — mobile apps, web clients, custom UIs, and automations that drive a remote Hermes backen",
       "source": "original",
+      "plugin": "agent-toolkit",
       "version": "1.0.0"
     },
     {
@@ -3902,6 +4008,7 @@
       "triggers": [],
       "routing_hint": "Build custom clients against the Hermes tui_gateway JSON-RPC protocol — remote connection, WebSocket transport, auth, and the @hermes/shared client library.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3920,6 +4027,7 @@
       ],
       "routing_hint": "Use when integrating Hermes V7 native MCP client (stdio/HTTP servers, tool discovery, config.yaml setup).",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3935,6 +4043,7 @@
       "triggers": [],
       "routing_hint": "Building native mobile clients (React Native / Expo) that connect to a remote Hermes Agent gateway via WebSocket JSON-RPC.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3950,6 +4059,7 @@
       "triggers": [],
       "routing_hint": "Build native mobile clients (iOS/Android) that connect remotely to a Hermes Agent backend via WebSocket JSON-RPC.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.1.0"
     },
@@ -3971,6 +4081,7 @@
       ],
       "routing_hint": "Author a Hermes color theme that skins every surface.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -3985,7 +4096,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Comprehensive job hunting and career assistant.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "knowledge-digest",
@@ -3998,7 +4110,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Converts textbooks or PDFs into personalized, multimodal interactive learning materials including handwritten notes, quiz webpages, slides, audio courses, and mind maps.",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "mckinsey-presentation-generator",
@@ -4011,7 +4124,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "A professional McKinsey consulting-style multi-page HTML presentation generator.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "messaging-gateway-setup",
@@ -4025,6 +4139,7 @@
       "triggers": [],
       "routing_hint": "Use when user asks for setting up Telegram, WhatsApp, Discord, Signal, or Matrix, configuring the Hermes messaging gateway, checking or restarting gateway status, or removing a mes",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.2.0"
     },
@@ -4039,7 +4154,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "A comprehensive guide to building your first AI agent using MiniMax.",
-      "source": "minimax"
+      "source": "minimax",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "minimax-crypto-trading",
@@ -4052,7 +4168,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "A professional-grade crypto trading decision agent for BTC/ETH/SOL.",
-      "source": "minimax"
+      "source": "minimax",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "minimax-docx",
@@ -4077,6 +4194,7 @@
       ],
       "routing_hint": "Professional DOCX document creation, editing, and formatting using OpenXML SDK (.NET).",
       "source": "minimax",
+      "plugin": "agent-toolkit",
       "license": "MIT"
     },
     {
@@ -4091,6 +4209,7 @@
       "triggers": [],
       "routing_hint": "Use this skill when visual quality and design identity matter for a PDF.",
       "source": "minimax",
+      "plugin": "agent-toolkit",
       "license": "MIT"
     },
     {
@@ -4104,7 +4223,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Use mmx to generate text, images, video, speech, and music via the MiniMax AI platform.",
-      "source": "minimax"
+      "source": "minimax",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "model-selector",
@@ -4118,6 +4238,7 @@
       "triggers": [],
       "routing_hint": "Use when user asks for choosing an LLM from the Nous Portal, comparing models by speed, reasoning, code ability, or price, resolving provider-specific model names, or selecting a l",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.2.0"
     },
@@ -4132,7 +4253,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Manage n8n workflows and automations via API.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "nano-banana-pro",
@@ -4145,7 +4267,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image).",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "notebooklm-bridge",
@@ -4159,6 +4282,7 @@
       "triggers": [],
       "routing_hint": "Use when user asks for managing NotebookLM notebooks and sources, asking citation-grounded questions over uploaded material, generating audio briefings or artifacts, or troubleshoo",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -4173,7 +4297,24 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Extract specific packages from large open-source monorepos and adapt them for standalone use.",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
+    },
+    {
+      "id": "plan-dev-loop",
+      "name": "plan-dev-loop",
+      "description": "Use when ein neuer Meilenstein-Zyklus geplant werden soll („plane M9“, „plan the next milestone“, „neuer Milestone mit Issues“, „plan dev loop“) — im Plan-Mode: verifizierte Ausgangslage, Meilenstein-Graph, Issues mit ausführbaren Akzeptanzkriterien, Bruchstellen-Rezepte, QoL-Backlog, dann Emission via gh + Handoff an dev-loop. NOT for das Abarbeiten bestehender Milestones (dev-loop), allgemeines Planen ohne GitHub-Emission (plan/plan-glm, better-plan-strategy) oder reines Interviewen ohne Planziel (grill-me).",
+      "tier": "installed",
+      "namespace": "dev-loop-toolkit:plan-dev-loop",
+      "path": "plugins/dev-loop-toolkit/skills/plan-dev-loop/SKILL.md",
+      "category": "standalone",
+      "tags": [],
+      "triggers": [],
+      "routing_hint": "Use when ein neuer Meilenstein-Zyklus geplant werden soll („plane M9“, „plan the next milestone“, „neuer Milestone mit Issues“, „plan dev loop“) — im Plan-Mode: verifizierte Ausgan",
+      "source": "original",
+      "plugin": "dev-loop-toolkit",
+      "license": "MIT",
+      "version": "0.1.0"
     },
     {
       "id": "pptx-generator",
@@ -4187,6 +4328,7 @@
       "triggers": [],
       "routing_hint": "Generate, edit, and read PowerPoint presentations.",
       "source": "downloads",
+      "plugin": "agent-toolkit",
       "license": "MIT"
     },
     {
@@ -4200,7 +4342,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Expert prompt engineering agent that helps users craft, critique, refine, and debug prompts for LLMs and AI systems.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "queen-bee-schwarm-dispatch",
@@ -4214,6 +4357,7 @@
       "triggers": [],
       "routing_hint": "Use when user asks to orchestrate parallel subagents, dispatch a Queen-Bee swarm, run orthogonal scouts, or audit separate artifacts concurrently.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.7.0"
     },
@@ -4228,7 +4372,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Autonomously produces doctorate-level research papers (12,000-15,000 words) as formatted Word documents (.docx).",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "saas-niche-finder",
@@ -4241,7 +4386,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Discovers profitable SaaS niches and generates validated business ideas.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "sales-power-map",
@@ -4254,7 +4400,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "B2B sales intelligence assistant: parse vague sales intent, discover target companies, mine org structures, build decision-maker Power Maps with contact info and flanking strategie",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "second-brain",
@@ -4267,7 +4414,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Bastis Obsidian Vault als Domän-Wissensbank nutzen.",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "seo-geo-optimization-expert",
@@ -4280,7 +4428,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Comprehensive SEO and GEO (Generative Engine Optimization) expert.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "skill-mcp-router",
@@ -4294,6 +4443,7 @@
       "triggers": [],
       "routing_hint": "Skill + MCP routing agent for the repository's installed and library skill tiers.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -4309,6 +4459,7 @@
       "triggers": [],
       "routing_hint": "Bypass bot detection and anti-scraping measures when browser automation is blocked.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "version": "1.1.0"
     },
     {
@@ -4322,7 +4473,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Professional folder cleanup and organization assistant.",
-      "source": "original"
+      "source": "original",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "web-content-reconnaissance",
@@ -4336,6 +4488,7 @@
       "triggers": [],
       "routing_hint": "Systematic discovery of hidden content across websites — subdomain enumeration, JavaScript Easter-egg hunting, Git commit archeology, API endpoint discovery, and client-side crypto",
       "source": "original",
+      "plugin": "agent-toolkit",
       "version": "1.3.0"
     },
     {
@@ -4349,7 +4502,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "Scrape, crawl, and extract data from websites.",
-      "source": "downloads"
+      "source": "downloads",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "yuno-cleaner",
@@ -4363,6 +4517,7 @@
       "triggers": [],
       "routing_hint": "Use when user asks to run Yuno Cleaner for a Linux scan, cleanup, status check, scheduled cleanup, JSON report, Telegram notification, or handoff.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.1"
     },
@@ -4388,6 +4543,7 @@
       ],
       "routing_hint": "Use when orchestrating Yunos 7-agent team for multi-domain tasks.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "2.1.0"
     },
@@ -4409,6 +4565,7 @@
       ],
       "routing_hint": "Use when user asks which Yuno team agent should handle a task, how to decompose a multi-domain request, or how to hand work between the seven specialized agents.",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -4424,6 +4581,7 @@
       "triggers": [],
       "routing_hint": "Use when user asks how to apply Basti’s working-style preferences, honest testing standard, recommendation-first decisions, concrete options, scope checks, or communication and doc",
       "source": "original",
+      "plugin": "agent-toolkit",
       "license": "MIT",
       "version": "1.0.0"
     },
@@ -4438,7 +4596,8 @@
       "tags": [],
       "triggers": [],
       "routing_hint": "ZCode SubAgent Team — a Hermes-Kanban multi-lane agent swarm where a Queen (GLM ZCode orchestrator/verifier) delegates bulk work to MiniMax-M3 workers across General / Vision / Cod",
-      "source": "zcode"
+      "source": "zcode",
+      "plugin": "agent-toolkit"
     },
     {
       "id": "apple-notes",
@@ -58906,6 +59065,7 @@
       "name": "coder",
       "description": "Use this agent for real implementation work in the dev projects on this machine — writing features, fixing bugs, refactoring, adding tests, and wiring things together across the polyglot codebases under ~/10-Projekte/10-active/ (Go, Python, Dart/Flutter, CUDA, GreyScript, Node/JS). Ideal when a task needs understanding existing code, matching its conventions, editing multiple files, and verifying the result by actually building/running/testing it. For mechanical batch edits or running a known script across many files with no design judgment, use the `worker` agent instead.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/coder.md"
     },
     {
@@ -58913,6 +59073,7 @@
       "name": "perf-tuner",
       "description": "Use this agent to diagnose and tune performance on this Zorin OS workstation (/home/bratan) — CPU/GPU power management, gaming performance (GameMode, NVIDIA PRIME), thermals/fan behavior, disk-space pressure, memory/zram-swap, and resource usage from local AI workloads (Ollama). Ideal for 'why is X slow/hot/thermal-throttling', pre-gaming-session tuning, disk-full firefighting, or checking whether a past perf fix is still applied. Read-only diagnosis by default: it reports findings and exact commands rather than applying system-wide or risky changes itself.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/perf-tuner.md"
     },
     {
@@ -58920,6 +59081,7 @@
       "name": "security-auditor",
       "description": "Use this agent to audit the security posture of this Zorin OS workstation (/home/bratan) — firewall rules, listening ports, service/systemd state, file permissions, credential exposure risk, sudoers, and drift against the documented baseline. Ideal for periodic security reviews, verifying a past hardening step is still applied, or investigating a specific concern (unexpected listener, loose permission, possible secret leak). Read-only by default: it reports prioritized findings rather than applying fixes itself.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/security-auditor.md"
     },
     {
@@ -58927,6 +59089,7 @@
       "name": "zc-changeset",
       "description": "Coding-Mikro-Worker (Cluster: coder). Leitet aus Impact-Map und Plan einen minimalen, konkreten Change-Set ab, bevor geschrieben wird. Nutzen nach zc-impact, vor zc-patch.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-changeset.md"
     },
     {
@@ -58934,6 +59097,7 @@
       "name": "zc-coder",
       "description": "ZCode-Team Implementierungs-Lead. Arbeitet in Mikrophasen (INGEST->SCAN->DESIGN->IMPLEMENT->SELF-TEST->PATCH-REVIEW->HANDOFF) auf Basis des zc-general-Plans. Nutzen für die eigentliche Code-Implementierung im Team-Workflow — nicht für Ad-hoc-Fixes außerhalb der Pipeline.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-coder.md"
     },
     {
@@ -58941,6 +59105,7 @@
       "name": "zc-debug",
       "description": "ZCode-Team Root-Cause-Lead für einen Hypothesen-Schwarm (REPRO->TRIAGE->HYPOTHESIS SWARM->ROOT CAUSE->FIX->REGRESSION VERIFY). Nutzen, wenn zc-coder NEEDS_DEBUG meldet oder ein Fehlerbild systematisch eingegrenzt werden muss statt geraten zu werden.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-debug.md"
     },
     {
@@ -58948,6 +59113,7 @@
       "name": "zc-fixvalidate",
       "description": "Debug-Mikro-Worker (Cluster: debug). Prüft, ob ein minimaler Fix den ursprünglichen Fehler wirklich beseitigt (Repro vorher/nachher + Regressionscheck). Nutzen als letzter Schritt vor Handoff an zc-verify.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-fixvalidate.md"
     },
     {
@@ -58955,6 +59121,7 @@
       "name": "zc-gate",
       "description": "ZCode-Team Quality Gate. Unabhängiger Prüfer, der aus Plan + optionalem Vision-Befund + Code + Verify-Report eine PASS/RETRY/BLOCK-Entscheidung mit 5 begründeten Scores trifft. Nutzen als finale Freigabe-Instanz, nie als erster Prüfschritt.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-gate.md"
     },
     {
@@ -58962,6 +59129,7 @@
       "name": "zc-general",
       "description": "ZCode-Team Recherche- und Planungs-Agent. Sammelt Kontext, strukturiert Aufgaben, liefert einen Arbeitsplan für zc-coder/zc-debug. Schreibt selbst keinen Code. Nutzen, wenn ein Task vor der Implementierung erst verstanden und in Arbeitspakete zerlegt werden muss.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-general.md"
     },
     {
@@ -58969,6 +59137,7 @@
       "name": "zc-hypothesis",
       "description": "Debug-Mikro-Worker (Cluster: debug). Formuliert und testet einzelne Root-Cause-Hypothesen getrennt voneinander, mit Vorhersage/Test/Beobachtung/Schluss. Nutzen nach zc-trace, vor zc-fixvalidate.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-hypothesis.md"
     },
     {
@@ -58976,6 +59145,7 @@
       "name": "zc-impact",
       "description": "Coding-Mikro-Worker (Cluster: coder). Ermittelt vor jeder Änderung betroffene Dateien, APIs, Typen und Seiteneffekte — reine Impact-Analyse, schreibt nichts. Nutzen als erster Schritt von zc-coders Mikrophasen-Workflow.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-impact.md"
     },
     {
@@ -58983,6 +59153,7 @@
       "name": "zc-patch",
       "description": "Coding-Mikro-Worker (Cluster: coder). Implementiert exakt den freigegebenen minimalen Change-Set in kleinen, logisch isolierten Patches. Nutzen nach zc-changeset, vor zc-selftest.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-patch.md"
     },
     {
@@ -58990,6 +59161,7 @@
       "name": "zc-repro",
       "description": "Debug-Mikro-Worker (Cluster: debug). Reproduziert einen Fehler stabil oder dokumentiert saubere Nicht-Reproduzierbarkeit. Nutzen als erster Schritt von zc-debugs Hypothesen-Schwarm.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-repro.md"
     },
     {
@@ -58997,6 +59169,7 @@
       "name": "zc-selftest",
       "description": "Coding-Mikro-Worker (Cluster: coder). Führt nach einem Patch schnelle lokale Checks (Tests/Lint/Build) aus und meldet ehrlich, was fehlschlägt. Nutzen als letzter Schritt der Coding-Mikrophasen, vor Handoff an zc-verify oder zc-debug.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-selftest.md"
     },
     {
@@ -59004,6 +59177,7 @@
       "name": "zc-trace",
       "description": "Debug-Mikro-Worker (Cluster: debug). Analysiert Logs, Stacktraces und Datenfluss, um wahrscheinliche Ursachenzonen einzugrenzen — ohne selbst eine Root-Cause zu behaupten. Nutzen nach zc-repro, vor zc-hypothesis.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-trace.md"
     },
     {
@@ -59011,6 +59185,7 @@
       "name": "zc-verify",
       "description": "ZCode-Team Verifikations-Agent. Führt 7 Pflicht-Checks (Syntax, Tests, Lint, Types, Diff-Review, Security-Schnellcheck, Regression) gegen den zc-coder/zc-debug-Output aus. Ändert selbst keine Logik. Nutzen als letzter Check vor zc-gate.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-verify.md"
     },
     {
@@ -59018,6 +59193,7 @@
       "name": "zc-vision",
       "description": "ZCode-Team multimodaler Analyse-Agent für Screenshots, UI-Mockups, Code-Diffs-als-Bild und Architektur-Diagramme. Nutzen, wenn ein visueller Befund (UI-Bug, Layout-Bruch, Diagramm-Abgleich) gebraucht wird, bevor zc-coder/zc-verify weiterarbeiten.",
       "model": "inherit",
+      "plugin": "agent-toolkit",
       "path": "plugins/agent-toolkit/agents/zc-vision.md"
     }
   ],

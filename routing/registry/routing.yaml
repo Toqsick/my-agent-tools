@@ -3,7 +3,7 @@
 
 meta_penalty:
   buckets: ['agents/orchestration', 'zcode/tooling-meta']
-  count: 229
+  count: 232
   rule: De-prioritize these buckets unless the request is explicitly about the agent system.
 
 name_dir_mismatches:
@@ -30,7 +30,7 @@ intent_buckets:
     sample_candidates: ["antigravity-cli", "axolotl", "bash-script-audit", "bioinformatics", "browser-game-development", "bulk-readme-to-wiki-pages", "classify-test-failures", "claude-coding-specialist", "arxiv", "cyber-analyzing-threat-actor-ttps-with-mitre-attack", "cyber-building-ioc-enrichment-pipeline-with-opencti", "cyber-implementing-zero-knowledge-proof-for-authentication", "hermes-maintenance-core", "perplexity-followup-plan", "research-paper-generator", "url-source-triage", "apple-notes", "apple-reminders", "custom-aware-research-prompt", "cyber-analyzing-email-headers-for-phishing-investigation"]
   ANALYSIS:
     candidate_domains: ["research/web", "zcode/tooling-meta", "AI/ML/LLM", "security/audit"]
-    sample_candidates: ["arxiv", "cyber-analyzing-threat-actor-ttps-with-mitre-attack", "cyber-building-ioc-enrichment-pipeline-with-opencti", "cyber-implementing-zero-knowledge-proof-for-authentication", "hermes-maintenance-core", "perplexity-followup-plan", "research-paper-generator", "url-source-triage", "architecture-diagram", "ascii-art", "audio-instructions", "auditing-cloud-with-cis-benchmarks", "beat-sync-editor", "blender-mcp", "claude-code-provider-profiles", "claude-coder", "1password", "3-statement-model", "config-propagation-bugs", "cyber-analyzing-cloud-storage-access-patterns"]
+    sample_candidates: ["arxiv", "cyber-analyzing-threat-actor-ttps-with-mitre-attack", "cyber-building-ioc-enrichment-pipeline-with-opencti", "cyber-implementing-zero-knowledge-proof-for-authentication", "hermes-maintenance-core", "perplexity-followup-plan", "research-paper-generator", "url-source-triage", "architecture-diagram", "ascii-art", "audio-instructions", "auditing-cloud-with-cis-benchmarks", "azahar-harness", "beat-sync-editor", "blender-mcp", "claude-code-provider-profiles", "1password", "3-statement-model", "config-propagation-bugs", "cyber-analyzing-cloud-storage-access-patterns"]
   COMMUNICATION:
     candidate_domains: ["communication", "content/media", "writing/docs"]
     sample_candidates: ["maps", "ai-os-architect", "airtable", "analyzing-docker-container-forensics", "analyzing-linux-system-artifacts", "animal-podcast", "anime-design", "anime-style-forge", "ascii-video", "cron-job-management", "cyber-abusing-shadow-credentials-for-privesc", "cyber-analyzing-golang-malware-with-ghidra", "cyber-analyzing-macro-malware-in-office-documents", "cyber-analyzing-malicious-pdf-with-peepdf", "cyber-analyzing-pdf-malware-with-pdfid", "cyber-detecting-arp-poisoning-in-network-traffic", "cyber-detecting-fileless-attacks-on-endpoints"]

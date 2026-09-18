@@ -36,13 +36,17 @@ try:
 except Exception:  # pragma: no cover
     _HAVE_YAML = False
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from plugin_discovery import discover_plugins  # noqa: E402
+
 REPO = Path(__file__).resolve().parent.parent
-INSTALLED_DIR = REPO / "plugins" / "agent-toolkit" / "skills"
 LIBRARY_DIR = REPO / "library"
-AGENTS_DIR = REPO / "plugins" / "agent-toolkit" / "agents"
 WORKFLOWS_DIR = REPO / "workflows"
-NAMESPACE = "agent-toolkit"
 REPO_SLUG = "Toqsick/my-agent-tools"
+# Installed skills and agents are discovered per plugin — see plugin_discovery.
+# Packs remain an agent-toolkit concept and stay scoped to that plugin.
+PACKS_PLUGIN = "agent-toolkit"
 SCHEMA_VERSION = "2.0"  # keep in sync with scripts/build_routing.py
 
 # ---- installed-skill provenance map (best-effort) --------------------------
@@ -173,7 +177,7 @@ def collect_triggers(fm: dict) -> list[str]:
     return out
 
 
-def build_record(skill_md: Path, tier: str, base: Path) -> dict:
+def build_record(skill_md: Path, tier: str, base: Path, namespace: str | None = None) -> dict:
     text = skill_md.read_text(encoding="utf-8", errors="replace")
     fm, body = parse_frontmatter(text)
     if not isinstance(fm, dict):
@@ -195,7 +199,7 @@ def build_record(skill_md: Path, tier: str, base: Path) -> dict:
         "name": collapse(fm.get("name")) or slug,
         "description": desc,
         "tier": tier,
-        "namespace": f"{NAMESPACE}:{slug}" if tier == "installed" else None,
+        "namespace": f"{namespace}:{slug}" if (tier == "installed" and namespace) else None,
         "path": rel,
         "category": category,
         "tags": tags,
@@ -203,6 +207,8 @@ def build_record(skill_md: Path, tier: str, base: Path) -> dict:
         "routing_hint": first_sentence(desc),
         "source": provenance(slug, tier, fm),
     }
+    if tier == "installed" and namespace:
+        rec["plugin"] = namespace
     # optional / sparse facets — only include when present
     for key in ("domain", "subdomain", "license"):
         val = collapse(fm.get(key))
@@ -248,21 +254,41 @@ def scan_tier(base: Path, tier: str) -> list[dict]:
     return records
 
 
-def scan_agents() -> list[dict]:
-    if not AGENTS_DIR.exists():
-        return []
+def scan_installed(plugins) -> list[dict]:
+    """Installed tier across every plugin. Honours each manifest's skill list —
+    a directory on disk that the manifest does not list does not load, so it is
+    not indexed as installed either."""
+    records = []
+    for plugin in plugins:
+        base = plugin.skills_root or plugin.root
+        for skill_dir in plugin.skill_dirs:
+            skill_md = skill_dir / "SKILL.md"
+            if not skill_md.is_file():
+                continue
+            try:
+                records.append(build_record(skill_md, "installed", base, plugin.name))
+            except Exception as e:  # never let one bad file break the whole index
+                print(f"WARN: failed to parse {skill_md}: {e}", file=sys.stderr)
+    return records
+
+
+def scan_agents(plugins) -> list[dict]:
     out = []
-    for md in sorted(AGENTS_DIR.glob("*.md")):
-        fm, _ = parse_frontmatter(md.read_text(encoding="utf-8", errors="replace"))
-        if not isinstance(fm, dict):
-            fm = {}
-        out.append({
-            "id": md.stem,
-            "name": collapse(fm.get("name")) or md.stem,
-            "description": collapse(fm.get("description")),
-            "model": collapse(fm.get("model")) or "inherit",
-            "path": md.relative_to(REPO).as_posix(),
-        })
+    for plugin in plugins:
+        if not plugin.agents_dir or not plugin.agents_dir.exists():
+            continue
+        for md in sorted(plugin.agents_dir.glob("*.md")):
+            fm, _ = parse_frontmatter(md.read_text(encoding="utf-8", errors="replace"))
+            if not isinstance(fm, dict):
+                fm = {}
+            out.append({
+                "id": md.stem,
+                "name": collapse(fm.get("name")) or md.stem,
+                "description": collapse(fm.get("description")),
+                "model": collapse(fm.get("model")) or "inherit",
+                "plugin": plugin.name,
+                "path": md.relative_to(REPO).as_posix(),
+            })
     return out
 
 
@@ -305,12 +331,13 @@ def build_tag_vocabulary(skills: list[dict]) -> list[str]:
 
 
 def main() -> int:
-    installed = scan_tier(INSTALLED_DIR, "installed")
+    plugins = discover_plugins(REPO)
+    installed = scan_installed(plugins)
     library = scan_tier(LIBRARY_DIR, "library")
     skills = sorted(installed + library,
                     key=lambda s: (0 if s["tier"] == "installed" else 1,
                                    s["category"], s["id"], s["path"]))
-    agents = scan_agents()
+    agents = scan_agents(plugins)
     workflows = scan_workflows()
     categories = build_categories(skills)
 
@@ -322,7 +349,18 @@ def main() -> int:
                       "each skill's triggers/tags/category, rank, then fetch the "
                       "chosen skill's `path`. Installed skills also load in-session "
                       "as their `namespace`. Multi-step work: see `workflows`.",
+        "plugins": [
+            {
+                "name": p.name,
+                "version": p.version,
+                "path": p.root.relative_to(REPO).as_posix(),
+                "skills": sum(1 for s in installed if s.get("plugin") == p.name),
+                "agents": sum(1 for a in agents if a.get("plugin") == p.name),
+            }
+            for p in plugins
+        ],
         "counts": {
+            "plugins": len(plugins),
             "installed": len(installed),
             "library": len(library),
             "skills_total": len(skills),
@@ -351,15 +389,19 @@ def main() -> int:
     write_navigation(index, packs)
     from build_routing import main as build_routing
     build_routing()
-    print(f"INDEX.json: {len(installed)} installed + {len(library)} library "
+    per_plugin = ", ".join(f"{p['name']} {p['skills']}" for p in index["plugins"])
+    print(f"INDEX.json: {len(installed)} installed ({per_plugin}) + {len(library)} library "
           f"= {len(skills)} skills, {len(agents)} agents, {len(workflows)} workflows, "
           f"{len(categories)} categories, {len(packs)} packs")
     return 0
 
 
 def _load_packs() -> list[dict]:
-    """Read the curated packs/manifest.json; return [] if absent."""
-    p = REPO / "plugins" / "agent-toolkit" / "packs" / "manifest.json"
+    """Read the curated packs/manifest.json; return [] if absent.
+
+    Packs are an agent-toolkit concept (a navigation layer over that one plugin's
+    skills), not a marketplace-wide one — hence the explicit scope."""
+    p = REPO / "plugins" / PACKS_PLUGIN / "packs" / "manifest.json"
     if not p.exists():
         return []
     try:
@@ -384,13 +426,21 @@ def write_navigation(index: dict, packs: list[dict] | None = None) -> None:
                  f"{c['categories']} categories")
     lines.append("")
     lines.append("Two tiers: **installed** skills load into every Claude Code session as "
-                 "`agent-toolkit:<name>`; **library** skills are browsable reference, fetched "
+                 "`<plugin>:<name>`; **library** skills are browsable reference, fetched "
                  "on demand by `path` via the GitHub MCP (never auto-loaded).")
     lines.append("")
 
-    # Installed skills, grouped by category
+    # Installed skills, grouped by category (the plugin shows in each Invoke-as cell)
     lines.append("## Installed skills (session-loaded)")
     lines.append("")
+    plugin_rows = index.get("plugins") or []
+    if len(plugin_rows) > 1:
+        lines.append("| Plugin | Version | Skills | Agents |")
+        lines.append("|---|---|---|---|")
+        for pr in plugin_rows:
+            lines.append(f"| [`{pr['name']}`]({pr['path']}) | {pr['version'] or '—'} "
+                         f"| {pr['skills']} | {pr['agents']} |")
+        lines.append("")
     inst = [s for s in index["skills"] if s["tier"] == "installed"]
     by_cat: dict[str, list[dict]] = {}
     for s in inst:
@@ -417,7 +467,7 @@ def write_navigation(index: dict, packs: list[dict] | None = None) -> None:
         lines.append("| Pack | Title | Category | Skills |")
         lines.append("|---|---|---|---|")
         for p in packs:
-            lines.append(f"| [`{p['name']}`](plugins/agent-toolkit/packs/{p['name']}/README.md) "
+            lines.append(f"| [`{p['name']}`](plugins/{PACKS_PLUGIN}/packs/{p['name']}/README.md) "
                          f"| {p.get('title', p['name'])} | {p.get('category', '')} | "
                          f"{p.get('skill_count', len(p.get('skills', [])))} |")
         lines.append("")
@@ -441,11 +491,14 @@ def write_navigation(index: dict, packs: list[dict] | None = None) -> None:
     # Agents
     lines.append("## Agents")
     lines.append("")
-    lines.append("| Agent | Model | Purpose |")
-    lines.append("|---|---|---|")
+    multi = len(index.get("plugins") or []) > 1
+    lines.append("| Agent | Plugin | Model | Purpose |" if multi
+                 else "| Agent | Model | Purpose |")
+    lines.append("|---|---|---|---|" if multi else "|---|---|---|")
     for a in index["agents"]:
         d = (a["description"] or "").replace("|", "\\|")[:120]
-        lines.append(f"| `{a['id']}` | {a['model']} | {d} |")
+        lines.append(f"| `{a['id']}` | `{a.get('plugin', '—')}` | {a['model']} | {d} |" if multi
+                     else f"| `{a['id']}` | {a['model']} | {d} |")
     lines.append("")
 
     # Workflows

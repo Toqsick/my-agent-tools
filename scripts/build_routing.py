@@ -10,10 +10,14 @@ from __future__ import annotations
 import csv
 import json
 import re
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from plugin_discovery import discover_plugins  # noqa: E402
+
 REPO = Path(__file__).resolve().parent.parent
-INSTALLED = REPO / "plugins" / "agent-toolkit" / "skills"
 LIBRARY = REPO / "library"
 OUT = REPO / "routing" / "registry"
 
@@ -235,7 +239,13 @@ def write_yaml(skills: list[dict]) -> None:
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    skills = sorted(scan(INSTALLED, "installed") + scan(LIBRARY, "library"), key=lambda r: (r["tier"], r["path"]))
+    installed: list[dict] = []
+    for plugin in discover_plugins(REPO):
+        base = plugin.skills_root or plugin.root
+        for skill_dir in plugin.skill_dirs:
+            if (skill_dir / "SKILL.md").is_file():
+                installed.append(build_record(skill_dir / "SKILL.md", "installed", base))
+    skills = sorted(installed + scan(LIBRARY, "library"), key=lambda r: (r["tier"], r["path"]))
     registry = {
         "schemaVersion": "2.0",
         "generated_by": "scripts/build_index.py",

@@ -46,8 +46,9 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 ├── ROUTING.md                    # how an agent self-routes to a skill
 ├── .env.example                  # all MCP env-var templates + setup guide
 ├── .claude-plugin/
-│   └── marketplace.json          # marketplace manifest → lists the agent-toolkit plugin
+│   └── marketplace.json          # marketplace manifest → lists both plugins
 ├── plugins/
+│   ├── dev-loop-toolkit/         # 4 skills, 2 commands — autonomous GitHub dev loop
 │   └── agent-toolkit/
 │       ├── .claude-plugin/
 │       │   └── plugin.json        # plugin manifest (registers the installed skills)
@@ -73,7 +74,7 @@ Installed = curated fast-path; library = the comprehensive Hermes arsenal, pulle
 
 ## Skill packs (installed-skill grouping)
 
-The 78 installed skills are grouped into **8 themed packs** — a navigation layer over the one
+The `agent-toolkit` plugin's 78 installed skills are grouped into **8 themed packs** — a navigation layer over the one
 plugin, so the wall of skills becomes scannable by domain. Every skill still loads in every
 session and is invokable as `agent-toolkit:<name>`; packs just make browsing and routing
 easier. See [`PACKS.md`](PACKS.md) for the full pack index, the per-pack skill rosters, and the
