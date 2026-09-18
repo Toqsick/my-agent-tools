@@ -4,11 +4,11 @@
   "repo": "Toqsick/my-agent-tools",
   "source": "repository-relative skill trees",
   "counts": {
-    "installed": 78,
+    "installed": 82,
     "library": 1279,
-    "total": 1357,
+    "total": 1361,
     "mcp_coupled": 30,
-    "meta_penalized": 229
+    "meta_penalized": 232
   },
   "skills": [
     {
@@ -1099,6 +1099,62 @@
       "domain": "agents/orchestration",
       "is_meta": true,
       "description": "ZCode SubAgent Team — a Hermes-Kanban multi-lane agent swarm where a Queen (GLM ZCode orchestrator/verifier) delegates bulk work to MiniMax-M3 workers across General / Vision / Coder / Debug / Verify / Quality-Gate lanes, all routed through Hermes. Use when orchestrating a staged, multi-lane coding or debugging pipeline; pairs with the zc-* subagents shipped in this toolkit.",
+      "mcp_server": null,
+      "mcp_note": null,
+      "name_dir_mismatch": null
+    },
+    {
+      "id": "installed:plugins/dev-loop-toolkit/skills/azahar-harness/SKILL.md",
+      "name": "azahar-harness",
+      "dir": "azahar-harness",
+      "tier": "installed",
+      "path": "plugins/dev-loop-toolkit/skills/azahar-harness/SKILL.md",
+      "source_root": "repo",
+      "domain": "zcode/tooling-meta",
+      "is_meta": true,
+      "description": "Use when 3DS-Homebrew im Azahar-Emulator (Citra-Fork) verifiziert werden soll („boot-test im Emulator“, „Azahar-Smoke-Test“, „emulator evidence“, „Save-Check“) — headless-Boot, Boot-Klassifikation, Save-CRC-Beweis, RPC-Zustandsleser. NOT for allgemeines GUI-Testing (computer-use), Build-Aufgaben ohne Emulator (linux-system) oder CI-Integration von Emulator-Runs (bewusst lokal, siehe Skill).",
+      "mcp_server": null,
+      "mcp_note": null,
+      "name_dir_mismatch": null
+    },
+    {
+      "id": "installed:plugins/dev-loop-toolkit/skills/dev-loop/SKILL.md",
+      "name": "dev-loop",
+      "dir": "dev-loop",
+      "tier": "installed",
+      "path": "plugins/dev-loop-toolkit/skills/dev-loop/SKILL.md",
+      "source_root": "repo",
+      "domain": "agents/orchestration",
+      "is_meta": true,
+      "description": "Use when ein GitHub-Milestone autonom abgearbeitet werden soll („fahr dev-loop fort“, „arbeite Milestone M9 ab“, „continue the milestone loop“, „nächstes Issue bitte“) — Issues → Branch → PR → CI → Squash-Merge → Evidenz-Close, Issue für Issue. NOT for Einzel-PR-Aufträge mit eigenem Briefing (pr-ship-pattern), Kanban-Dispatch ohne GitHub (kanban-orchestrator), reines Issue-Triage (github-issues) oder Planung neuer Milestones (plan-dev-loop).",
+      "mcp_server": null,
+      "mcp_note": null,
+      "name_dir_mismatch": null
+    },
+    {
+      "id": "installed:plugins/dev-loop-toolkit/skills/harness-bootstrap/SKILL.md",
+      "name": "harness-bootstrap",
+      "dir": "harness-bootstrap",
+      "tier": "installed",
+      "path": "plugins/dev-loop-toolkit/skills/harness-bootstrap/SKILL.md",
+      "source_root": "repo",
+      "domain": "agents/orchestration",
+      "is_meta": true,
+      "description": "Use when ein Repo dev-loop-fähig gemacht werden soll („mach das Repo loop-fähig“, „bootstrap governance“, „richte den Dev-Loop ein“) — Governance-Grundausstattung, Labels, agent-log, Verify-Befehl, merge-probe. NOT for Repos, die bereits WORKFLOW.md/AGENTS.md-Canon haben (nur Lücken prüfen), oder für das Abarbeiten von Milestones (dev-loop).",
+      "mcp_server": null,
+      "mcp_note": null,
+      "name_dir_mismatch": null
+    },
+    {
+      "id": "installed:plugins/dev-loop-toolkit/skills/plan-dev-loop/SKILL.md",
+      "name": "plan-dev-loop",
+      "dir": "plan-dev-loop",
+      "tier": "installed",
+      "path": "plugins/dev-loop-toolkit/skills/plan-dev-loop/SKILL.md",
+      "source_root": "repo",
+      "domain": "devops/infra",
+      "is_meta": false,
+      "description": "Use when ein neuer Meilenstein-Zyklus geplant werden soll („plane M9“, „plan the next milestone“, „neuer Milestone mit Issues“, „plan dev loop“) — im Plan-Mode: verifizierte Ausgangslage, Meilenstein-Graph, Issues mit ausführbaren Akzeptanzkriterien, Bruchstellen-Rezepte, QoL-Backlog, dann Emission via gh + Handoff an dev-loop. NOT for das Abarbeiten bestehender Milestones (dev-loop), allgemeines Planen ohne GitHub-Emission (plan/plan-glm, better-plan-strategy) oder reines Interviewen ohne Planziel (grill-me).",
       "mcp_server": null,
       "mcp_note": null,
       "name_dir_mismatch": null
