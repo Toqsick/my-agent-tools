@@ -1,11 +1,10 @@
 {
   "name": "agent-toolkit",
   "description": "Basti's vetted Claude Code toolkit: 78 skills in 8 themed packs, 17 subagents, 9 MCP server declarations, a /toolkit browse command, and a session-start status hook. One enable → every agent on the same state.",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "author": {
     "name": "Toqsick"
   },
-  "category": "productivity",
   "skills": [
     "./skills/second-brain",
     "./skills/yuno-cleaner",
