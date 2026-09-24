@@ -1,6 +1,6 @@
 # dev-loop-toolkit — Design-Herleitung
 
-Stand: 2026-09-17 · v0.1.0 · Branch `dev-loop-toolkit`
+Stand: 2026-09-18 · v0.1.0 (Ziel 0.2.0, Plan: `~/.claude/plans/analysiere-den-workflow-von-golden-storm.md`)
 
 ## Woher der Kanon kommt
 
@@ -21,7 +21,11 @@ Forensik des `pokerogue-3ds`-Loops (Toqsick, 16.–17.09.2026: 19 squash-gemergt
 ## Design-Entscheidungen
 
 1. **Plugin statt Skills-Ordner:** eigene Marketplace-Identität, aktivierbar in
-   ZCode (lokal, live-resolve) und Claude Code (nach Push), kein Toggle-Scope-Konflikt.
+   ZCode und Claude Code, kein Toggle-Scope-Konflikt. *Korrigiert 2026-09-18:* ZCode löst
+   `dev-loop-toolkit@my-agent-tools-local` über den lokalen Marketplace gegen den
+   **main-Checkout** auf, nicht gegen einen Feature-Branch; ein „live-resolve" der Arbeitskopie
+   gibt es nicht. Ob ZCode das Plugin tatsächlich lädt, ist noch nicht live verifiziert
+   (Plan, offene Fakten Nr. 6; `parity-check` T-0.9).
    Name `dev-loop-toolkit`, weil `agent-toolkit` vom 129-Skill-Plugin belegt ist.
 2. **Thin Orchestrator:** die Skills routen zu Bestehendem (pr-ship-pattern,
    github-pr-workflow/-issues/-merge-readiness, classify-test-failures, grill-4x4,
@@ -42,7 +46,7 @@ Forensik des `pokerogue-3ds`-Loops (Toqsick, 16.–17.09.2026: 19 squash-gemergt
    sind stundenlang aktiv; eine Script-PID wäre nach Sekunden tot).
 6. **Abnahme-Trennung:** `Abnahme: Mensch`-Marker (Body) bzw. agent-log-Führung;
    frontier.sh weist solche Issues als `[abnah]` aus. Implementiert ≠ abgenommen.
-7. **Kein Hook in v1:** SessionStart-Banner wäre nice-to-have; read-only-first.
+7. **Kein Hook in v1** — *überholt in v0.2:* Der Merge-Guard, der Banner, Stop und die Outbox sind Hooks (fail-closed), siehe Entscheidungsprotokoll Q19/Q31.
 
 ## Verifiziert
 
@@ -68,6 +72,44 @@ Forensik des `pokerogue-3ds`-Loops (Toqsick, 16.–17.09.2026: 19 squash-gemergt
 - INDEX.json-Regeneration (Repo-Index) erst mit dem Commit
 - Cron/OffPeak-Anstoß für unattended Loop-Fahrten: dokumentiert im SKILL
   (ZCode-Tool-Map), bewusst nicht vorkonfiguriert
+
+## Entscheidungsprotokoll v0.2 (grill-me, 2026-09-18)
+
+| Q | Entscheidung | Kern-Begründung |
+|---|---|---|
+| 1 | Ein Plan, ein Release; Milestones darin sequenziell | Gesamtbild statt Stückwerk |
+| 2 | Primärziel: unbeaufsichtigte Laufzeit | Engpass ist die Anwesenheit, nicht der Durchsatz |
+| 3 | Claude Code primär, ZCode gleicher Skill-Text + Tool-Maps | superpowers-Muster |
+| 4 | Gate-Klassen `gate:human` / `gate:auto` | nur echte Abnahmepunkte brauchen den Menschen |
+| 5 | Verifikationspfad-PRs → `needs-human` + Hook gegen Testlöschung/Skip; Verifikationspfad-Milestones mergen normal, aber erzwungenes `gate:human` mit Mutationsbeleg | der Verify darf sich nicht selbst aufweichen |
+| 6 | Universell für Dev; Azahar ist das Musterbeispiel | Muster verallgemeinern |
+| 7 | Nur das Delta bauen, zu superpowers routen | keine Duplikate |
+| 8 | Nachlaufender Polish-Milestone je Zyklus | QoL ohne Scope-Creep im Kern |
+| 9 | Hybrid: Kern direkt, Rest per Loop (Dogfood my-agent-tools) | der Loop muss sich selbst bauen können |
+| 10/14 | PokeRogue umstellen → präzisiert: pausiert bis der v0.2-Kern ladbar ist; Basti stoppt 45e47888 | kein Umbau unter laufendem Loop |
+| 11/27 | Volle GUI-Exploration → echtes Display, Azahar nur isoliert + llvmpipe, Basti anwesend; Ausführungsschritt 0 | nvkms-Livelock-Risiko |
+| 12/26/36 | Breite Deep Research → vor der Plan-Datei → nach 429: das Tragende jetzt, Literatur als T-1.1 | Plan steht auf geprüften Fakten |
+| 13 | Telegram als Hauptkanal, GitHub-Kommentare für Nachvollziehbarkeit | Mobilität + Spur |
+| 15 | #124/#125 bleiben in PokeRogue; #126/#127 generisch ins Plugin | Generisches ins Plugin |
+| 16 | `oracle-harness` + Toolkit + Adapter, kein MCP | Methodik vor Werkzeug |
+| 17/30 | beathome = Konsument #2, zuerst Server/API-Orakel | billig, hermetisch, NVIDIA-frei |
+| 18 | Supergroup, Topic je Repo, Pin-Status, Buttons mit from.id, gespiegelt zu GitHub; Koordination über GitHub + State | Chat ist flüchtig |
+| 19 | PreToolUse-Merge-Guard + Allow-Regel + PokeRogue-`gov:`-Commit (Driver-Modus präzisiert: nur der Driver merged) | Durchlauf per Regel, Kontrolle per Guard |
+| 20 | Modell-agnostisch (Session-Default), optionales Gate-Modell | Unabhängigkeit über frischen Kontext |
+| 21/29 | Externer Driver, frische Session je Issue; erst Spike, Fallback Stop-Hook | robust gegen Kontextverlust |
+| 22 | Ein PR pro Task; Progress-Block im selben PR; Squash-SHA im agent-log | kein Folge-PR-Rauschen |
+| 23 | `.dev-loop.toml` getrackt, `.dev-loop/` untrackt | Konfig reviewbar, State lokal |
+| 24 | Dev: ZCode per Pfad, Claude per `--plugin-dir`; stabil: gleicher Tag; `parity-check`; 0.6.0-Symlinks bereinigen | ein Stand für beide |
+| 25 | Nur Laufzeit-Nötiges vendoren; Routen zu plan-glm/better-plan/kanban weg | schlankes Set im Headless-Lauf |
+| 28 | Done-Kriterium (s. oben) | messbar |
+| 31 | Hooks: Guard, SessionStart-Banner (JSON), Stop, PostToolUse → Telegram gebündelt | Gruppenlimit 20/min |
+| 32 | Polish: retro, status, Kostenreport, Scheduler, Grafana, Morgen-Digest | — |
+| 33 | 0.2.0 bis Done, dann 1.0.0; Name bleibt | — |
+| 34→40 | Lanes: 1 Session global, IMPL-Lanes opt-in mit Konflikt-Probe | gemeinsames Kontingent, ~20 % Konfliktrate |
+| 35 | Android-Emulator-Orakel → eigener Folgeplan | NVIDIA-Risiko, nicht Done-relevant |
+| 37 | Yuno liest ab v0.2 mit (Bot-zu-Bot), antwortet, handelt nie | neue Bot-API-Fähigkeit ohne Koordinationsrisiko |
+| 38 | Machine-Account ab v0.2; Telegram-Tap → echtes Toqsick-Approval | Autor ≠ Approver beweisbar |
+| 39 | Harness-Nahtstelle jetzt, ZCode-Adapter + Failover im Polish | Headless nur statisch belegt |
 
 ## Quellen
 
