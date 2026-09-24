@@ -3,14 +3,15 @@
 
 A plugin is any ``plugins/<name>/`` carrying ``.claude-plugin/plugin.json``.
 The manifest's ``skills`` / ``agents`` keys are polymorphic — Claude Code accepts
-both shapes and this repository uses both:
+all three shapes below; this repository uses the list and the absent form:
 
-* a **string** naming a directory to scan, e.g. ``"skills": "skills"``
-  (dev-loop-toolkit) — every ``SKILL.md`` beneath it is installed;
+* a **string** naming a directory to scan, e.g. ``"skills": "./skills"``
+  — every ``SKILL.md`` beneath it is installed;
 * a **list** of explicit paths, e.g. ``"skills": ["./skills/n8n", …]``
   (agent-toolkit) — that list is the real load switch, so a directory present on
   disk but absent from the list must NOT be indexed as installed;
-* **absent** — fall back to the conventional ``skills/`` / ``agents/`` directory.
+* **absent** — fall back to the conventional ``skills/`` / ``agents/`` directory
+  (dev-loop-toolkit).
 
 Shared by scripts/build_index.py and scripts/build_routing.py so the manifest
 shapes are understood in exactly one place.
