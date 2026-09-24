@@ -1,0 +1,65 @@
+name: Plugin Validate
+
+# Runs Claude Code's own manifest validator, so a plugin.json or
+# marketplace.json that `claude plugin install` would reject cannot land on
+# main. PR #28 shipped an invalid dev-loop-toolkit manifest, fixed in #31.
+# No credentials are needed because validation only reads files.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**'
+      - '.github/workflows/plugin-validate.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**'
+      - '.github/workflows/plugin-validate.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: plugin-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: claude plugin validate
+    runs-on: ubuntu-latest
+    env:
+      DISABLE_AUTOUPDATER: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node 22 einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Uses `latest` on purpose so the job checks against the release users
+      # actually install. The log records which version ran.
+      - name: Claude Code installieren
+        run: |
+          npm install -g @anthropic-ai/claude-code@latest
+          claude --version
+
+      - name: Marketplace validieren (marketplace.json + alle gelisteten plugin.json)
+        run: claude plugin validate .
+
+      # Also covers plugins that are not (yet) listed in marketplace.json.
+      - name: Jedes Plugin einzeln validieren
+        run: |
+          status=0
+          for manifest in plugins/*/.claude-plugin/plugin.json; do
+            dir="${manifest%/.claude-plugin/plugin.json}"
+            echo "::group::$dir"
+            claude plugin validate "$dir" || status=1
+            echo "::endgroup::"
+          done
+          exit $status

@@ -441,7 +441,10 @@ uv run --extra dev pytest tests/unit tests/integration -v
 5. **Regenerate the catalogs (required):** run `python3 scripts/build_index.py` to rebuild
    [`INDEX.json`](INDEX.json), [`NAVIGATION.md`](NAVIGATION.md), and `routing/registry/*`. Never hand-edit
    generated files.
-6. Bump `version` in `plugin.json`, commit, push. Re-sync on other machines with
+6. **Validate the manifests:** `claude plugin validate .` must pass without errors. The
+   `Plugin Validate` workflow runs the same check on every PR that touches `plugins/**` or
+   `.claude-plugin/**`.
+7. Bump `version` in `plugin.json`, commit, push. Re-sync on other machines with
    `claude plugin marketplace update my-agent-tools`.
 
 **Rule:** only vetted, quality tools land here — this is the canonical set, not a dumping ground.
