@@ -1,19 +1,19 @@
 {
   "schemaVersion": "2.0",
-  "generated_at": "2026-09-18T08:33:54+00:00",
+  "generated_at": "2026-09-18T09:43:09+00:00",
   "repo": "Toqsick/my-agent-tools",
   "how_to_use": "See ROUTING.md. Fetch this file, match a task against each skill's triggers/tags/category, rank, then fetch the chosen skill's `path`. Installed skills also load in-session as their `namespace`. Multi-step work: see `workflows`.",
   "plugins": [
     {
       "name": "agent-toolkit",
-      "version": "0.7.0",
+      "version": "0.7.1",
       "path": "plugins/agent-toolkit",
       "skills": 78,
       "agents": 17
     },
     {
       "name": "dev-loop-toolkit",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "path": "plugins/dev-loop-toolkit",
       "skills": 4,
       "agents": 0
