@@ -17,7 +17,7 @@
 - [ ] If adding a skill: `python3 scripts/build_index.py` has been run locally
 - [ ] If adding an MCP server: entry added to `.mcp.json` with `${ENV_VAR}` references only
 - [ ] If adding an MCP server: env var added to `.env.example`
-- [ ] CI passes (secret-scanning, skill-lint, mcp-health-check)
+- [ ] CI passes (secret-scanning, skill-lint, mcp-health-check, plugin-validate)
 
 ## Related
 
